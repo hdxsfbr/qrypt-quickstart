@@ -1,0 +1,6 @@
+# codex isolated runs; image=92cd0628f7f0; 2026-10-15T17:24Z
+isolated,codex,1,wall_s=58,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=6,impl=./qrypt-aes256/quickstart.mjs/,image=92cd0628f7f0
+isolated,codex,2,wall_s=63,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=8,impl=./qrypt-demo/quickstart.mjs/,image=92cd0628f7f0
+isolated,codex,3,wall_s=56,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=9,impl=./qrypt-aes256/quickstart.mjs/,image=92cd0628f7f0
+isolated,codex,4,wall_s=74,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=8,impl=./qrypt-demo/.venv/lib/python3.11/site-packages/requests/packages.py/./qrypt-demo/.venv/lib/python3.11/site-packages/requests/exceptions.py/./qrypt-demo/.venv/lib/python3.11/site-packages/requests/utils.py/,image=92cd0628f7f0
+isolated,codex,5,wall_s=65,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=7,impl=./qrypt-demo/.venv/lib/python3.11/site-packages/requests/packages.py/./qrypt-demo/.venv/lib/python3.11/site-packages/requests/exceptions.py/./qrypt-demo/.venv/lib/python3.11/site-packages/requests/utils.py/,image=92cd0628f7f0

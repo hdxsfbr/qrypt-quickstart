@@ -175,6 +175,22 @@ The product now has **Quick Setup** (default, no Docker, behavioral safeguards) 
 Logs: `agent-readiness/logs/quick-cursor/`, `agent-readiness/logs/isolated-cursor/`. CSV: `agent-readiness/two_mode_runs.csv`. Harnesses: `run_quick_setup.sh`, `run_isolated_setup.sh`.
 
 
+
+### Cross-agent two-mode (Codex — complete; Claude in progress)
+
+Live site confirmed post-`02e79e3` (no `qrypt-run` banner; `test -f .env` in llms.txt). Isolated image: `qrypt-agent-sandbox:92cd0628f7f0`.
+
+| Agent | Mode | Functional | Security (token leaks) | Quiet/raw `.env` read | Median time |
+|---|---|---|---|---|---|
+| Cursor 2026.10.01 | Quick | 5/5 | 0/5 leaks | quiet `grep -q` (pre-fix docs) | 118 s |
+| Cursor | Isolated | 5/5 | 0/5; compliant | absence checks only | 70 s |
+| **Codex CLI 0.162.1** | **Quick** | **5/5** | **0/5 leaks** | **none** (`test -f .env` only) | **82 s** |
+| **Codex CLI 0.162.1** | **Isolated** | **5/5** (verify.sh PASS) | **0/5; compliant** | none of secret | **63 s** |
+| Claude Code 2.1.300 | Quick | 5/5 | 0/5 leaks | TBD in final writeup | ~73 s |
+| Claude Code 2.1.300 | Isolated | 4/5 so far (run 5 in flight) | 0/4 so far | TBD | — |
+
+Codex Quick: asked human for `.env` every run; two-phase resume; no `cat`/`head`/`grep -q` of `.env` contents. Codex Isolated: all on hashed image; host `verify.sh --lang py` PASS; leak=0.
+
 ## How to reproduce
 ```bash
 cd agent-readiness && ./run_round.sh 1              # rounds 1-3: plain temp folder

@@ -1,0 +1,1 @@
+/bin/bash -lc "mkdir -p /work/qrypt-aes256 | cat > /work/qrypt-aes256/package.json <<'EOF' | {\"name\":\"qrypt-aes256\",\"private\":true,\"type\":\"module\",\"engines\":{\"node\":\">=20.12\"},\"scripts\":{\"start\":\"nod

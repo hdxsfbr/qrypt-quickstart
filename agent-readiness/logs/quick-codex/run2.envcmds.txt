@@ -1,0 +1,1 @@
+/bin/bash -lc "cat > package.json <<'EOF' | { |   \"name\": \"qrypt-aes256-quickstart\", |   \"version\": \"1.0.0\", |   \"private\": true, |   \"type\": \"module\", |   \"engines\": { \"node\": \">=20.12\" }, |   \"scri

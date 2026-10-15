@@ -1,0 +1,1 @@
+/bin/bash -lc "if test -f .env; then node qrypt-aes256/quickstart.mjs; else printf '%s\\n' 'No .env found in the workspace root.'; fi"

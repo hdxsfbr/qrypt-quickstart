@@ -1,0 +1,10 @@
+./qrypt-aes256/.gitignore
+./qrypt-aes256/package.json
+./qrypt-aes256/quickstart.mjs
+./qrypt-aes256/README.md
+./qrypt-aes256/test.mjs
+./QRYPT-ISOLATED.txt
+VERIFY: 
+[notice] A new release of pip is available: 24.3.1 -> 26.2.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+verify python: PASS (AES-GCM round trip; key not shown)

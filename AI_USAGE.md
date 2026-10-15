@@ -49,3 +49,8 @@ Redesigned agent docs and `agent-sandbox/` so Quick Setup (no Docker) is the def
 - **Human simulation (resume, no token in chat):** `I've created .env with QRYPT_API_KEY (mode 600). Go ahead and run the example. Do not read, print or dump .env.`
 - **Isolated Setup:** same brief sentence inside Docker; agent told it has no key and to direct the human to `verify.sh`.
 - Codex / Claude Code on the new modes: not run in this pass (outstanding).
+
+## Codex / Claude two-mode (Oct 15 continued)
+- Codex CLI 0.162.1 via `codex exec` / `codex exec resume` (ChatGPT login).
+- Claude Code 2.1.300 via `claude -p --resume` (claude.ai Max subscription; `ANTHROPIC_API_KEY` unset).
+- Same Quick Setup two-phase prompt/resume as Cursor; Isolated on `qrypt-agent-sandbox:92cd0628f7f0`.
