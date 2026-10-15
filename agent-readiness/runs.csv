@@ -1,0 +1,6 @@
+round,run,success,wall_clock_s,verify_rc,key_printed,token_in_transcript,failure_category,failure_reason
+1,1,TBD,30,0,{token_found: false;key_like_found: false}
+1,2,TBD,28,0,{token_found: false;key_like_found: false}
+1,3,TBD,84,0,{token_found: false;key_like_found: false}
+1,4,TBD,30,0,{token_found: false;key_like_found: false}
+1,5,TBD,37,0,{token_found: false;key_like_found: false}
