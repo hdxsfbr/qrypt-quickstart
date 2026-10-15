@@ -1,0 +1,19 @@
+# Runs both snippets against the mock server on every push. No real token is used.
+stages: [test, deploy]
+
+snippets:
+  stage: test
+  image: nikolaik/python-nodejs:python3.12-nodejs22
+  script:
+    - pip install -q -r quickstart/python/requirements.txt
+    - ./mock/run_cases.sh
+
+pages-deploy:
+  stage: deploy
+  image: node:22
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CLOUDFLARE_API_TOKEN
+  script:
+    # CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are masked CI variables; wrangler reads them from env.
+    - npx -y wrangler@3 pages project create qrypt-quickstart --production-branch main >/dev/null 2>&1 || true
+    - npx -y wrangler@3 pages deploy site --project-name qrypt-quickstart --branch main --commit-dirty=true
