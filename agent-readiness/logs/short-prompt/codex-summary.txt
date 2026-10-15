@@ -1,0 +1,2 @@
+# codex quick runs; image=92cd0628f7f0; 2026-10-15T20:04Z
+quick,codex,1,works=yes,wall_s=58,p1_s=36,asked_env=3,vrc=0,stream_ok=2,leak=0,quiet_read=0,raw_read=0,file=./quickstart.py,p1=0,p2=0

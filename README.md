@@ -29,7 +29,7 @@ cd agent-readiness
 Requirements: Python 3.9+, Node 20.12+.
 
 ## Using an AI coding agent?
-Two modes — details on the site and in `AGENTS.md`:
+Paste a short request that links the quickstart and `/llms.txt` (the site has copy buttons). Full rules are in those docs, not in the paste prompt. Two modes — details on the site and in `AGENTS.md`:
 
 | | Quick Setup (default) | Isolated Setup |
 |---|---|---|
