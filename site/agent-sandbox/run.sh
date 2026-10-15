@@ -19,6 +19,14 @@ if [ -f "$proj/.env" ] || [ -f "$proj/.env.local" ]; then
   echo "pass that path to agent-sandbox/verify.sh --env <path>." >&2
   exit 2
 fi
+# Visible hint so agents that `ls` first know they have no token.
+printf '%s\n' \
+  'Qrypt Isolated Setup. You have NO QRYPT_API_KEY in this container — that is intentional.' \
+  'Implement the example from https://qrypt-quickstart.pages.dev/llms.txt and run mock tests.' \
+  'Tell the human to run on the host: agent-sandbox/verify.sh --env <their-secret-path>' \
+  > "$proj/QRYPT-ISOLATED.txt"
+chmod 444 "$proj/QRYPT-ISOLATED.txt" 2>/dev/null || true
+
 docker image inspect qrypt-agent-sandbox >/dev/null 2>&1 \
   || docker build -q -t qrypt-agent-sandbox "$here" >/dev/null
 # SANDBOX_DOCKER_ARGS may mount an agent CLI binary (read-only) and its login

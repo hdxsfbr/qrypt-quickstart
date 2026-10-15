@@ -15,6 +15,10 @@
 
 The brief's target is ≥ 4/5 with a median ≤ 10 minutes. We met it on the working-key definition in every round. **On the strict definition (no token characters leaked), we only met it in round 4, with the sandbox.** Rounds 1–3 are reported as they happened.
 
+## Design note (Oct 15, 2026) — two-mode onboarding
+The site now defaults to **Quick Setup** (no Docker; behavioral safeguards) and offers **Isolated Setup** (`agent-sandbox/run.sh` + host-side `agent-sandbox/verify.sh`). Isolated Setup **does not** pass the token into the agent container and **does not** run agent-writable code with credentials (the older `qrypt-run` path was removed). Rounds 1–4 below remain the real results for the designs that existed then; they are not re-run or altered here. Butler owns follow-up evals against the new Isolated Setup (`BACKLOG` #14). Isolation boundaries for the new design are checked by `agent-sandbox/test-isolation.sh` (no live token).
+
+
 **About the token:** this is a test token issued for the assessment. Characters from it (up to 36 of 40) reached Cursor's local transcripts in rounds 1–3. It has **not** been rotated. The project owner decided to keep it because it's a test token, and those transcripts were left in place. The logs committed here are scrubbed.
 
 ## Setup (identical for every run)
