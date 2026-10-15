@@ -1,5 +1,5 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"></head><body>
-<a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main"><h1>Troubleshooting</h1>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"></head><body>
+{{TOP}}<h1>Troubleshooting</h1>
 <h2 id="codes">HTTP status codes</h2>
 <div class="tw"><table><caption>Symptom, likely cause and fix for each response</caption><thead><tr><th scope="col">Code</th><th scope="col">Symptom</th><th scope="col">Likely cause</th><th scope="col">Fix</th></tr></thead><tbody>
 <tr><th scope="row">400</th><td>"'size' must be an integer between 1 and 512"</td><td><code>size</code> is 0, over 512, or not a number; often someone passed a byte count (e.g. 32) thinking size is in bytes.</td><td>Use <code>size=1</code>; it returns 1,024 bytes. Slice 32 bytes for AES-256.</td></tr>
@@ -40,5 +40,4 @@ NODE_USE_ENV_PROXY=1 node quickstart.mjs</code></pre></div>
 setGlobalDispatcher(new EnvHttpProxyAgent()); // honors HTTPS_PROXY</code></pre></div>
 <p>Expected error body from the API, for reference:</p>
 <pre><code data-lang="json">{"error": "Forbidden or entropy quota reached"}</code></pre>
-<p id="copy-status" class="sr" aria-live="polite"></p></main>
-<footer><p><a href="/">Back to the quickstart</a></p></footer><script src="/app.js" defer></script></body></html>
+<p id="copy-status" class="sr" aria-live="polite"></p>{{BOTTOM}}<script src="/app.js" defer></script></body></html>

@@ -15,3 +15,9 @@ document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()
   catch{b.textContent='Select and copy';if(live)live.textContent='Copy failed: select the code and copy it manually';}
   setTimeout(()=>b.textContent='Copy',2000);
 }));
+// Mobile docs menu: collapsible sidebar, Escape closes and returns focus.
+(()=>{const b=document.querySelector('.menu'),w=document.querySelector('.wrap');if(!b)return;
+const set=o=>{w.classList.toggle('open',o);b.setAttribute('aria-expanded',o);};
+b.addEventListener('click',()=>{const o=b.getAttribute('aria-expanded')!=='true';set(o);if(o)document.querySelector('#sidebar a').focus();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&w.classList.contains('open')){set(false);b.focus();}});
+document.querySelectorAll('#sidebar a').forEach(a=>a.addEventListener('click',()=>set(false)));})();

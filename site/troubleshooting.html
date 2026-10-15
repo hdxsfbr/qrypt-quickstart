@@ -1,48 +1,63 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><style>:root{--fg:#111;--bg:#fff;--mut:#444;--acc:#0b57d0;--code:#f4f4f6}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><style>:root{--fg:#171628;--bg:#fff;--mut:#45445a;--acc:#4a48d6;--side:#fafafa;--line:#d2d2d5;--hi:#eeeefc;--code:#f1f1f1}
 *{box-sizing:border-box}
-body{margin:0;font:1rem/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--fg);background:var(--bg)}
+body{margin:0;font:1rem/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--fg);background:#f1f1f1;overflow-wrap:break-word}
 .skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:#fff;padding:.5rem;z-index:9}
-header,main,footer{max-width:52rem;margin:0 auto;padding:1rem}
-nav a{margin-right:1rem}
 a{color:var(--acc)}
 :focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-h1{font-size:1.8rem;line-height:1.25}
-pre{background:#0d1117;color:#e6edf3;padding:1rem;overflow-x:auto;white-space:pre;font-size:.875rem;line-height:1.55;border-radius:6px;margin:0}
-:not(pre)>code{background:var(--code);padding:0 .2em;border-radius:3px}
+.unoff{margin:0;padding:.35rem 1rem;background:#ffecb7;color:#3b2a00;font-size:.85rem;text-align:center}
+.wrap{display:grid;grid-template-columns:17rem 1fr;grid-template-areas:"top top" "side main" "side foot";max-width:90rem;margin:0 auto;background:var(--bg);min-height:100vh}
+.top{grid-area:top;display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid var(--line);background:var(--side)}
+.mark{color:var(--fg);text-decoration:none;font-size:1.3rem}.mark b{letter-spacing:.02em}.mark small{font-size:.75rem;color:var(--mut);margin-left:.4rem}
+.menu{display:none;font:inherit;padding:.35rem .8rem;border:1px solid var(--fg);border-radius:6px;background:#fff;color:var(--fg)}
+#sidebar{grid-area:side;background:var(--side);border-right:1px solid var(--line);padding:1rem 0;font-size:.95rem}
+#sidebar ul{list-style:none;margin:0;padding:0}
+#sidebar a{display:block;padding:.45rem 1.25rem;color:var(--fg);text-decoration:none}
+#sidebar a:hover{background:var(--hi)}
+#sidebar li li a{padding:.3rem 1.25rem .3rem 2.25rem;font-size:.9rem;color:var(--mut)}
+#sidebar li.on>a{background:var(--hi);font-weight:600;border-left:3px solid var(--acc)}
+#sidebar li:not(.on) ul{display:none}
+#sidebar .ext::after{content:" \2197"}
+.grp{margin:1rem 0 .25rem;padding:0 1.25rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.grp a{padding:0!important}
+main{grid-area:main;padding:1.5rem 2.5rem;max-width:52rem;min-width:0}
+.foot{grid-area:foot;padding:1rem 2.5rem;border-top:1px solid var(--line);font-size:.85rem;color:var(--mut)}
+h1{font-size:1.75rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem}h1,h2{scroll-margin-top:1rem}
+pre{background:#0d1117;color:#e6edf3;padding:1rem;overflow-x:auto;white-space:pre;font-size:.875rem;line-height:1.55;border-radius:.75rem;margin:0}
+:not(pre)>code{background:var(--code);padding:0 .2em;border-radius:3px;overflow-wrap:anywhere}
+pre,pre code{overflow-wrap:normal;word-break:normal}
 code{font-family:ui-monospace,Menlo,Consolas,monospace}
 .codebox{position:relative;margin:.5rem 0 1.25rem}
 .copy{position:absolute;top:.4rem;right:.4rem;font:inherit;font-size:.85rem;padding:.25rem .6rem;border:1px solid #888;border-radius:4px;background:#fff;color:#111;cursor:pointer}
-[role=tablist]{display:flex;gap:.25rem;border-bottom:2px solid #ccc}
-[role=tab]{font:inherit;padding:.5rem 1rem;border:1px solid #ccc;border-bottom:none;background:#eee;color:#111;cursor:pointer;border-radius:6px 6px 0 0}
-[role=tab][aria-selected=true]{background:#fff;font-weight:600;border-color:#555}
-.time{display:inline-block;background:#e6f0ff;color:#0a2a66;padding:.2rem .6rem;border-radius:4px;font-weight:600}
-table{border-collapse:collapse;width:100%}th,td{border:1px solid #bbb;padding:.4rem;text-align:left;vertical-align:top}
+[role=tablist]{display:flex;gap:.25rem;border-bottom:2px solid var(--line)}
+[role=tab]{font:inherit;padding:.5rem 1rem;border:1px solid var(--line);border-bottom:none;background:#f1f1f1;color:var(--fg);cursor:pointer;border-radius:6px 6px 0 0}
+[role=tab][aria-selected=true]{background:#fff;font-weight:600;border-color:var(--acc)}
+.time{display:inline-block;background:var(--hi);color:#2b2a7a;padding:.2rem .6rem;border-radius:4px;font-weight:600}
+table{border-collapse:separate;border-spacing:0;width:100%;border:1px solid var(--line);border-radius:.75rem;overflow:hidden;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:.5rem;text-align:left;vertical-align:top}
+thead th{background:#e9e9eb}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-body{overflow-wrap:break-word}pre,pre code{overflow-wrap:normal;word-break:normal}
-:not(pre)>code{overflow-wrap:anywhere}
 .tw{overflow-x:auto}
-@media (max-width:40rem){.tw caption{display:block;text-align:left;font-weight:600;margin-bottom:.5rem}.tw table,.tw thead,.tw tbody,.tw tr,.tw th,.tw td{display:block}.tw thead{position:absolute;left:-9999px}.tw tr{border:1px solid #bbb;margin-bottom:.75rem}.tw th,.tw td{border:none}
-.tw td:nth-of-type(1)::before{content:"Symptom: ";font-weight:600}.tw td:nth-of-type(2)::before{content:"Cause: ";font-weight:600}.tw td:nth-of-type(3)::before{content:"Fix: ";font-weight:600}}
-nav{display:flex;flex-wrap:wrap;gap:.5rem 1rem}nav a{margin:0}
 code.numbered{counter-reset:ln}
 code.numbered .line{counter-increment:ln}
 code.numbered .line::before{content:counter(ln);display:inline-block;width:2.2ch;margin-right:1.2ch;text-align:right;color:#9ba7b4;user-select:none;-webkit-user-select:none}
 pre.hl:focus-visible{outline:3px solid #79c0ff;outline-offset:2px}
 .codebox pre{padding-top:2.4rem}
-@media (max-width:40rem){pre{font-size:.8rem}}
-
-.warn{background:#fff6e6;border-left:4px solid #b36b00;padding:.75rem 1rem;margin:1rem 0;color:#3b2a00}
+.warn{background:#fff6e6;border-left:4px solid #b36b00;padding:.75rem 1rem;margin:1rem 0;color:#3b2a00;border-radius:0 .5rem .5rem 0}
 .warn code{background:#f5ecd7}
-table.cmp{width:100%;border-collapse:collapse;font-size:.95rem;margin:1rem 0}
-table.cmp th,table.cmp td{border:1px solid #bbb;padding:.5rem;vertical-align:top;text-align:left}
-table.cmp thead th{background:#f4f4f6}
-details{border:1px solid #ccc;border-radius:6px;padding:.5rem 1rem;margin:1rem 0;background:#fafafa}
+details{border:1px solid var(--line);border-radius:.75rem;padding:.5rem 1rem;margin:1rem 0;background:#fafafa}
 details[open]{background:#fff}
 details summary{cursor:pointer;font-size:1.05rem;padding:.4rem 0}
-details summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-@media (max-width:40rem){table.cmp,table.cmp thead,table.cmp tbody,table.cmp tr,table.cmp th,table.cmp td{display:block}
-table.cmp thead{position:absolute;left:-9999px}
-table.cmp tr{border:1px solid #bbb;margin-bottom:.75rem}
+@media (max-width:52rem){.wrap{grid-template-columns:1fr;grid-template-areas:"top" "side" "main" "foot"}
+.js .menu{display:block}.js #sidebar{display:none}.js .open #sidebar{display:block}
+#sidebar{border-right:0;border-bottom:1px solid var(--line)}main,.foot{padding:1rem}}
+@media (max-width:40rem){pre{font-size:.8rem}
+.tw caption{display:block;text-align:left;font-weight:600;margin-bottom:.5rem}
+.tw table,.tw thead,.tw tbody,.tw tr,.tw th,.tw td,table.cmp,table.cmp thead,table.cmp tbody,table.cmp tr,table.cmp th,table.cmp td{display:block}
+.tw thead,table.cmp thead{position:absolute;left:-9999px}
+.tw table,table.cmp{border:0}
+.tw tr,table.cmp tr{border:1px solid var(--line);border-radius:.5rem;margin-bottom:.75rem}
+.tw th,.tw td,table.cmp td,table.cmp th{border:none}
+.tw td:nth-of-type(1)::before{content:"Symptom: ";font-weight:600}.tw td:nth-of-type(2)::before{content:"Cause: ";font-weight:600}.tw td:nth-of-type(3)::before{content:"Fix: ";font-weight:600}
 table.cmp td:nth-of-type(1)::before{content:"Quick Setup: ";font-weight:600}
 table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}</style><style>.hl{background:#0d1117;color:#e6edf3}
 .hl .c{color:#9ba7b4}
@@ -78,7 +93,7 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 .hl .p{color:#e6edf3}
 .hl .err{color:#ffa198}
 .hl .c,.hl .c1,.hl .cm,.hl .ch,.hl .cs{color:#9ba7b4;font-style:italic}</style></head><body>
-<a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main"><h1>Troubleshooting</h1>
+<a class="skip" href="#main">Skip to content</a><p class="unoff" role="note">Unofficial prototype. Not affiliated with or endorsed by Qrypt.</p><div class="wrap"><header class="top"><a class="mark" href="/"><b>Qrypt</b> Docs <small>quickstart prototype</small></a><button class="menu" aria-controls="sidebar" aria-expanded="false">Menu</button></header><nav id="sidebar" aria-label="Documentation"><ul class="topics"><li><a href="/">Quickstart</a><ul><li><a href="/#h-token">Get a token</a></li><li><a href="/#h-env">Save it in .env</a></li><li><a href="/#h-run">Run the snippet</a></li><li><a href="/#h-trip">Common pitfalls</a></li><li><a href="/#h-agent">AI coding agents</a></li></ul></li><li class=on><a href="/troubleshooting" aria-current="page">Troubleshooting</a><ul><li><a href="#codes">HTTP status codes</a></li><li><a href="#mistakes">Common mistakes</a></li><li><a href="#env">Environment issues</a></li><li><a href="#agent">AI agent modes</a></li><li><a href="#proxy">Proxy and TLS</a></li></ul></li></ul><p class="grp">Official Qrypt docs</p><ul class="topics"><li><a class="ext" href="https://docs.qrypt.com/eaas/" rel="noopener">Quantum Entropy reference<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/eaas/rngd/" rel="noopener">RNG Tools<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/eaas/pkcs11/" rel="noopener">Qseed<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/sdk/" rel="noopener">DQKD Key Generation<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/faqs/" rel="noopener">FAQs<span class="sr"> (official Qrypt docs)</span></a></li></ul><p class="grp"><a href="/llms.txt">llms.txt</a></p></nav><main id="main"><h1>Troubleshooting</h1>
 <h2 id="codes">HTTP status codes</h2>
 <div class="tw"><table><caption>Symptom, likely cause and fix for each response</caption><thead><tr><th scope="col">Code</th><th scope="col">Symptom</th><th scope="col">Likely cause</th><th scope="col">Fix</th></tr></thead><tbody>
 <tr><th scope="row">400</th><td>"'size' must be an integer between 1 and 512"</td><td><code>size</code> is 0, over 512, or not a number; often someone passed a byte count (e.g. 32) thinking size is in bytes.</td><td>Use <code>size=1</code>; it returns 1,024 bytes. Slice 32 bytes for AES-256.</td></tr>
@@ -119,5 +134,4 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 <span class="line"><span class="nx">setGlobalDispatcher</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">EnvHttpProxyAgent</span><span class="p">());</span><span class="w"> </span><span class="c1">// honors HTTPS_PROXY</span></span></code></pre></div>
 <p>Expected error body from the API, for reference:</p>
 <pre class="hl" tabindex="0"><code data-lang="json"><span class="line"><span class="p">{</span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Forbidden or entropy quota reached&quot;</span><span class="p">}</span></span></code></pre>
-<p id="copy-status" class="sr" aria-live="polite"></p></main>
-<footer><p><a href="/">Back to the quickstart</a></p></footer><script src="/app.js" defer></script></body></html>
+<p id="copy-status" class="sr" aria-live="polite"></p></main><footer class="foot"><p>Unofficial prototype built on the public API docs; not a Qrypt product and not endorsed by Qrypt. API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com/eaas</a>. No analytics or cookies.</p></footer></div><script src="/app.js" defer></script></body></html>

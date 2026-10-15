@@ -92,11 +92,60 @@ def inline_css(html):
     return html
 
 
+# ---- Docs shell (non-functional look-alike of docs.qrypt.com; see docs/design/NOTES.md)
+REAL = "https://docs.qrypt.com"
+OURS = [("/", "Quickstart", [("#h-token", "Get a token"), ("#h-env", "Save it in .env"),
+                             ("#h-run", "Run the snippet"), ("#h-trip", "Common pitfalls"),
+                             ("#h-agent", "AI coding agents")]),
+        ("/troubleshooting", "Troubleshooting", [("#codes", "HTTP status codes"),
+                                                 ("#mistakes", "Common mistakes"),
+                                                 ("#env", "Environment issues"),
+                                                 ("#agent", "AI agent modes"),
+                                                 ("#proxy", "Proxy and TLS")])]
+THEIRS = [("Quantum Entropy reference", "/eaas/"), ("RNG Tools", "/eaas/rngd/"),
+          ("Qseed", "/eaas/pkcs11/"), ("DQKD Key Generation", "/sdk/"),
+          ("FAQs", "/faqs/")]
+
+
+def shell_top(path):
+    items = []
+    for href, label, kids in OURS:
+        on = href == path
+        cur = ' aria-current="page"' if on else ""
+        sub = "".join(f'<li><a href="{href if not on else ""}{a}">{l}</a></li>'
+                      for a, l in kids)
+        items.append(f'<li{" class=on" if on else ""}><a href="{href}"{cur}>'
+                     f'{label}</a><ul>{sub}</ul></li>')
+    ext = "".join(f'<li><a class="ext" href="{REAL}{h}" rel="noopener">{l}'
+                  f'<span class="sr"> (official Qrypt docs)</span></a></li>'
+                  for l, h in THEIRS)
+    return ('<a class="skip" href="#main">Skip to content</a>'
+            '<p class="unoff" role="note">Unofficial prototype. Not affiliated '
+            'with or endorsed by Qrypt.</p>'
+            '<div class="wrap"><header class="top"><a class="mark" href="/">'
+            '<b>Qrypt</b> Docs <small>quickstart prototype</small></a>'
+            '<button class="menu" aria-controls="sidebar" aria-expanded="false">'
+            'Menu</button></header>'
+            '<nav id="sidebar" aria-label="Documentation"><ul class="topics">'
+            + "".join(items) + '</ul><p class="grp">Official Qrypt docs</p>'
+            '<ul class="topics">' + ext + '</ul>'
+            '<p class="grp"><a href="/llms.txt">llms.txt</a></p></nav>'
+            '<main id="main">')
+
+
+BOTTOM = ('</main><footer class="foot"><p>Unofficial prototype built on the '
+          'public API docs; not a Qrypt product and not endorsed by Qrypt. '
+          'API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com'
+          '/eaas</a>. No analytics or cookies.</p></footer></div>')
+
+
 for name in ("index.tmpl.html", "troubleshooting.tmpl.html"):
     src = root / "site-src" / name
     if src.exists():
         out_name = name.replace(".tmpl", "")
-        page = inline_css(render(src.read_text()))
+        path = "/" if out_name == "index.html" else "/" + out_name[:-5]
+        text = src.read_text().replace("{{TOP}}", shell_top(path))
+        page = inline_css(render(text.replace("{{BOTTOM}}", BOTTOM)))
         (root / "site" / out_name).write_text(page)
 
 txt = (root / "site-src/llms.tmpl.txt").read_text()
