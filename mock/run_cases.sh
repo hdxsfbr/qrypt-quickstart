@@ -23,6 +23,6 @@ for lang in py js; do
   check $lang 500 1 "Try again shortly"
   check $lang html 1 "non-JSON reply"
   QRYPT_BASE_URL=http://127.0.0.1:9 check $lang neterr 1 "Network error"
-  QRYPT_API_KEY= check $lang success 1 "QRYPT_API_KEY is missing"
+  QRYPT_API_KEY= check $lang success 1 "is missing: add to .env. Token: portal.qrypt.com"
 done
 exit $fail
