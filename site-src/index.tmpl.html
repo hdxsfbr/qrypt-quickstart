@@ -25,8 +25,9 @@
 <h2>Things that trip people up</h2>
 <ul><li><code>size</code> counts <strong>KiB</strong>, not bytes. Ask for <code>size=1</code> (1,024 bytes) and take 32 bytes.</li>
 <li>Base64-decode the string first; never use the text itself as the key.</li>
+<li>Live can return 429 about 1 s after a single prior call; wait 10 s or more and never loop.</li>
 <li>A wrong token returns <strong>403</strong>, the same as an exhausted quota. Check the token first.</li>
 <li>Never print, log or commit the key or token. Use fresh entropy for each key.</li></ul>
 <p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
-</main><footer><p>Unofficial quickstart. API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com/eaas</a>. No analytics or cookies.</p></footer>
+<p id="copy-status" class="sr" aria-live="polite"></p></main><footer><p>Unofficial quickstart. API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com/eaas</a>. No analytics or cookies.</p></footer>
 <script src="/app.js" defer></script></body></html>

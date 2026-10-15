@@ -5,10 +5,13 @@ document.querySelectorAll('[role=tablist]').forEach(list=>{
     document.getElementById(x.getAttribute('aria-controls')).hidden=!on;});t.focus();};
   tabs.forEach((t,i)=>{t.addEventListener('click',()=>select(t));
     t.addEventListener('keydown',e=>{const n={ArrowRight:1,ArrowLeft:-1}[e.key];
-      if(n){e.preventDefault();select(tabs[(i+n+tabs.length)%tabs.length]);}});});
+      if(n){e.preventDefault();select(tabs[(i+n+tabs.length)%tabs.length]);}
+      if(e.key==='Home'){e.preventDefault();select(tabs[0]);}if(e.key==='End'){e.preventDefault();select(tabs[tabs.length-1]);}});});
 });
 document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{
   const txt=document.getElementById(b.dataset.target).innerText;
-  try{await navigator.clipboard.writeText(txt);b.textContent='Copied';}catch{b.textContent='Select and copy';}
+  const live=document.getElementById('copy-status');
+  try{await navigator.clipboard.writeText(txt);b.textContent='Copied';if(live)live.textContent=b.getAttribute('aria-label').replace('Copy','Copied');}
+  catch{b.textContent='Select and copy';if(live)live.textContent='Copy failed: select the code and copy it manually';}
   setTimeout(()=>b.textContent='Copy',2000);
 }));
