@@ -1,4 +1,4 @@
-"""Mock Qrypt entropy API for CI. Stdlib only.
+"""Mock Qrypt entropy API for offline tests. Stdlib only.
 MOCK_MODE: success | html | 401 | 403 | 429 | 500 | 503 (default success). Also honors real-API rules
 (missing/malformed Bearer -> 401, size outside 1..512 -> 400)."""
 import base64, json, os, sys

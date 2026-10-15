@@ -7,7 +7,7 @@
 <p>Prefer <a href="/llms.txt"><code>llms.txt</code></a> (also linked in the page head) or <code>AGENTS.md</code> in the <a href="/qrypt-quickstart-starter.zip">starter archive</a>. Never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Human-readable modes: <a href="#h-agent">below</a>.</p>
 </details>
 
-<p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
+<p><span class="time">Time: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
 <h2 id="h-token">1. Get a token</h2>
 <p>Create an account at <a href="https://portal.qrypt.com/trial-signup-entropy">portal.qrypt.com/trial-signup-entropy</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once. Treat it like a password: anyone who has it can use your account's entropy quota.</p>
 <p>The trial form asks for two things: your full name and a work email. It does not say what the trial quota is, so check the portal after you sign up.</p>
@@ -37,7 +37,7 @@
 <h2 id="h-output">4. Expected output</h2>
 <pre><code data-lang="text">Success: AES-256-GCM round trip with a Qrypt key (not shown).</code></pre>
 <h2 id="h-fp">Optional: see that the key changes</h2>
-<p>The core snippets stay within 25 lines, so this is a separate, optional extra. Add these lines to the end of your script to print the first 8 hex characters of a SHA-256 hash of the key. Each run should show a different value. A one-way hash this short shows the key changed without revealing it.</p>
+<p>Add these lines to the end of your script to print the first 8 hex characters of a SHA-256 hash of the key. Each run should show a different value. A one-way hash this short shows the key changed without revealing it.</p>
 <p class="lbl">Python (end of <code>quickstart.py</code>)</p>
 <div class="codebox"><button class="copy" data-target="c-fp-py" aria-label="Copy Python fingerprint lines">Copy</button><pre><code id="c-fp-py" data-lang="python">import hashlib  # optional extra
 print("Key fingerprint:", hashlib.sha256(key).hexdigest()[:8])</code></pre></div>

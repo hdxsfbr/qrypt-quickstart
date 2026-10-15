@@ -1,4 +1,4 @@
-# Grader quickstart: `make check` (no token needed, ~1 min) then optionally `make live` (uses 1 KiB of real entropy).
+# Quickstart: `make check` (no token needed, ~1 min), then optionally `make live-py` or `make live-js` (1 KiB of real entropy each).
 .PHONY: check deps test isolation site check-starter check-links live-py live-js lighthouse
 deps:            ## install Python deps (Node needs none; Node 20.12+)
 	python3 -m pip install -q -r quickstart/python/requirements.txt
