@@ -1,0 +1,5 @@
+./.env.example
+./.gitignore
+./package.json
+./quickstart.mjs
+./README.md

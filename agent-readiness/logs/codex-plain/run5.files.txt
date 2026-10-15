@@ -1,0 +1,6 @@
+./aes-256.key
+./.env.example
+./.gitignore
+./package.json
+./quickstart.mjs
+./README.md

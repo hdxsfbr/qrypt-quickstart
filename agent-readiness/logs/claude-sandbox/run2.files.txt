@@ -1,0 +1,4 @@
+./qrypt-aes256/generate-key.mjs
+./qrypt-aes256/.gitignore
+./qrypt-aes256/keys/aes256.key
+./qrypt-aes256/package.json

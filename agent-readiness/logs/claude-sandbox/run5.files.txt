@@ -1,0 +1,3 @@
+./generate-key.js
+./.gitignore
+./package.json
