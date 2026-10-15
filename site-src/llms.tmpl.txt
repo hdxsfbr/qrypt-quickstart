@@ -1,13 +1,29 @@
 # Qrypt quantum entropy quickstart (for AI agents)
 > Get an AES-256-GCM key from Qrypt quantum entropy. Plain HTTPS; no SDK exists for this API. Do not invent one.
 
-## FIRST: secrets and layout
-- SANDBOX: if .env gives "Permission denied" (or QRYPT-SANDBOX-README.txt exists), you MUST run your program with `qrypt-run <file>`, e.g. qrypt-run quickstart.mjs. Plain `node`/`python` cannot read .env there. Do not stop and report failure; use qrypt-run.
-- If .env exists, it already has the token. Do NOT read or print it in any form (no cat/head/sed/less, not even masked). Only check: grep -q '^QRYPT_API_KEY=.' .env && echo set
-- Write all files in the current directory next to .env. No subfolder, no copying .env.
-- Keep the generated key in memory only. Do NOT write it to a file (no aes-256.key, no key.bin), print it or log it. "Generate a key" means: run the AES-GCM round trip and print the success line. Long-term key storage belongs in a secret manager or KMS and is out of scope here.
-- If .env gives "Permission denied", you are in the Qrypt agent sandbox ON PURPOSE. Do not try to read it or work around it. Run your program with: qrypt-run quickstart.py (or qrypt-run quickstart.mjs). Only qrypt-run can read .env.
-- Humans: to keep agents from reading .env, run the agent in the sandbox: see "Using an AI coding agent?" on the quickstart page (files at /agent-sandbox/).
+## Choose a mode
+- **Quick Setup (default, no Docker):** follow the rules below. The human creates `.env`; you never read it. Behavioral safeguards only — not isolation.
+- **Isolated Setup (Docker):** if `QRYPT-ISOLATED.txt` exists or the human said they are using `agent-sandbox/run.sh`, you have NO token. Implement the example, run mock tests, then tell the human to run `agent-sandbox/verify.sh --env <their-secret-path>` on the host. Do not ask for the token. Do not try to read any `.env`.
+
+## FIRST: secrets
+- NEVER ask the human to paste QRYPT_API_KEY into chat, a prompt, CLI args or source code.
+- NEVER read, print, cat, head, sed, less, or dump `.env` or environment variables. NEVER enable verbose HTTP logging of Authorization headers.
+- To check a `.env` exists without reading it: `test -f .env && echo set` (Quick Setup only). If that fails with Permission denied, you are misconfigured — stop and tell the human to use Isolated Setup.
+- Keep the generated key in memory only. Do NOT write it to a file (no aes-256.key, no key.bin). "Generate a key" means: run the AES-GCM round trip and print the success line.
+- At the end, remind the human: review this agent session for credential exposure and rotate any exposed or potentially compromised API credentials, including unrelated project credentials. Rotating the Qrypt token alone does not protect other secrets.
+
+## Workflow (Quick Setup)
+1. Read this file and the quickstart page.
+2. Pick Python or Node (ask if unsure).
+3. Implement using the official snippets below.
+4. Install deps and run mocked tests (QRYPT_BASE_URL pointing at a mock, or `make check` in this repo).
+5. Ask the human to create `.env` with QRYPT_API_KEY and confirm it is set — without sharing the value.
+6. Run the example. Report the success line only.
+
+## Workflow (Isolated Setup)
+1. Implement and mock-test as above. You will not have a real token; that is intentional.
+2. Tell the human: `agent-sandbox/verify.sh --env ~/.config/qrypt/.env` (or their secret path).
+3. Do not attempt workarounds for missing credentials.
 
 ## API
 GET https://api-eus.qrypt.com/api/v1/quantum-entropy?size=1
@@ -17,9 +33,6 @@ size counts KiB (1..512), NOT bytes. For one AES-256 key use size=1 and take the
 
 ## Rules
 - Python: use `requests` or set a custom User-Agent. Cloudflare blocks Python-urllib with 403 Error 1010.
-- Read the token from .env (QRYPT_API_KEY). Never print, log or commit the token or key.
-- Never show .env or any part of it (no `cat .env`, no `head -c N .env`). To check it is set: `grep -q '^QRYPT_API_KEY=.' .env && echo set`
-- Build the project in the directory that already holds .env. Do not copy .env into a new subfolder.
 - 400 bad size; 401 missing/malformed Authorization header; 403 wrong token OR quota reached (bad tokens return 403, not 401);
   429 rate limited (docs: 30 req/10 s, but live can return 429 about 1 s after a single prior call; no Retry-After): wait 10 s or more and never loop; 500/503 try again shortly. Exit non-zero on error.
 
@@ -29,3 +42,4 @@ size counts KiB (1..512), NOT bytes. For one AES-256 key use size=1 and take the
 {{JS}}
 ## More
 Troubleshooting: /troubleshooting
+Human docs: /  (Quick Setup default; Isolated Setup under "Using an AI coding agent?")

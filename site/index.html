@@ -127,16 +127,78 @@
 <li>A wrong token returns <strong>403</strong>, the same as an exhausted quota. Check the token first.</li>
 <li>Never print, log or commit the key or token. Use fresh entropy for each key.</li></ul>
 <p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
-<section aria-labelledby="h-agent"><h2 id="h-agent">Using an AI coding agent?</h2>
-<p>In our tests, AI agents read part of <code>.env</code> (for example <code>head -c 20 .env</code>) in 14 of 15 runs, even when these docs told them not to. A doc can't stop that habit, but file permissions can. Run your agent inside this small Docker sandbox:</p>
+<section aria-labelledby="h-agent">
+<h2 id="h-agent">Using an AI coding agent?</h2>
+<p>Two modes. <strong>Quick Setup is the default</strong> (no Docker). Isolated Setup is optional when you want stronger credential boundaries.</p>
+
+<table class="cmp"><caption>Quick Setup vs Isolated Setup</caption>
+<thead><tr><th scope="col"></th><th scope="col">Quick Setup (default)</th><th scope="col">Isolated Setup</th></tr></thead>
+<tbody>
+<tr><th scope="row">Best for</th><td>Trying the API in under 10 minutes with Claude Code, Codex, Cursor or similar</td><td>Repos that already hold secrets, or any run where the agent must not see credentials</td></tr>
+<tr><th scope="row">Docker required</th><td>No</td><td>Yes</td></tr>
+<tr><th scope="row">Agent can access existing project secrets</th><td>Yes — unrestricted agents can read files, including <code>.env</code></td><td>No — project must not contain <code>.env</code>; host secrets stay off the mount</td></tr>
+<tr><th scope="row">Credential exposure risk</th><td>Behavioral only. Agents may log file contents. Use a disposable token.</td><td>Token never enters the agent container. Live verify runs fixed snippets on the host.</td></tr>
+<tr><th scope="row">Human credential setup</th><td>You create <code>.env</code> yourself; never paste the token into chat</td><td>You keep <code>.env</code> outside the project (e.g. <code>~/.config/qrypt/.env</code>)</td></tr>
+<tr><th scope="row">Live verification</th><td>Agent runs the example after you confirm <code>.env</code> is set</td><td>You run <code>agent-sandbox/verify.sh --env …</code> (sanitized PASS/FAIL only)</td></tr>
+</tbody></table>
+
+<details open id="quick-setup">
+<summary><strong>Option A — Quick Setup</strong> (default, no Docker)</summary>
+<div class="warn" role="note">
+<p><strong>Security warning.</strong> AI coding agents may access files containing credentials, including existing <code>.env</code> files, before reading these instructions. Credential values could appear in agent session logs. For this quick setup, use disposable API credentials where possible and rotate any credentials that were exposed or may have been compromised. For stronger protection, choose Isolated Setup.</p>
+</div>
 <ol>
-<li>Download the sandbox files: <a href="/agent-sandbox/Dockerfile">Dockerfile</a>, <a href="/agent-sandbox/entrypoint.sh">entrypoint.sh</a>, <a href="/agent-sandbox/qrypt-run">qrypt-run</a>, <a href="/agent-sandbox/qrypt-run-inner">qrypt-run-inner</a>, <a href="/agent-sandbox/run.sh">run.sh</a>, all into one folder called <code>agent-sandbox/</code>. Then run <code>chmod +x agent-sandbox/*.sh agent-sandbox/qrypt-run*</code>.</li>
-<li>Start the agent inside it (the project folder must already contain your <code>.env</code>):
-<div class="codebox"><button class="copy" data-target="c-sbx" aria-label="Copy sandbox start command">Copy</button><pre class="hl" tabindex="0"><code id="c-sbx" data-lang="bash"><span class="line">agent-sandbox/run.sh<span class="w"> </span>~/my-project<span class="w"> </span>~/my-project/.env<span class="w"> </span>your-agent-command</span></code></pre></div></li>
-<li>Inside the sandbox, the agent runs as user <code>agent</code>. <code>.env</code> belongs to a separate user (<code>qrypt</code>, mode 600), so <code>cat .env</code> gets <em>Permission denied</em>. The program runs with <code>qrypt-run quickstart.py</code>, a fixed rule that runs one <code>.py</code>/<code>.mjs</code>/<code>.js</code> file as the <code>qrypt</code> user, so it can still read <code>QRYPT_API_KEY</code> from <code>.env</code>.</li>
+<li>Paste this prompt into Claude Code, Codex, Cursor or another coding agent:
+<div class="codebox"><button class="copy" data-target="c-prompt" aria-label="Copy Quick Setup agent prompt">Copy</button>
+<pre class="hl" tabindex="0"><code id="c-prompt" data-lang="text"><span class="line">Quickstart: https://qrypt-quickstart.pages.dev/  (also /llms.txt)</span>
+<span class="line"></span>
+<span class="line">Goal: AES-256-GCM round trip using 1 KiB of Qrypt quantum entropy.</span>
+<span class="line"></span>
+<span class="line">Rules (follow all of them):</span>
+<span class="line">- Read the quickstart and pick Python or Node (ask me if unsure).</span>
+<span class="line">- Use the official snippets from the quickstart. Do not invent an SDK.</span>
+<span class="line">- Install dependencies and run the mocked tests first (no real token).</span>
+<span class="line">- NEVER ask me to paste QRYPT_API_KEY into chat, a prompt, CLI args or source.</span>
+<span class="line">- NEVER read, print, cat, head, or dump .env or environment variables.</span>
+<span class="line">- NEVER enable verbose HTTP logging that would log Authorization headers.</span>
+<span class="line">- Ask me to create .env myself (QRYPT_API_KEY=...) and confirm when it is set.</span>
+<span class="line">- After I confirm, run the example. Keep the key in memory only (no key files).</span>
+<span class="line">- Report success with the success line only. Never display the token, entropy or key.</span>
+<span class="line"></span>
+<span class="line">Security reminder for me at the end: review this agent session for credential exposure and rotate any exposed or potentially compromised API credentials, including unrelated project credentials. Rotating the Qrypt token alone does not protect other secrets.</span></code></pre></div></li>
+<li>The agent reads the quickstart, picks a language, implements with the official snippets and runs the mock tests.</li>
+<li>When asked, create <code>.env</code> yourself (never paste the token into the chat):
+<div class="codebox"><button class="copy" data-target="c-env2" aria-label="Copy .env example line">Copy</button>
+<pre class="hl" tabindex="0"><code id="c-env2" data-lang="env"><span class="line"><span class="nv">QRYPT_API_KEY</span><span class="o">=</span>paste-your-token-here</span></code></pre></div>
+Tell the agent only that it is set. Do not share the value.</li>
+<li>The agent runs the example (1 KiB → 32-byte AES-256 key → AES-GCM round trip) and reports the success line without displaying secrets.</li>
 </ol>
-<p>The agent CLI has to be available in the container. Either add it to the Dockerfile (for example <code>RUN npm i -g your-agent</code>) or mount it by setting <code>SANDBOX_DOCKER_ARGS</code>. For example, for Cursor CLI: <code>SANDBOX_DOCKER_ARGS="-v $HOME/.local/share/cursor-agent/versions/VERSION:/opt/cursor-agent:ro -v $HOME/agent-home:/home/agent -e PATH=/opt/cursor-agent:/usr/local/bin:/usr/bin:/bin"</code>, with your agent's login file copied into <code>~/agent-home</code>.</p>
-<p><strong>Limits:</strong> this stops accidental reads such as <code>cat</code>, <code>head</code> or an editor opening <code>.env</code>. It does not stop an agent that deliberately writes a program to print the token and runs it with <code>qrypt-run</code>. Review what your agent runs, and use a test token, not a production one.</p>
+<p class="warn"><strong>End-of-workflow reminder:</strong> Review your agent session for potential credential exposure. Rotate any exposed or potentially compromised API credentials, including unrelated project credentials. Rotating the Qrypt token alone does not protect other secrets.</p>
+<p>These rules are defense-in-depth, not enforceable isolation. Rotation does not make an earlier exposure harmless, and nothing here claims a no-logging guarantee. Prefer Isolated Setup when that matters.</p>
+</details>
+
+<details id="isolated-setup">
+<summary><strong>Option B — Isolated Setup</strong> (Docker; agent never sees the token)</summary>
+<p>The agent runs in a container with <strong>no</strong> <code>.env</code>, no host home, no SSH keys, no cloud credentials and no Docker socket. Live verification is a separate host-side step that runs <em>fixed</em> snippets from this repo — never agent-modifiable code — with the real token.</p>
+<ol>
+<li>Download the sandbox into one folder: <a href="/agent-sandbox/Dockerfile">Dockerfile</a>, <a href="/agent-sandbox/run.sh">run.sh</a>, <a href="/agent-sandbox/verify.sh">verify.sh</a>, <a href="/agent-sandbox/test-isolation.sh">test-isolation.sh</a>, <a href="/agent-sandbox/README.md">README.md</a>. Then <code>chmod +x agent-sandbox/*.sh</code>.</li>
+<li>Keep the token <em>outside</em> the project the agent will see:
+<div class="codebox"><button class="copy" data-target="c-iso-env" aria-label="Copy isolated env setup commands">Copy</button>
+<pre class="hl" tabindex="0"><code id="c-iso-env" data-lang="bash"><span class="line">mkdir<span class="w"> </span>-p<span class="w"> </span>~/.config/qrypt</span>
+<span class="line"><span class="c1"># put QRYPT_API_KEY=... in ~/.config/qrypt/.env, then:</span></span>
+<span class="line">chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>~/.config/qrypt/.env</span></code></pre></div></li>
+<li>Start the agent against a clean project directory (must not contain <code>.env</code> — <code>run.sh</code> refuses otherwise):
+<div class="codebox"><button class="copy" data-target="c-iso-run" aria-label="Copy isolated run command">Copy</button>
+<pre class="hl" tabindex="0"><code id="c-iso-run" data-lang="bash"><span class="line">agent-sandbox/run.sh<span class="w"> </span>~/qrypt-demo<span class="w"> </span>your-agent-command</span></code></pre></div></li>
+<li>Inside the container the agent implements the example and runs mock tests. It has no token.</li>
+<li>On the host, after the agent finishes, run trusted verification:
+<div class="codebox"><button class="copy" data-target="c-iso-verify" aria-label="Copy verify command">Copy</button>
+<pre class="hl" tabindex="0"><code id="c-iso-verify" data-lang="bash"><span class="line">agent-sandbox/verify.sh<span class="w"> </span>--env<span class="w"> </span>~/.config/qrypt/.env</span>
+<span class="line"><span class="c1"># -&gt; verify python: PASS (AES-GCM round trip; key not shown)</span></span></code></pre></div></li>
+</ol>
+<p><strong>Honesty about isolation:</strong> this blocks the common failure mode (agents reading <code>.env</code>). It does <em>not</em> claim Docker guarantees zero leakage. A malicious <code>SANDBOX_DOCKER_ARGS</code> that remounts your home directory, a compromised agent binary, or a container escape is out of scope. The boundaries we <em>do</em> claim are checked by <code>agent-sandbox/test-isolation.sh</code>.</p>
+</details>
 </section>
+
 <p id="copy-status" class="sr" aria-live="polite"></p></main><footer><p>Unofficial quickstart. API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com/eaas</a>. No analytics or cookies.</p></footer>
 <script src="/app.js" defer></script></body></html>
