@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"></head><body>
 <a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main">
 <h1>Make an AES-256 key from quantum entropy</h1>
-<aside class="agent-note" aria-label="Note for AI coding agents"><p><strong>AI coding agents, read this first:</strong> if a <code>.env</code> file already exists, do not open or print it in any way (no <code>cat</code>, <code>head</code>, <code>sed</code> or <code>ls</code> of its contents). Check it only with <code>grep -q '^QRYPT_API_KEY=.' .env &amp;&amp; echo set</code>. Create the project files in the current directory, next to <code>.env</code>. Do not make a subfolder or copy <code>.env</code>. Machine-readable version: <a href="/llms.txt">/llms.txt</a>.</p></aside>
+<aside class="agent-note" aria-label="Note for AI coding agents"><p><strong>AI coding agents, read this first:</strong> if a <code>.env</code> file already exists, do not open or print it in any way (no <code>cat</code>, <code>head</code>, <code>sed</code> or <code>ls</code> of its contents). Check it only with <code>grep -q '^QRYPT_API_KEY=.' .env &amp;&amp; echo set</code>. If <code>.env</code> says <em>Permission denied</em>, you are in the Qrypt agent sandbox on purpose: do not try to read it, and run your program with <code>qrypt-run quickstart.py</code> (or <code>qrypt-run quickstart.mjs</code>). Create the project files in the current directory, next to <code>.env</code>. Do not make a subfolder or copy <code>.env</code>. Machine-readable version: <a href="/llms.txt">/llms.txt</a>.</p></aside>
 
 <p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
 <h2>1. Get a token</h2>
@@ -31,5 +31,16 @@
 <li>A wrong token returns <strong>403</strong>, the same as an exhausted quota. Check the token first.</li>
 <li>Never print, log or commit the key or token. Use fresh entropy for each key.</li></ul>
 <p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
+<section aria-labelledby="h-agent"><h2 id="h-agent">Using an AI coding agent?</h2>
+<p>In our tests, AI agents read part of <code>.env</code> (for example <code>head -c 20 .env</code>) in 14 of 15 runs, even when these docs told them not to. A doc can't stop that habit, but file permissions can. Run your agent inside this small Docker sandbox:</p>
+<ol>
+<li>Download the sandbox files: <a href="/agent-sandbox/Dockerfile">Dockerfile</a>, <a href="/agent-sandbox/entrypoint.sh">entrypoint.sh</a>, <a href="/agent-sandbox/qrypt-run">qrypt-run</a>, <a href="/agent-sandbox/qrypt-run-inner">qrypt-run-inner</a>, <a href="/agent-sandbox/run.sh">run.sh</a>, all into one folder called <code>agent-sandbox/</code>. Then run <code>chmod +x agent-sandbox/*.sh agent-sandbox/qrypt-run*</code>.</li>
+<li>Start the agent inside it (the project folder must already contain your <code>.env</code>):
+<div class="codebox"><button class="copy" data-target="c-sbx" aria-label="Copy sandbox start command">Copy</button><pre><code id="c-sbx">agent-sandbox/run.sh ~/my-project ~/my-project/.env your-agent-command</code></pre></div></li>
+<li>Inside the sandbox, the agent runs as user <code>agent</code>. <code>.env</code> belongs to a separate user (<code>qrypt</code>, mode 600), so <code>cat .env</code> gets <em>Permission denied</em>. The program runs with <code>qrypt-run quickstart.py</code>, a fixed rule that runs one <code>.py</code>/<code>.mjs</code>/<code>.js</code> file as the <code>qrypt</code> user, so it can still read <code>QRYPT_API_KEY</code> from <code>.env</code>.</li>
+</ol>
+<p>The agent CLI has to be available in the container. Either add it to the Dockerfile (for example <code>RUN npm i -g your-agent</code>) or mount it by setting <code>SANDBOX_DOCKER_ARGS</code>. For example, for Cursor CLI: <code>SANDBOX_DOCKER_ARGS="-v $HOME/.local/share/cursor-agent/versions/VERSION:/opt/cursor-agent:ro -v $HOME/agent-home:/home/agent -e PATH=/opt/cursor-agent:/usr/local/bin:/usr/bin:/bin"</code>, with your agent's login file copied into <code>~/agent-home</code>.</p>
+<p><strong>Limits:</strong> this stops accidental reads such as <code>cat</code>, <code>head</code> or an editor opening <code>.env</code>. It does not stop an agent that deliberately writes a program to print the token and runs it with <code>qrypt-run</code>. Review what your agent runs, and use a test token, not a production one.</p>
+</section>
 <p id="copy-status" class="sr" aria-live="polite"></p></main><footer><p>Unofficial quickstart. API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com/eaas</a>. No analytics or cookies.</p></footer>
 <script src="/app.js" defer></script></body></html>

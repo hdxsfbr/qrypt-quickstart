@@ -4,6 +4,8 @@
 ## FIRST: secrets and layout
 - If .env exists, it already has the token. Do NOT read or print it in any form (no cat/head/sed/less, not even masked). Only check: grep -q '^QRYPT_API_KEY=.' .env && echo set
 - Write all files in the current directory next to .env. No subfolder, no copying .env.
+- If .env gives "Permission denied", you are in the Qrypt agent sandbox ON PURPOSE. Do not try to read it or work around it. Run your program with: qrypt-run quickstart.py (or qrypt-run quickstart.mjs). Only qrypt-run can read .env.
+- Humans: to keep agents from reading .env, run the agent in the sandbox: see "Using an AI coding agent?" on the quickstart page (files at /agent-sandbox/).
 
 ## API
 GET https://api-eus.qrypt.com/api/v1/quantum-entropy?size=1
