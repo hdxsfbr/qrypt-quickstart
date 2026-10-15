@@ -9,7 +9,7 @@ document.querySelectorAll('[role=tablist]').forEach(list=>{
       if(e.key==='Home'){e.preventDefault();select(tabs[0]);}if(e.key==='End'){e.preventDefault();select(tabs[tabs.length-1]);}});});
 });
 document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{
-  const txt=document.getElementById(b.dataset.target).innerText;
+  const txt=document.getElementById(b.dataset.target).textContent; // exact code; CSS line numbers are not text
   const live=document.getElementById('copy-status');
   try{await navigator.clipboard.writeText(txt);b.textContent='Copied';if(live)live.textContent=b.getAttribute('aria-label').replace('Copy','Copied');}
   catch{b.textContent='Select and copy';if(live)live.textContent='Copy failed: select the code and copy it manually';}

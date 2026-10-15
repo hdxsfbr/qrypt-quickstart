@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main"><h1>Troubleshooting</h1>
+<h2 id="codes">HTTP status codes</h2>
+<div class="tw"><table><caption>Symptom, likely cause and fix for each response</caption><thead><tr><th scope="col">Code</th><th scope="col">Symptom</th><th scope="col">Likely cause</th><th scope="col">Fix</th></tr></thead><tbody>
+<tr><th scope="row">400</th><td>"'size' must be an integer between 1 and 512"</td><td><code>size</code> is 0, over 512, or not a number; often someone passed a byte count (e.g. 32) thinking size is in bytes.</td><td>Use <code>size=1</code>; it returns 1,024 bytes. Slice 32 bytes for AES-256.</td></tr>
+<tr><th scope="row">401</th><td>"Missing or malformed Authorization header"</td><td>No <code>Authorization</code> header, or it is not <code>Bearer &lt;token&gt;</code>. An empty <code>.env</code> value also causes this.</td><td>Send <code>Authorization: Bearer YOUR_TOKEN</code>. Check <code>.env</code> is in the folder you run from. Note: expired tokens are documented to return 401.</td></tr>
+<tr><th scope="row">403</th><td>"Forbidden or entropy quota reached"</td><td>Either the token is <strong>wrong</strong> (live API returns 403, not 401, for a bad token) <strong>or</strong> the monthly quota is used up. An HTML "Error 1010" page instead means Cloudflare blocked your client's User-Agent.</td><td>Check the token first: no spaces or quotes, correct service (Entropy). Then check quota in the portal. For Error 1010, use <code>requests</code> or set a custom User-Agent; don't use Python's <code>urllib</code> defaults.</td></tr>
+<tr><th scope="row">429</th><td>Too many requests</td><td>Rate limit. Docs say 30 requests per 10 seconds, but <strong>live can return 429 about 1 s after a single prior call</strong> (seen Oct 14, 2026). The API sends no <code>Retry-After</code> header.</td><td>Wait 10 s or more, then retry once. Never loop; request a larger <code>size</code> instead of many calls.</td></tr>
+<tr><th scope="row">500</th><td>Internal error</td><td>Problem on Qrypt's side.</td><td>Try again shortly. If it persists, contact support@qrypt.com.</td></tr>
+<tr><th scope="row">503</th><td>Entropy temporarily insufficient</td><td>Qrypt's entropy supply is briefly low.</td><td>Try again shortly, with a delay. Don't loop.</td></tr>
+</tbody></table></div>
+<h2 id="mistakes">Common mistakes</h2>
+<ul><li>Retrying in a loop after a 429. Wait 10 s or more; live can rate-limit after one prior call.</li><li>Using the base64 string as the key instead of decoding it.</li><li>Treating <code>size</code> as bytes.</li><li>Reusing the same entropy bytes for two keys.</li><li>Printing the key or token while debugging, or committing <code>.env</code>.</li><li>Leaving out <code>Accept: application/json</code> (the docs require it).</li><li>Assuming an SDK package exists; the API is plain HTTPS.</li></ul>
+<h2 id="env">Environment issues</h2>
+<div class="tw"><table><caption>Environment problems</caption><thead><tr><th scope="col">Issue</th><th scope="col">Symptom</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead><tbody>
+<tr><th scope="row">Runtime version</th><td>Node: <code>process.loadEnvFile is not a function</code> or <code>fetch is not defined</code>. Python: syntax errors.</td><td>Node older than 20.12, or Python older than 3.9.</td><td>Run <code>node -v</code> / <code>python3 --version</code> and upgrade.</td></tr>
+<tr><th scope="row">Missing .env</th><td>"QRYPT_API_KEY is missing"</td><td>No <code>.env</code> in the current directory, or the variable name is misspelled.</td><td>Copy <code>.env.example</code> to <code>.env</code> in the folder you run from, or export <code>QRYPT_API_KEY</code>.</td></tr>
+<tr><th scope="row">Missing packages</th><td><code>ModuleNotFoundError: requests</code></td><td>Dependencies not installed in the active environment.</td><td><code>pip install -r requirements.txt</code> inside your virtualenv.</td></tr>
+<tr><th scope="row">Proxy / TLS</th><td><code>SSLError</code>, <code>CERTIFICATE_VERIFY_FAILED</code>, <code>UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code>, <code>fetch failed</code>, or timeouts</td><td>Corporate proxy or TLS-inspecting firewall.</td><td><strong>Python:</strong> <code>requests</code> honors <code>HTTPS_PROXY</code>; set <code>REQUESTS_CA_BUNDLE</code> to your company CA. <strong>Node:</strong> built-in <code>fetch</code> in Node 20 and 22 <strong>ignores <code>HTTPS_PROXY</code></strong>. On Node 24+, run with <code>NODE_USE_ENV_PROXY=1</code> plus <code>HTTPS_PROXY</code>. On older Node, <code>npm i undici</code> and call <code>setGlobalDispatcher(new EnvHttpProxyAgent())</code> before <code>fetch</code>. Set <code>NODE_EXTRA_CA_CERTS</code> to your company CA. Never disable certificate checks.</td></tr>
+</tbody></table></div><h2 id="proxy">Proxy and TLS setup commands</h2>
+<p>Python (<code>requests</code> reads these variables):</p>
+<div class="codebox"><button class="copy" data-target="c-pyproxy" aria-label="Copy Python proxy commands">Copy</button><pre><code id="c-pyproxy" data-lang="bash">export HTTPS_PROXY=http://proxy.example.com:8080
+export REQUESTS_CA_BUNDLE=/path/to/company-ca.pem
+python quickstart.py</code></pre></div>
+<p>Node 24 and later:</p>
+<div class="codebox"><button class="copy" data-target="c-nodeproxy" aria-label="Copy Node 24 proxy commands">Copy</button><pre><code id="c-nodeproxy" data-lang="bash">export HTTPS_PROXY=http://proxy.example.com:8080
+export NODE_EXTRA_CA_CERTS=/path/to/company-ca.pem
+NODE_USE_ENV_PROXY=1 node quickstart.mjs</code></pre></div>
+<p>Node 20 and 22 (built-in <code>fetch</code> ignores <code>HTTPS_PROXY</code>): run <code>npm i undici</code>, then add these two lines at the top of the script:</p>
+<div class="codebox"><button class="copy" data-target="c-undici" aria-label="Copy Node 20 proxy code">Copy</button><pre><code id="c-undici" data-lang="js">import { setGlobalDispatcher, EnvHttpProxyAgent } from "undici";
+setGlobalDispatcher(new EnvHttpProxyAgent()); // honors HTTPS_PROXY</code></pre></div>
+<p>Expected error body from the API, for reference:</p>
+<pre><code data-lang="json">{"error": "Forbidden or entropy quota reached"}</code></pre>
+<p id="copy-status" class="sr" aria-live="polite"></p></main>
+<footer><p><a href="/">Back to the quickstart</a></p></footer><script src="/app.js" defer></script></body></html>

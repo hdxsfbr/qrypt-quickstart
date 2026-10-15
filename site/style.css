@@ -2,12 +2,13 @@
 *{box-sizing:border-box}
 body{margin:0;font:1rem/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--fg);background:var(--bg)}
 .skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:#fff;padding:.5rem;z-index:9}
-header,main,footer{max-width:46rem;margin:0 auto;padding:1rem}
+header,main,footer{max-width:52rem;margin:0 auto;padding:1rem}
 nav a{margin-right:1rem}
 a{color:var(--acc)}
 :focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 h1{font-size:1.8rem;line-height:1.25}
-pre{background:var(--code);padding:1rem;overflow-x:auto;white-space:pre-wrap;word-break:break-word;font-size:.9rem;border-radius:6px;margin:0}
+pre{background:#0d1117;color:#e6edf3;padding:1rem;overflow-x:auto;white-space:pre;font-size:.875rem;line-height:1.55;border-radius:6px;margin:0}
+:not(pre)>code{background:var(--code);padding:0 .2em;border-radius:3px}
 code{font-family:ui-monospace,Menlo,Consolas,monospace}
 .codebox{position:relative;margin:.5rem 0 1.25rem}
 .copy{position:absolute;top:.4rem;right:.4rem;font:inherit;font-size:.85rem;padding:.25rem .6rem;border:1px solid #888;border-radius:4px;background:#fff;color:#111;cursor:pointer}
@@ -17,8 +18,15 @@ code{font-family:ui-monospace,Menlo,Consolas,monospace}
 .time{display:inline-block;background:#e6f0ff;color:#0a2a66;padding:.2rem .6rem;border-radius:4px;font-weight:600}
 table{border-collapse:collapse;width:100%}th,td{border:1px solid #bbb;padding:.4rem;text-align:left;vertical-align:top}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-body{overflow-wrap:break-word}pre,code{overflow-wrap:anywhere}
+body{overflow-wrap:break-word}pre,pre code{overflow-wrap:normal;word-break:normal}
+:not(pre)>code{overflow-wrap:anywhere}
 .tw{overflow-x:auto}
 @media (max-width:40rem){.tw caption{display:block;text-align:left;font-weight:600;margin-bottom:.5rem}.tw table,.tw thead,.tw tbody,.tw tr,.tw th,.tw td{display:block}.tw thead{position:absolute;left:-9999px}.tw tr{border:1px solid #bbb;margin-bottom:.75rem}.tw th,.tw td{border:none}
 .tw td:nth-of-type(1)::before{content:"Symptom: ";font-weight:600}.tw td:nth-of-type(2)::before{content:"Cause: ";font-weight:600}.tw td:nth-of-type(3)::before{content:"Fix: ";font-weight:600}}
 nav{display:flex;flex-wrap:wrap;gap:.5rem 1rem}nav a{margin:0}
+code.numbered{counter-reset:ln}
+code.numbered .line{counter-increment:ln}
+code.numbered .line::before{content:counter(ln);display:inline-block;width:2.2ch;margin-right:1.2ch;text-align:right;color:#9ba7b4;user-select:none;-webkit-user-select:none}
+pre.hl:focus-visible{outline:3px solid #79c0ff;outline-offset:2px}
+.codebox pre{padding-top:2.4rem}
+@media (max-width:40rem){pre{font-size:.8rem}}

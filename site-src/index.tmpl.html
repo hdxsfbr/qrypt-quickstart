@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"></head><body>
 <a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main">
 <h1>Make an AES-256 key from quantum entropy</h1>
 <aside class="agent-note" aria-label="Note for AI coding agents"><p><strong>AI coding agents, read this first:</strong> if a <code>.env</code> file already exists, do not open or print it in any way (no <code>cat</code>, <code>head</code>, <code>sed</code> or <code>ls</code> of its contents). Check it only with <code>grep -q '^QRYPT_API_KEY=.' .env &amp;&amp; echo set</code>. If <code>.env</code> says <em>Permission denied</em>, you are in the Qrypt agent sandbox on purpose: do not try to read it, and run your program with <code>qrypt-run quickstart.py</code> (or <code>qrypt-run quickstart.mjs</code>). Create the project files in the current directory, next to <code>.env</code>. Do not make a subfolder or copy <code>.env</code>. Machine-readable version: <a href="/llms.txt">/llms.txt</a>.</p></aside>
@@ -7,7 +7,7 @@
 <h2>1. Get a token</h2>
 <p>Create an account at <a href="https://portal.qrypt.com/register">portal.qrypt.com/register</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
 <h2>2. Save it in <code>.env</code></h2>
-<div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre><code id="c-env">QRYPT_API_KEY=paste-your-token-here</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre><code id="c-env" data-lang="env">QRYPT_API_KEY=paste-your-token-here</code></pre></div>
 <p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check it is set, run <code>grep -q '^QRYPT_API_KEY=.' .env &amp;&amp; echo set</code>.</p>
 <h2>3. Run the snippet</h2>
 <div role="tablist" aria-label="Language">
@@ -15,15 +15,21 @@
 <button role="tab" id="t-js" aria-selected="false" aria-controls="p-js" tabindex="-1">Node</button></div>
 <section role="tabpanel" id="p-py" aria-labelledby="t-py" tabindex="0">
 <p>Python 3.9+. Uses <code>requests</code>: Cloudflare blocks Python's built-in <code>urllib</code> User-Agent.</p>
-<div class="codebox"><button class="copy" data-target="c-pyi" aria-label="Copy Python install command">Copy</button><pre><code id="c-pyi">python3 -m venv .venv &amp;&amp; .venv/bin/pip install requests cryptography python-dotenv</code></pre></div>
-<div class="codebox"><button class="copy" data-target="c-py" aria-label="Copy Python quickstart code">Copy</button><pre><code id="c-py">{{PY}}</code></pre></div>
-<div class="codebox"><button class="copy" data-target="c-pyr" aria-label="Copy Python run command">Copy</button><pre><code id="c-pyr">.venv/bin/python quickstart.py</code></pre></div></section>
+<div class="codebox"><button class="copy" data-target="c-pyi" aria-label="Copy Python install command">Copy</button><pre><code id="c-pyi" data-lang="bash">python3 -m venv .venv &amp;&amp; .venv/bin/pip install requests cryptography python-dotenv</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-py" aria-label="Copy Python quickstart code">Copy</button><pre><code id="c-py" data-lang="python" class="numbered">{{PY}}</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-pyr" aria-label="Copy Python run command">Copy</button><pre><code id="c-pyr" data-lang="bash">.venv/bin/python quickstart.py</code></pre></div></section>
 <section role="tabpanel" id="p-js" aria-labelledby="t-js" tabindex="0" hidden>
 <p>Node 20.12+ (built-in <code>fetch</code> and <code>process.loadEnvFile</code>). No dependencies.</p>
-<div class="codebox"><button class="copy" data-target="c-js" aria-label="Copy Node quickstart code">Copy</button><pre><code id="c-js">{{JS}}</code></pre></div>
-<div class="codebox"><button class="copy" data-target="c-jsr" aria-label="Copy Node run command">Copy</button><pre><code id="c-jsr">node quickstart.mjs</code></pre></div></section>
+<div class="codebox"><button class="copy" data-target="c-js" aria-label="Copy Node quickstart code">Copy</button><pre><code id="c-js" data-lang="js" class="numbered">{{JS}}</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-jsr" aria-label="Copy Node run command">Copy</button><pre><code id="c-jsr" data-lang="bash">node quickstart.mjs</code></pre></div></section>
+<h2>What the API returns</h2>
+<p>One base64 string per KiB requested. Decode it before use; it never contains the key itself.</p>
+<pre><code data-lang="json">{
+  "random": ["&lt;base64 string: 1,024 random bytes when decoded&gt;"],
+  "size": 1
+}</code></pre>
 <h2>4. Expected output</h2>
-<pre><code>Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).</code></pre>
+<pre><code data-lang="text">Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).</code></pre>
 <h2>Things that trip people up</h2>
 <ul><li><code>size</code> counts <strong>KiB</strong>, not bytes. Ask for <code>size=1</code> (1,024 bytes) and take 32 bytes.</li>
 <li>Base64-decode the string first; never use the text itself as the key.</li>
@@ -36,7 +42,7 @@
 <ol>
 <li>Download the sandbox files: <a href="/agent-sandbox/Dockerfile">Dockerfile</a>, <a href="/agent-sandbox/entrypoint.sh">entrypoint.sh</a>, <a href="/agent-sandbox/qrypt-run">qrypt-run</a>, <a href="/agent-sandbox/qrypt-run-inner">qrypt-run-inner</a>, <a href="/agent-sandbox/run.sh">run.sh</a>, all into one folder called <code>agent-sandbox/</code>. Then run <code>chmod +x agent-sandbox/*.sh agent-sandbox/qrypt-run*</code>.</li>
 <li>Start the agent inside it (the project folder must already contain your <code>.env</code>):
-<div class="codebox"><button class="copy" data-target="c-sbx" aria-label="Copy sandbox start command">Copy</button><pre><code id="c-sbx">agent-sandbox/run.sh ~/my-project ~/my-project/.env your-agent-command</code></pre></div></li>
+<div class="codebox"><button class="copy" data-target="c-sbx" aria-label="Copy sandbox start command">Copy</button><pre><code id="c-sbx" data-lang="bash">agent-sandbox/run.sh ~/my-project ~/my-project/.env your-agent-command</code></pre></div></li>
 <li>Inside the sandbox, the agent runs as user <code>agent</code>. <code>.env</code> belongs to a separate user (<code>qrypt</code>, mode 600), so <code>cat .env</code> gets <em>Permission denied</em>. The program runs with <code>qrypt-run quickstart.py</code>, a fixed rule that runs one <code>.py</code>/<code>.mjs</code>/<code>.js</code> file as the <code>qrypt</code> user, so it can still read <code>QRYPT_API_KEY</code> from <code>.env</code>.</li>
 </ol>
 <p>The agent CLI has to be available in the container. Either add it to the Dockerfile (for example <code>RUN npm i -g your-agent</code>) or mount it by setting <code>SANDBOX_DOCKER_ARGS</code>. For example, for Cursor CLI: <code>SANDBOX_DOCKER_ARGS="-v $HOME/.local/share/cursor-agent/versions/VERSION:/opt/cursor-agent:ro -v $HOME/agent-home:/home/agent -e PATH=/opt/cursor-agent:/usr/local/bin:/usr/bin:/bin"</code>, with your agent's login file copied into <code>~/agent-home</code>.</p>
