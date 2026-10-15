@@ -4,6 +4,7 @@
 ## FIRST: secrets and layout
 - If .env exists, it already has the token. Do NOT read or print it in any form (no cat/head/sed/less, not even masked). Only check: grep -q '^QRYPT_API_KEY=.' .env && echo set
 - Write all files in the current directory next to .env. No subfolder, no copying .env.
+- Keep the generated key in memory only. Do NOT write it to a file (no aes-256.key, no key.bin), print it or log it. "Generate a key" means: run the AES-GCM round trip and print the success line. Long-term key storage belongs in a secret manager or KMS and is out of scope here.
 - If .env gives "Permission denied", you are in the Qrypt agent sandbox ON PURPOSE. Do not try to read it or work around it. Run your program with: qrypt-run quickstart.py (or qrypt-run quickstart.mjs). Only qrypt-run can read .env.
 - Humans: to keep agents from reading .env, run the agent in the sandbox: see "Using an AI coding agent?" on the quickstart page (files at /agent-sandbox/).
 
