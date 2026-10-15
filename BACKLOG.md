@@ -1,4 +1,4 @@
-# Backlog: 10 follow-ups, RICE-scored
+# Backlog: 21 items (17 open, 4 done), RICE-scored
 
 **RICE = Reach × Impact × Confidence ÷ Effort.** Higher scores go first.
 - **Reach:** new developers or agent sessions affected per quarter, out of the PRD's assumed 400 signups.
@@ -12,10 +12,14 @@ Items are numbered in the order we found them; the open table is sorted by RICE 
 | # | Item | Reach | Impact | Conf. | Effort (wk) | **RICE** | Evidence |
 |---|---|---|---|---|---|---|---|
 | 6 | **Fix the official curl example** so it includes `Accept: application/json` | 400 | 0.5 | 100% | 0.1 | **2000** | docs.qrypt.com/eaas curl example compared with its own Request table |
+| 18 | **Python: catch a missing `random` field** (`KeyError`/`IndexError`) with the same friendly non-JSON message | 400 | 0.5 | 90% | 0.1 | **1800** | Opus review, Oct 15: `except (requests.RequestException, ValueError)` misses `resp.json()["random"][0]` on an unexpected body. Must stay within 25 lines. |
+| 19 | **Tip: one `size=1` call gives 1 KiB = 32 separate 32-byte keys** from distinct slices (`raw[i*32:(i+1)*32]`), instead of one call per key | 200 | 0.5 | 80% | 0.1 | **800** | Opus review, Oct 15. Also cuts 429 risk. |
 | 3 | **Ask Qrypt to return 401 for a wrong token** (keep 403 for quota only) | 400 | 2 | 90% | 1 | **720** | Live test: a bad token returned 403 "Forbidden or entropy quota reached" |
+| 20 | **Move the agent modes (Quick/Isolated) to their own page** so the 5-minute human path is shorter | 400 | 1 | 60% | 0.5 | **480** | Opus review, Oct 15: the human page feels heavy below step 4 |
 | 5 | **Allow the default Python User-Agent** (or document the Cloudflare rule in the official docs) | 120 | 2 | 90% | 0.5 | **432** | `Python-urllib` got 403 "Error 1010" from Cloudflare. The other clients passed. |
 | 16 | **Docs: tell agents not to probe `~/.env` or other home secret paths** during Quick Setup | 100 | 0.5 | 80% | 0.1 | **400** | Claude Code `ls ~/.env` in 2/5 Quick runs (no leak) |
-| 11 | **Say "no key-derived output"** in the docs and snippets: no fingerprints or hashes of the key. Print only the success line. | 100 | 0.5 | 70% | 0.1 | **350** | Claude Code printed a 16-hex SHA-256 fingerprint of the key in 3 runs |
+| 17 | **Rerun Codex with its sandbox on** (no `--dangerously-bypass-approvals-and-sandbox`) once the bwrap AppArmor profile is loaded on hdx-lab (needs Andre's sudo) | 100 | 1 | 80% | 0.2 | **400** | All Codex runs so far used the bypass flag; default Codex fails with `bwrap: loopback: Failed RTM_NEWADDR` on Ubuntu 24.04 |
+| 11 | **Say "no unprompted key-derived output"** to agents: print only the success line. Since Oct 15 the page has an *optional, human-opted-in* 8-hex fingerprint block; llms.txt tells agents to add it only if asked and never print more. | 100 | 0.5 | 70% | 0.1 | **350** | Claude Code printed a 16-hex SHA-256 fingerprint of the key in 3 runs |
 | 4 | **Ask Qrypt to send `Retry-After` / `X-RateLimit-*` headers** and to document the real 429 behavior | 150 | 2 | 80% | 1 | **240** | No rate-limit headers on any response. A 429 came back about 1 s after a single call, stricter than "30 per 10 s". |
 | 13 | **Disposable / short-lived tokens in Quick Setup UX** — deep-link to portal trial with "test token" framing | 200 | 2 | 50% | 1 | **200** | Quick Setup cannot stop agents reading `.env`; disposable tokens are the residual control |
 | 8 | **Wire up funnel instrumentation** (the events from PRD §4: `X-Qrypt-Client` header counting, a `src=qs` link parameter) | 400 | 2 | 60% | 3 | **160** | No funnel data exists today. The PRD specifies the events. |
@@ -35,3 +39,4 @@ Items are numbered in the order we found them; the open table is sorted by RICE 
 **Where they came from:** #1–10 from the first agent rounds and our live API review; #11–12 from the Codex and Claude Code rounds; #13–15 from the two-mode redesign; #16 from Claude probing `~/.env` (a home-folder file check, no contents shown) in 2 of 5 Quick runs. The key-to-disk finding (Codex 5/5) was fixed directly in the docs (`8985bbd`) and is not a backlog item.
 
 **Recommendation:** do #6 this week (fix the official curl example; cheapest). Send #3, #5 and #4 to Qrypt (Sean Neal) in one email. #16 and #11 are 1-hour doc edits. #13 (disposable tokens) is the main remaining risk for Quick Setup users.
+| 21 | ✅ **DONE (Oct 15): Starter archive download.** `/qrypt-quickstart-starter.zip` holds the snippets, mock + tests, `requirements.txt`, `.env.example`, `AGENTS.md`, `Makefile` and `agent-sandbox/` (replaces 5 one-by-one downloads). Built by `make site`; CI `tools/check_starter.py` checks byte equality and no `.env`/token. | 400 | 1 | 90% | 0.3 | **1200** | Opus review: page referenced files in a private repo |

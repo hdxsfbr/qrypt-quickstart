@@ -100,7 +100,7 @@ The site now defaults to **Quick Setup** (no Docker; behavioral safeguards) and 
 ## Cross-agent comparison (Oct 15, 2026)
 We used the same exact prompt, the same `.env` in a fresh temp folder, a 10-minute timeout and 30 s spacing. "Plain" uses the rounds 1–3 setup. "Sandbox" is `agent-sandbox/` with the agent's CLI mounted and its login file copied into a fresh home directory. The copy was deleted after each run, and none are left behind.
 
-Each agent ran headless with auto-approve:
+Each agent ran headless with auto-approve. **Disclosure: every Codex run in this report (all rounds, plain, sandbox, Quick, Isolated and short-prompt) used `--dangerously-bypass-approvals-and-sandbox`, which turns Codex's own sandbox and approvals off.** The Codex results therefore describe Codex with its sandbox off, not the default setup. On the test machine (Ubuntu 24.04, `kernel.apparmor_restrict_unprivileged_userns=1`) Codex's default bubblewrap sandbox fails every command with `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted` (seen by Andre on Oct 15; fix in /troubleshooting#codex-bwrap). Rerunning with the sandbox on needs the AppArmor profile loaded with sudo (BACKLOG #17). Claude Code likewise ran with `--dangerously-skip-permissions`.
 - `cursor-agent -p --force --trust`
 - `codex exec --dangerously-bypass-approvals-and-sandbox --json`
 - `claude -p --dangerously-skip-permissions --output-format stream-json`

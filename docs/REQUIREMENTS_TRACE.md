@@ -14,7 +14,7 @@ Audit date: Oct 15, 2026 (PT). Every requirement from the portal brief (`docs/br
 | Requirement | Status | Evidence | Notes |
 |---|---|---|---|
 | Two languages | Met | `quickstart/python/quickstart.py`, `quickstart/node/quickstart.mjs` | Python + Node |
-| ≤ 25 LOC each, excl. comments/imports | Met | Counted Oct 15 (non-blank lines that aren't comments or imports): **Python 25, Node 25** | Exactly at the limit; any new line needs another removed |
+| ≤ 25 LOC each, excl. comments/imports | Met | Counted Oct 15 (non-blank lines that aren't comments or imports): **Python 25, Node 25** | Exactly at the limit. The optional fingerprint (Oct 15) is a separate labeled block on the page, not in the core files (PRD §5) |
 | Reads `QRYPT_API_KEY` from `.env` | Met | `load_dotenv()` (Py); `process.loadEnvFile` (Node 20.12+) | |
 | Fetches 1 KiB (`GET api-eus.qrypt.com/api/v1/quantum-entropy?size=1`, both headers) | Met | `params={"size": 1}`; `?size=1`; `Accept` + `Authorization: Bearer` | |
 | Base64 decode, take 32 bytes as AES-256 key | Met | `b64decode(...)[:32]`; `Buffer.from(..., "base64").subarray(0, 32)` | |
@@ -36,6 +36,7 @@ Audit date: Oct 15, 2026 (PT). Every requirement from the portal brief (`docs/br
 | Troubleshooting: 400, 401, 403, 429, 500, 503 as symptom → cause → fix | Met | `site/troubleshooting.html` table | Includes the real 403-for-bad-token behavior |
 | Common mistakes: KiB not bytes, decode base64, don't loop | Met | "Common mistakes" list | |
 | Environment issues: runtime version, missing `.env`, proxy/TLS | Met | "Environment issues" table + proxy commands | |
+| Starter archive matches repo, no secrets | Met | `site/qrypt-quickstart-starter.zip` built by `make site`; CI `tools/check_starter.py` (13 files byte-equal, no `.env`/token); unzipped copy passes `make check` 18/18 (Oct 15) | Added after the Opus review: page referenced files in the private repo |
 | Every documented command runs as written | Partial | `make check` and both snippets run in CI; agent runs followed the site commands 30/30 | Proxy and Windows commands not executed (no proxy available) |
 | Site builds from the repo on push | Met | CI rebuilds `site/` and fails on drift; `pages-deploy` job | |
 
@@ -63,7 +64,7 @@ Audit date: Oct 15, 2026 (PT). Every requirement from the portal brief (`docs/br
 ## Core requirement 5: backlog
 | Requirement | Status | Evidence |
 |---|---|---|
-| ≥ 10 items from findings + own review | Met | `BACKLOG.md`: 16 items (13 open, 3 done) |
+| ≥ 10 items from findings + own review | Met | `BACKLOG.md`: 21 items (17 open, 4 done), Oct 15 |
 | RICE score + evidence each | Met | Scores rechecked arithmetically Oct 15 |
 
 ## Performance benchmarks
@@ -80,7 +81,7 @@ Audit date: Oct 15, 2026 (PT). Every requirement from the portal brief (`docs/br
 |---|---|---|
 | Unit confusion impossible to miss | Met | KiB warnings on page, llms.txt, 400 message |
 | Warn against printing/logging/committing keys and reusing entropy bytes | Met | Page + "Common mistakes" |
-| Claims-to-source table; no superlatives | Met | `docs/claims-to-source.md` (23 claims + 6 observations); grep for "unbreakable"/"perfectly secure": 0 |
+| Claims-to-source table; no superlatives | Met | `docs/claims-to-source.md` (27 claims + 6 observations; #24 trial-signup form, #25–27 Codex bwrap sandbox); grep for "unbreakable"/"perfectly secure": 0 |
 | Fact-check count of AI-drafted claims | Met | `AI_USAGE.md`: 4 corrections |
 | `.env` gitignored, `.env.example` committed | Met | `.gitignore`, `.env.example` |
 | Keyboard only, 200% zoom, labelled copy buttons | Partial | Skip link, `:focus-visible`, arrow-key tabs, focusable scrollable code blocks, `aria-label` on copy buttons, Lighthouse a11y 100. Not hand-tested at 200% zoom with keyboard only |

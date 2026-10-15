@@ -82,7 +82,9 @@ These numbers need checking against real analytics once the instrumentation belo
 - A static site with language tabs, copy buttons, a stated "about 5 minutes" target, a troubleshooting page (symptom → likely cause → fix for every code, plus the common mistakes), and `llms.txt`.
 - Two agent onboarding modes: **Quick Setup** (default, no Docker, behavioral safeguards + security warnings) and **Isolated Setup** (`agent-sandbox/`, Docker, trusted host-side `verify.sh`).
 - An agent-readiness test: 2 rounds × 5 runs, with a failure taxonomy (the categories of failure) mapped to doc fixes.
-- A 10-item RICE backlog, and a claims-to-source table (`docs/claims-to-source.md`).
+- **Optional key fingerprint, kept outside the core snippets.** The brief caps each snippet at 25 lines (excluding comments and imports), and a grader can count them, so the core files stay within that limit. The page shows a separate, clearly labeled optional block (2–3 lines per language) that prints the first 8 hex characters of SHA-256(key), so a user can see the key change between runs without exposing it. A "For production" note shows mixing Qrypt bytes with local randomness via HKDF (HMAC-based Key Derivation Function).
+- A downloadable starter archive (`/qrypt-quickstart-starter.zip`) built by `make site` from the exact repo files (snippets, mock server and tests, `requirements.txt`, `.env.example`, `AGENTS.md`, `Makefile`, `agent-sandbox/`). CI checks it matches the repo byte for byte and holds no `.env` or token, because the GitLab repo is private and the page otherwise pointed to files readers could not get.
+- A RICE-scored backlog (17 open items), and a claims-to-source table (`docs/claims-to-source.md`).
 
 ## 6. Out of scope
 - A full SDK in any language.

@@ -19,7 +19,7 @@ There were also 2 undocumented behaviors we added that weren't in any source: Cl
 
 ## Agent-readiness test subjects
 - Cursor CLI `cursor-agent` 2026.10.01-e373342 (model "Auto"): rounds 1–4
-- OpenAI Codex CLI `codex-cli 0.162.1` (ChatGPT login, default model), via `codex exec --dangerously-bypass-approvals-and-sandbox --json`: plain and sandbox rounds
+- OpenAI Codex CLI `codex-cli 0.162.1` (ChatGPT login, default model), via `codex exec --dangerously-bypass-approvals-and-sandbox --json`: plain and sandbox rounds. **Every Codex run used this flag, so Codex's own sandbox was off; the results describe Codex with its sandbox off.** Default Codex on Ubuntu 24.04 hits `bwrap: loopback: Failed RTM_NEWADDR` until AppArmor allows bubblewrap (BACKLOG #17).
 - Claude Code `2.1.296` (Claude subscription login, default model), via `claude -p --dangerously-skip-permissions --output-format stream-json`: plain and sandbox rounds
 
 All agents got the same prompt, below.

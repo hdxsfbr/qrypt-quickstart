@@ -30,6 +30,11 @@ A = https://docs.qrypt.com/eaas/ · F = https://docs.qrypt.com/faqs/ · B = proj
 | 22 | Get a token at portal.qrypt.com/trial-signup-entropy | B→live | Brief said /register (404 SPA page). Live portal routes: /signup (contact sales), /trial-signup and /trial-signup-entropy (both redirect to /trial signup form). We link /trial-signup-entropy. | Yes |
 | 23 | No SDK is needed for the entropy API | B | "No SDK required. Call the REST endpoint directly from any language." | Yes (plain HTTP works) |
 
+| 24 | The trial signup form asks only for full name and work email, and does not state a quota | Live portal | Headless Chrome render of https://portal.qrypt.com/trial-signup-entropy, Oct 15, 2026 ~1:53 PM CT, read only (not submitted): heading "Start your Qrypt trial", fields "Full name", "Work email", button "Start trial". No quota, price or card fields on that page. | Yes (form not submitted) |
+| 25 | Codex's Linux sandbox fails with `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted` when `kernel.apparmor_restrict_unprivileged_userns=1` (Ubuntu 23.10/24.04+) | OpenAI docs + issues | https://developers.openai.com/codex/concepts/sandboxing (Prerequisites, "Ubuntu AppArmor note"); https://github.com/openai/codex/issues/14919; https://github.com/openai/codex/issues/15057 | Yes (Andre's Codex run on hdx-lab, Oct 15) |
+| 26 | Fix: install `bubblewrap`; on 24.04 load `/usr/share/apparmor/extra-profiles/bwrap-userns-restrict` with `apparmor_parser -r`; `sysctl kernel.apparmor_restrict_unprivileged_userns=0` only as a fallback | OpenAI docs | Same Codex Sandbox page: "prefer loading the bwrap AppArmor profile so bwrap can keep working without disabling the restriction globally"; Codex prefers system `/usr/bin/bwrap` (https://github.com/openai/codex/pull/14963) | No (needs sudo on the lab) |
+| 27 | `--dangerously-bypass-approvals-and-sandbox` removes the sandbox and approvals | OpenAI docs | Sandbox page: `danger-full-access` "removes the filesystem and network boundaries" | n/a |
+
 ## Observed behavior not covered by the docs (live, Oct 14, 2026)
 | Observation | Evidence |
 |---|---|
