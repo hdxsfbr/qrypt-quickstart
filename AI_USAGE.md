@@ -34,3 +34,6 @@ All agents got the same prompt, below.
   Generate an AES-256 key using Qrypt quantum entropy in a new project
   ```
 - **Brief's prompt:** "Generate an AES-256 key using Qrypt quantum entropy in a new project". We kept that sentence word for word and only added the URL and the location of `.env`.
+
+## Two-mode agent onboarding (Oct 15, 2026)
+Redesigned agent docs and `agent-sandbox/` so Quick Setup (no Docker) is the default and Isolated Setup keeps the real token off the agent container. Trusted live verification is `agent-sandbox/verify.sh`, which runs fixed snippets from this repo — never agent-modifiable code — and prints only sanitized PASS/FAIL. Historical agent-readiness rounds 1–4 (including the older `qrypt-run` design) are preserved in `AGENT_READINESS.md` and were not re-run as part of this change; Butler owns follow-up evals (`BACKLOG` #14).

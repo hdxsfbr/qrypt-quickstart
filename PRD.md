@@ -76,6 +76,7 @@ These numbers need checking against real analytics once the instrumentation belo
   - prints a clear message for a missing token and for 400/401/403/429/500/503, and exits non-zero without retrying in a loop
 - CI runs both snippets on every push against a mock server: success, 401, 429 and 503.
 - A static site with language tabs, copy buttons, a stated "about 5 minutes" target, a troubleshooting page (symptom → likely cause → fix for every code, plus the common mistakes), and `llms.txt`.
+- Two agent onboarding modes: **Quick Setup** (default, no Docker, behavioral safeguards + security warnings) and **Isolated Setup** (`agent-sandbox/`, Docker, trusted host-side `verify.sh`).
 - An agent-readiness test: 2 rounds × 5 runs, with a failure taxonomy (the categories of failure) mapped to doc fixes.
 - A 10-item RICE backlog, and a claims-to-source table (`docs/claims-to-source.md`).
 
@@ -94,6 +95,14 @@ These numbers need checking against real analytics once the instrumentation belo
 3. Snippets let us measure the funnel now. If the data shows SDK demand (for example, repeated tickets about the same wrapper logic), we revisit it next quarter.
 **What we give up:** typed errors, built-in retries and a one-line install. We make up for part of that with clear error messages and troubleshooting docs.
 
+
+## 7a. The tradeoff we are explicitly making: zero-install agent onboarding first
+> We prioritize a zero-install agent onboarding path for developer accessibility, while offering an optional sandboxed workflow for users requiring stronger credential isolation. Quick Setup relies on behavioral safeguards and cannot guarantee that existing credentials will remain inaccessible to unrestricted agents.
+
+**Why Quick Setup is the default:** most evaluators will not install Docker for a 10-minute trial. A copy-pasteable prompt unblocks Claude Code, Codex and Cursor immediately.
+**Why Isolated Setup exists:** in our agent-readiness tests, unrestricted agents read part of `.env` in 14 of 15 runs despite two doc revisions. Isolated Setup keeps the token off the agent container and runs live verification as fixed snippets on the host (`agent-sandbox/verify.sh`).
+**What we are not claiming:** Docker does not guarantee zero leakage. Isolation boundaries (no token in agent env/FS, no docker.sock, `run.sh` refuses a project that contains `.env`) are tested by `agent-sandbox/test-isolation.sh`. Container escapes, compromised agent binaries and reckless `SANDBOX_DOCKER_ARGS` are out of scope.
+
 ## 8. Risks and mitigations
 | Risk | Mitigation |
 |---|---|
@@ -103,6 +112,7 @@ These numbers need checking against real analytics once the instrumentation belo
 | The quota is undocumented, and the test budget is ≤ 10 MB | Each run uses 1 KiB, CI uses the mock server only, and we log total live usage. |
 | Keys leak through logs or recordings | Snippets never print keys, `.env` is gitignored, and recordings mask the token. |
 | Docs drift away from the API | The claims-to-source table records whether each claim was verified live, and we re-check it each release. |
+| Unrestricted agents read `.env` by reflex | Quick Setup warns + disposable-token guidance. Isolated Setup keeps the token off the agent mount; `verify.sh` runs fixed snippets. Documented in PRD §7a. |
 | Funnel joins break without cookies | We accept some loss of attribution. Stages 3–5 are server-side and exact. |
 
 ## 9. Open questions

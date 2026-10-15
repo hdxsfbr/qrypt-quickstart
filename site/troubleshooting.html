@@ -17,7 +17,16 @@
 <tr><th scope="row">Missing .env</th><td>"QRYPT_API_KEY is missing"</td><td>No <code>.env</code> in the current directory, or the variable name is misspelled.</td><td>Copy <code>.env.example</code> to <code>.env</code> in the folder you run from, or export <code>QRYPT_API_KEY</code>.</td></tr>
 <tr><th scope="row">Missing packages</th><td><code>ModuleNotFoundError: requests</code></td><td>Dependencies not installed in the active environment.</td><td><code>pip install -r requirements.txt</code> inside your virtualenv.</td></tr>
 <tr><th scope="row">Proxy / TLS</th><td><code>SSLError</code>, <code>CERTIFICATE_VERIFY_FAILED</code>, <code>UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code>, <code>fetch failed</code>, or timeouts</td><td>Corporate proxy or TLS-inspecting firewall.</td><td><strong>Python:</strong> <code>requests</code> honors <code>HTTPS_PROXY</code>; set <code>REQUESTS_CA_BUNDLE</code> to your company CA. <strong>Node:</strong> built-in <code>fetch</code> in Node 20 and 22 <strong>ignores <code>HTTPS_PROXY</code></strong>. On Node 24+, run with <code>NODE_USE_ENV_PROXY=1</code> plus <code>HTTPS_PROXY</code>. On older Node, <code>npm i undici</code> and call <code>setGlobalDispatcher(new EnvHttpProxyAgent())</code> before <code>fetch</code>. Set <code>NODE_EXTRA_CA_CERTS</code> to your company CA. Never disable certificate checks.</td></tr>
-</tbody></table></div><h2 id="proxy">Proxy and TLS setup commands</h2>
+</tbody></table></div>
+<h2 id="agent">AI agent modes</h2>
+<table><caption>Agent onboarding issues</caption><thead><tr><th scope="col">Issue</th><th scope="col">Symptom</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead><tbody>
+<tr><th scope="row">Agent asks for the token in chat</th><td>Prompt like "paste your QRYPT_API_KEY"</td><td>Model ignoring Quick Setup rules</td><td>Refuse. Create <code>.env</code> yourself and say only "it's set". Or switch to Isolated Setup.</td></tr>
+<tr><th scope="row"><code>run.sh: refuse … contains a .env</code></th><td>Isolated Setup will not start</td><td>Project directory has a <code>.env</code>, which would be bind-mounted into the agent</td><td><code>mv .env ~/.config/qrypt/.env &amp;&amp; chmod 600 ~/.config/qrypt/.env</code>, then re-run <code>run.sh</code>.</td></tr>
+<tr><th scope="row">Agent has no token in Isolated Setup</th><td>Example fails with "QRYPT_API_KEY is missing"</td><td>Expected. The agent container has no secret.</td><td>Finish mock tests inside the container, then on the host run <code>agent-sandbox/verify.sh --env ~/.config/qrypt/.env</code>.</td></tr>
+<tr><th scope="row">verify.sh refuses mode</th><td>"refusing … chmod 600"</td><td><code>.env</code> is group/world-readable</td><td><code>chmod 600</code> the file and retry.</td></tr>
+</tbody></table>
+
+<h2 id="proxy">Proxy and TLS setup commands</h2>
 <p>Python (<code>requests</code> reads these variables):</p>
 <div class="codebox"><button class="copy" data-target="c-pyproxy" aria-label="Copy Python proxy commands">Copy</button><pre class="hl" tabindex="0"><code id="c-pyproxy" data-lang="bash"><span class="line"><span class="nb">export</span><span class="w"> </span><span class="nv">HTTPS_PROXY</span><span class="o">=</span>http://proxy.example.com:8080</span>
 <span class="line"><span class="nb">export</span><span class="w"> </span><span class="nv">REQUESTS_CA_BUNDLE</span><span class="o">=</span>/path/to/company-ca.pem</span>

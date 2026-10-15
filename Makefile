@@ -1,10 +1,12 @@
 # Grader quickstart: `make check` (no token needed, ~1 min) then optionally `make live` (uses 1 KiB of real entropy).
-.PHONY: check deps test site live-py live-js lighthouse
+.PHONY: check deps test isolation site live-py live-js lighthouse
 deps:            ## install Python deps (Node needs none; Node 20.12+)
 	python3 -m pip install -q -r quickstart/python/requirements.txt
 test:            ## run both snippets against the mock: success, 401, 403, 429, 500, 503, missing token
 	./mock/run_cases.sh
 check: deps test
+isolation:       ## Docker isolation probes (no real token)
+	./agent-sandbox/test-isolation.sh
 site:            ## regenerate site pages (Pygments highlighting) from sources
 	python3 -m pip install -q -r tools/requirements-site.txt
 	python3 tools/build_site.py
