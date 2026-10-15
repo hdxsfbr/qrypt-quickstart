@@ -12,7 +12,7 @@ Requirements: Python 3.9+, Node 20.12+.
 ## Layout
 - `quickstart/python`, `quickstart/node` — the snippets (≤25 lines excluding comments/imports)
 - `mock/` — stdlib mock of the entropy API + `run_cases.sh`
-- `site/` — static docs (`*.tmpl.html` are filled from the snippets by `make site`)
+- `site/` — static docs (deployed); `site-src/` templates are filled from the snippets by `make site`
 - `tools/lighthouse.sh` — 10 mobile Lighthouse runs; reports in `reports/lighthouse/`
 - `.gitlab-ci.yml` — mock tests on every push; Pages deploy on main (needs masked `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`)
 - `PRD.md`, `docs/` — PRD, research, claims-to-source
