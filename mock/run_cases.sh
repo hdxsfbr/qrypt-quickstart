@@ -18,9 +18,11 @@ for lang in py js; do
   check $lang success 0 "Success"
   check $lang 401 1 "401"
   check $lang 403 1 "Token invalid OR"
-  check $lang 429 1 "Wait 10 seconds"
+  check $lang 429 1 "wait 10 s or more"
   check $lang 503 1 "Try again shortly"
   check $lang 500 1 "Try again shortly"
+  check $lang html 1 "non-JSON reply"
+  QRYPT_BASE_URL=http://127.0.0.1:9 check $lang neterr 1 "Network error"
   QRYPT_API_KEY= check $lang success 1 "QRYPT_API_KEY is missing"
 done
 exit $fail

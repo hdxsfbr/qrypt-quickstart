@@ -1,5 +1,5 @@
 """Mock Qrypt entropy API for CI. Stdlib only.
-MOCK_MODE: success | 401 | 403 | 429 | 500 | 503 (default success). Also honors real-API rules
+MOCK_MODE: success | html | 401 | 403 | 429 | 500 | 503 (default success). Also honors real-API rules
 (missing/malformed Bearer -> 401, size outside 1..512 -> 400)."""
 import base64, json, os, sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -19,6 +19,9 @@ class H(BaseHTTPRequestHandler):
         u = urlparse(self.path)
         if u.path == "/healthz": return self.send(200, {"status": "ok"})
         if u.path != "/api/v1/quantum-entropy": return self.send(404, {"error": "not found"})
+        if MODE == "html":  # Cloudflare-style HTML page with 200
+            b = b"<html>blocked</html>"; self.send_response(200); self.send_header("Content-Type", "text/html")
+            self.send_header("Content-Length", str(len(b))); self.end_headers(); return self.wfile.write(b)
         if MODE in BODIES: return self.send(int(MODE), {"error": BODIES[MODE]})
         if not self.headers.get("Authorization", "").startswith("Bearer "): return self.send(401, {"error": BODIES["401"]})
         size = parse_qs(u.query).get("size", ["1"])[0]
