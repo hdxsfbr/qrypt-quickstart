@@ -71,8 +71,8 @@ Audit date: Oct 15, 2026 (PT). Every requirement from the portal brief (`docs/br
 | Target | Status | Measured |
 |---|---|---|
 | Agent median ≤ 10 min | Met | 63–160 s per agent/mode |
-| Agent success ≥ 4/5 | Met | 5/5 every round |
-| Site load < 1.5 s p95, mobile, 10 runs | Met | **p95 LCP 1.03 s** (range 0.88–1.03 s) after the docs-shell redesign (c8fbca1), a11y 100; Lighthouse 12 mobile preset, Oct 15 ~11:40 AM PT (earlier pre-shell run: 0.95 s), `reports/lighthouse/summary.json`. Note: the first re-measure in this audit gave p95 **1.54 s (fail)**; inlining the CSS (`4c7e81c`) removed two blocking requests and fixed it |
+| Agent success ≥ 4/5 | Met | 5/5 every round; feedback-batch check Claude 1/1, Cursor 1/1, 0 leaks |
+| Site load < 1.5 s p95, mobile, 10 runs | Met | **Latest (Oct 15 ~4:10 PM CT, after feedback batch `41230b4`): index p95 LCP 1.32 s (1.18–1.32 s), troubleshooting 1.11 s (1.03–1.11 s), a11y 100 on all 20 runs** (`reports/lighthouse/feedback-batch/summary.json`). Earlier: **p95 LCP 1.03 s** (range 0.88–1.03 s) after the docs-shell redesign (c8fbca1), a11y 100; Lighthouse 12 mobile preset, Oct 15 ~11:40 AM PT (earlier pre-shell run: 0.95 s), `reports/lighthouse/summary.json`. Note: the first re-measure in this audit gave p95 **1.54 s (fail)**; inlining the CSS (`4c7e81c`) removed two blocking requests and fixed it |
 | Lighthouse accessibility ≥ 95, report committed | Met | **100** in all 10 runs, `reports/lighthouse/run-*.report.html` |
 | Snippet runtime < 3 s, 5 runs | Met | Live, Oct 15 ~11:05 AM PT: **Python 0.48–0.77 s, Node 0.45–0.55 s**, 5/5 success each (`reports/snippet-runtime.txt`, 10 KiB logged) |
 

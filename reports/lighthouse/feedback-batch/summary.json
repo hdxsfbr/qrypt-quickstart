@@ -1,0 +1,42 @@
+{
+  "index": {
+    "url": "https://qrypt-quickstart.pages.dev/",
+    "runs": 10,
+    "lcp_seconds": [
+      1.182,
+      1.186,
+      1.193,
+      1.196,
+      1.197,
+      1.202,
+      1.202,
+      1.218,
+      1.273,
+      1.321
+    ],
+    "p95_load_lcp_s": 1.321,
+    "accessibility_min": 100,
+    "measured": "2026-10-15 ~4:10 PM CT, Lighthouse 12 mobile preset, after feedback batch (41230b4)",
+    "pass": true
+  },
+  "troubleshooting": {
+    "url": "https://qrypt-quickstart.pages.dev/troubleshooting",
+    "runs": 10,
+    "lcp_seconds": [
+      1.03,
+      1.036,
+      1.059,
+      1.063,
+      1.066,
+      1.07,
+      1.089,
+      1.095,
+      1.098,
+      1.109
+    ],
+    "p95_load_lcp_s": 1.109,
+    "accessibility_min": 100,
+    "measured": "2026-10-15 ~4:10 PM CT, Lighthouse 12 mobile preset, after feedback batch (41230b4)",
+    "pass": true
+  }
+}
