@@ -5,6 +5,7 @@
 **How it works:**
 - The agent runs in Docker as user `agent`.
 - `run.sh` passes `.env` into the container by an environment-variable *name*, never on the command line, and removes the readable copy from the project folder. The entrypoint writes it to `/work/.env`, owned by a separate user `qrypt` with mode 600, then starts the agent with that variable removed from its environment.
+- The entrypoint also writes a read-only `QRYPT-SANDBOX-README.txt` hint into the folder (added after a Claude Code run gave up without finding `qrypt-run`).
 - `qrypt-run file.py|file.mjs|file.js` is the only way in. It's a fixed sudo rule that runs one program file from `/work` as `qrypt`, so the snippet still reads `QRYPT_API_KEY` from `.env`.
 
 ```bash

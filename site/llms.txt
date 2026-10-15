@@ -2,6 +2,7 @@
 > Get an AES-256-GCM key from Qrypt quantum entropy. Plain HTTPS; no SDK exists for this API. Do not invent one.
 
 ## FIRST: secrets and layout
+- SANDBOX: if .env gives "Permission denied" (or QRYPT-SANDBOX-README.txt exists), you MUST run your program with `qrypt-run <file>`, e.g. qrypt-run quickstart.mjs. Plain `node`/`python` cannot read .env there. Do not stop and report failure; use qrypt-run.
 - If .env exists, it already has the token. Do NOT read or print it in any form (no cat/head/sed/less, not even masked). Only check: grep -q '^QRYPT_API_KEY=.' .env && echo set
 - Write all files in the current directory next to .env. No subfolder, no copying .env.
 - Keep the generated key in memory only. Do NOT write it to a file (no aes-256.key, no key.bin), print it or log it. "Generate a key" means: run the AES-GCM round trip and print the success line. Long-term key storage belongs in a secret manager or KMS and is out of scope here.
