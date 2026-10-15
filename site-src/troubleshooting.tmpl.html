@@ -14,13 +14,13 @@
 <h2 id="env">Environment issues</h2>
 <div class="tw"><table><caption>Environment problems</caption><thead><tr><th scope="col">Issue</th><th scope="col">Symptom</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead><tbody>
 <tr><th scope="row">Runtime version</th><td>Node: <code>process.loadEnvFile is not a function</code> or <code>fetch is not defined</code>. Python: syntax errors.</td><td>Node older than 20.12, or Python older than 3.9.</td><td>Run <code>node -v</code> / <code>python3 --version</code> and upgrade.</td></tr>
-<tr><th scope="row">Missing .env</th><td>"QRYPT_API_KEY is missing"</td><td>No <code>.env</code> in the current directory, or the variable name is misspelled.</td><td>Copy <code>.env.example</code> to <code>.env</code> in the folder you run from, or export <code>QRYPT_API_KEY</code>.</td></tr>
-<tr><th scope="row">Missing packages</th><td><code>ModuleNotFoundError: requests</code></td><td>Dependencies not installed in the active environment.</td><td><code>pip install -r requirements.txt</code> inside your virtualenv.</td></tr>
+<tr><th scope="row">Missing .env</th><td>"QRYPT_API_KEY is missing"</td><td>No <code>.env</code> in the current directory, or the variable name is misspelled.</td><td>Copy <code>.env.example</code> (in the <a href="/qrypt-quickstart-starter.zip">starter archive</a>) to <code>.env</code> in the folder you run from, or export <code>QRYPT_API_KEY</code>.</td></tr>
+<tr><th scope="row">Missing packages</th><td><code>ModuleNotFoundError: requests</code></td><td>Dependencies not installed in the active environment.</td><td><code>pip install -r quickstart/python/requirements.txt</code> (from the starter archive) inside your virtualenv.</td></tr>
 <tr><th scope="row">Proxy / TLS</th><td><code>SSLError</code>, <code>CERTIFICATE_VERIFY_FAILED</code>, <code>UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code>, <code>fetch failed</code>, or timeouts</td><td>Corporate proxy or TLS-inspecting firewall.</td><td><strong>Python:</strong> <code>requests</code> honors <code>HTTPS_PROXY</code>; set <code>REQUESTS_CA_BUNDLE</code> to your company CA. <strong>Node:</strong> built-in <code>fetch</code> in Node 20 and 22 <strong>ignores <code>HTTPS_PROXY</code></strong>. On Node 24+, run with <code>NODE_USE_ENV_PROXY=1</code> plus <code>HTTPS_PROXY</code>. On older Node, <code>npm i undici</code> and call <code>setGlobalDispatcher(new EnvHttpProxyAgent())</code> before <code>fetch</code>. Set <code>NODE_EXTRA_CA_CERTS</code> to your company CA. Never disable certificate checks.</td></tr>
 </tbody></table></div>
 <details id="agent" class="agent-box">
 <summary>For AI coding agents — mode troubleshooting</summary>
-<p>Full agent rules: <a href="/llms.txt"><code>llms.txt</code></a>. Repo: <code>AGENTS.md</code>.</p>
+<p>Full agent rules: <a href="/llms.txt"><code>llms.txt</code></a>. Also <code>AGENTS.md</code> in the <a href="/qrypt-quickstart-starter.zip">starter archive</a>.</p>
 <div class="tw"><table><caption>Agent onboarding issues</caption><thead><tr><th scope="col">Issue</th><th scope="col">Symptom</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead><tbody>
 <tr><th scope="row">Agent asks for the token in chat</th><td>Prompt like "paste your QRYPT_API_KEY"</td><td>Model ignoring Quick Setup rules</td><td>Refuse. Create <code>.env</code> yourself and say only "it's set". Or switch to Isolated Setup.</td></tr>
 <tr><th scope="row"><code>run.sh: refuse … contains a .env</code></th><td>Isolated Setup will not start</td><td>Project directory has a <code>.env</code>, which would be bind-mounted into the agent</td><td><code>mv .env ~/.config/qrypt/.env &amp;&amp; chmod 600 ~/.config/qrypt/.env</code>, then re-run <code>run.sh</code>.</td></tr>
@@ -29,6 +29,20 @@
 </tbody></table></div>
 </details>
 
+<h2 id="codex-bwrap">Codex: <code>bwrap: loopback: Failed RTM_NEWADDR</code></h2>
+<p><strong>Symptom:</strong> in Codex, every shell command and web fetch fails before it runs with <code>bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted</code>. The agent never reaches this quickstart.</p>
+<p><strong>Cause:</strong> Codex's Linux sandbox uses bubblewrap (<code>bwrap</code>), which needs unprivileged user namespaces (an isolated view of the system that a normal user can create). Ubuntu 23.10, 24.04 and later set <code>kernel.apparmor_restrict_unprivileged_userns=1</code>, so AppArmor (Ubuntu's security module) blocks them unless a profile allows <code>bwrap</code>.</p>
+<p><strong>Fix (OpenAI's documented steps, needs sudo):</strong> install the system <code>bwrap</code>; on Ubuntu 24.04 also load its AppArmor profile, then test:</p>
+<div class="codebox"><button class="copy" data-target="c-bwrap" aria-label="Copy Codex bwrap fix commands">Copy</button><pre><code id="c-bwrap" data-lang="bash">sudo apt update
+sudo apt install bubblewrap apparmor-profiles apparmor-utils
+sudo install -m 0644 \
+  /usr/share/apparmor/extra-profiles/bwrap-userns-restrict \
+  /etc/apparmor.d/bwrap-userns-restrict
+sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+codex sandbox linux -- /bin/true   # no output, exit 0 = fixed</code></pre></div>
+<p>OpenAI lists <code>sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0</code> only as a fallback. It turns the protection off for every program on the machine, so prefer the profile. Another option is <a href="/#isolated-setup">Isolated Setup</a>: Docker is then the boundary, and the token stays on the host.</p>
+<p class="warn"><strong>Do not use <code>--dangerously-bypass-approvals-and-sandbox</code> on your own machine to get past this.</strong> It turns off Codex's sandbox and approvals, so the agent can read any file, including <code>.env</code> and other secrets, and reach the network freely.</p>
+<p>Sources: <a href="https://developers.openai.com/codex/concepts/sandboxing">OpenAI Codex docs, Sandbox: Prerequisites</a>; <a href="https://github.com/openai/codex/issues/14919">openai/codex issue 14919</a>; <a href="https://github.com/openai/codex/pull/14963">openai/codex pull request 14963</a>.</p>
 <h2 id="proxy">Proxy and TLS setup commands</h2>
 <p>Python (<code>requests</code> reads these variables):</p>
 <div class="codebox"><button class="copy" data-target="c-pyproxy" aria-label="Copy Python proxy commands">Copy</button><pre><code id="c-pyproxy" data-lang="bash">export HTTPS_PROXY=http://proxy.example.com:8080

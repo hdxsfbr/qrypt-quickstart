@@ -11,6 +11,7 @@ snippets:
     # site/ must match a fresh build (highlighting + snippets from quickstart/)
     - pip install -q -r tools/requirements-site.txt
     - python3 tools/build_site.py && git diff --exit-code -- site
+    - python3 tools/check_starter.py
     - python3 tools/check_links.py
 
 pages-deploy:

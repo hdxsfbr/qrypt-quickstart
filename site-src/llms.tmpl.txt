@@ -1,7 +1,7 @@
 # Qrypt quantum entropy quickstart (for AI agents)
 
 This file is the canonical agent instructions. Humans paste a short prompt that links
-here and to the quickstart page; read THIS file (or AGENTS.md in the repo) for the full
+here and to the quickstart page; read THIS file (or AGENTS.md in the starter archive) for the full
 rules. A small tip at the top of the HTML pages is collapsed; the Quick/Isolated modes
 section is always visible.
 
@@ -10,6 +10,12 @@ section is always visible.
 ## Expected short prompts (humans paste these)
 - Quick Setup: `Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.`
 - Isolated Setup: `Use Isolated Setup for the Qrypt quickstart in this folder (see QRYPT-ISOLATED.txt). Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.`
+
+## What this is
+The random bytes come from Qrypt's quantum entropy source over one HTTPS GET. The key you derive is an ordinary AES-256 key (AES = Advanced Encryption Standard) that you use with standard crypto libraries.
+
+## Starter archive
+https://qrypt-quickstart.pages.dev/qrypt-quickstart-starter.zip contains both snippets (quickstart/python/quickstart.py, quickstart/node/quickstart.mjs), quickstart/python/requirements.txt, .env.example, mock/server.py and mock/run_cases.sh (mock tests), AGENTS.md, a Makefile (`make check` = install deps + run mock tests, no token) and agent-sandbox/ (Isolated Setup). It never contains a .env. Prefer downloading it over writing your own mock or tests.
 
 ## Choose a mode
 - **Quick Setup (default, no Docker):** follow the rules below. The human creates `.env`; you never read it. Behavioral safeguards only — not isolation.
@@ -27,7 +33,7 @@ section is always visible.
 1. Read this file and the quickstart page.
 2. Pick Python or Node (ask if unsure).
 3. Implement using the official snippets below.
-4. Install deps and run mocked tests (QRYPT_BASE_URL pointing at a mock, or `make check` in this repo).
+4. Install deps and run mocked tests (QRYPT_BASE_URL pointing at a mock, or `make check` inside the starter archive).
 5. Ask the human to create `.env` with QRYPT_API_KEY (token from https://portal.qrypt.com/trial-signup-entropy) and confirm it is set — without sharing the value.
 6. Run the example. Report the success line only.
 
@@ -49,8 +55,15 @@ size counts KiB (1..512), NOT bytes. For one AES-256 key use size=1 and take the
 
 ## Python (isolated install: python3 -m venv .venv && .venv/bin/pip install requests cryptography python-dotenv; run with .venv/bin/python)
 {{PY}}
-## Node 20.12+ (no deps)
+## Node 20.12+ (no deps). SAVE AS quickstart.mjs (NOT .js): it uses ESM import and top-level await; a .js file throws SyntaxError on older Node unless package.json has "type": "module".
 {{JS}}
+## Optional extras (only if the human asks)
+- Key fingerprint (kept out of the 25-line core snippets): Python `print("Key fingerprint:", hashlib.sha256(key).hexdigest()[:8])` (import hashlib); Node `const { createHash } = await import("node:crypto"); console.log("Key fingerprint:", createHash("sha256").update(key).digest("hex").slice(0, 8));`. 8 hex characters only; never print more of the key or its hash.
+- For production: Qrypt's service delivers the raw bytes, so mix them with local randomness via HKDF (HMAC-based Key Derivation Function). Python: `key = HKDF(hashes.SHA256(), 32, None, b"aes-256 key").derive(qrypt_bytes + os.urandom(32))`. Node: `key = Buffer.from(hkdfSync("sha256", Buffer.concat([qryptBytes, randomBytes(32)]), "", "aes-256 key", 32))`.
+
+## Codex on Ubuntu 23.10+/24.04
+If every shell command fails with `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`, AppArmor is blocking Codex's sandbox. Stop and tell the human to see /troubleshooting#codex-bwrap. Do NOT switch to --dangerously-bypass-approvals-and-sandbox on the host yourself.
+
 ## More
 Troubleshooting: /troubleshooting
 Human docs: /  (short paste-prompts live under "For AI coding agents"; full rules are THIS file and AGENTS.md)

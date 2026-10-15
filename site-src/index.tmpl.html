@@ -1,28 +1,31 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt"></head><body>
 {{TOP}}
 <h1>Make an AES-256 key from quantum entropy</h1>
+<p class="lede">Qrypt's API gives you random bytes from its quantum entropy source over one HTTPS call. You turn 32 of those bytes into an ordinary AES-256 key (AES is the Advanced Encryption Standard) and use it with the standard crypto library you already have.</p>
 <details class="agent-box">
 <summary>For AI coding agents</summary>
-<p>Prefer <a href="/llms.txt"><code>llms.txt</code></a> (also linked in the page head) or the repo <code>AGENTS.md</code>. Never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Human-readable modes: <a href="#h-agent">below</a>.</p>
+<p>Prefer <a href="/llms.txt"><code>llms.txt</code></a> (also linked in the page head) or <code>AGENTS.md</code> in the <a href="/qrypt-quickstart-starter.zip">starter archive</a>. Never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Human-readable modes: <a href="#h-agent">below</a>.</p>
 </details>
 
 <p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
 <h2 id="h-token">1. Get a token</h2>
-<p>Create an account at <a href="https://portal.qrypt.com/trial-signup-entropy">portal.qrypt.com/trial-signup-entropy</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
+<p>Create an account at <a href="https://portal.qrypt.com/trial-signup-entropy">portal.qrypt.com/trial-signup-entropy</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once. Treat it like a password: anyone who has it can use your account's entropy quota.</p>
+<p>The trial form asks for two things: your full name and a work email. It does not say what the trial quota is, so check the portal after you sign up.</p>
 <h2 id="h-env">2. Save it in <code>.env</code></h2>
 <div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre><code id="c-env" data-lang="env">QRYPT_API_KEY=paste-your-token-here</code></pre></div>
 <p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check the file exists, run <code>test -f .env &amp;&amp; echo set</code>.</p>
 <h2 id="h-run">3. Run the snippet</h2>
+<p>Copy a snippet below, or download the <a href="/qrypt-quickstart-starter.zip">starter archive</a> (zip): both snippets, <code>requirements.txt</code>, <code>.env.example</code>, a mock server with tests, <code>AGENTS.md</code>, a <code>Makefile</code> and the Isolated Setup files. Inside it, <code>make check</code> runs every test against the mock with no token.</p>
 <div role="tablist" aria-label="Language">
 <button role="tab" id="t-py" aria-selected="true" aria-controls="p-py">Python</button>
 <button role="tab" id="t-js" aria-selected="false" aria-controls="p-js" tabindex="-1">Node</button></div>
 <section role="tabpanel" id="p-py" aria-labelledby="t-py" tabindex="0">
-<p>Python 3.9+. Uses <code>requests</code>: Cloudflare blocks Python's built-in <code>urllib</code> User-Agent.</p>
+<p>Save the code as <code>quickstart.py</code>. Python 3.9+. Uses <code>requests</code>: Cloudflare blocks Python's built-in <code>urllib</code> User-Agent.</p>
 <div class="codebox"><button class="copy" data-target="c-pyi" aria-label="Copy Python install command">Copy</button><pre><code id="c-pyi" data-lang="bash">python3 -m venv .venv &amp;&amp; .venv/bin/pip install requests cryptography python-dotenv</code></pre></div>
 <div class="codebox"><button class="copy" data-target="c-py" aria-label="Copy Python quickstart code">Copy</button><pre><code id="c-py" data-lang="python" class="numbered">{{PY}}</code></pre></div>
 <div class="codebox"><button class="copy" data-target="c-pyr" aria-label="Copy Python run command">Copy</button><pre><code id="c-pyr" data-lang="bash">.venv/bin/python quickstart.py</code></pre></div></section>
 <section role="tabpanel" id="p-js" aria-labelledby="t-js" tabindex="0" hidden>
-<p>Node 20.12+ (built-in <code>fetch</code> and <code>process.loadEnvFile</code>). No dependencies.</p>
+<p><strong>Save the code as <code>quickstart.mjs</code></strong>, not <code>.js</code>. It uses ES module <code>import</code> and top-level <code>await</code>; a <code>.js</code> file fails with <code>SyntaxError</code> on older Node unless <code>package.json</code> sets <code>"type": "module"</code>. Node 20.12+ (built-in <code>fetch</code> and <code>process.loadEnvFile</code>). No dependencies.</p>
 <div class="codebox"><button class="copy" data-target="c-js" aria-label="Copy Node quickstart code">Copy</button><pre><code id="c-js" data-lang="js" class="numbered">{{JS}}</code></pre></div>
 <div class="codebox"><button class="copy" data-target="c-jsr" aria-label="Copy Node run command">Copy</button><pre><code id="c-jsr" data-lang="bash">node quickstart.mjs</code></pre></div></section>
 <h2 id="h-api">What the API returns</h2>
@@ -33,6 +36,28 @@
 }</code></pre>
 <h2 id="h-output">4. Expected output</h2>
 <pre><code data-lang="text">Success: AES-256-GCM round trip with a Qrypt key (not shown).</code></pre>
+<h2 id="h-fp">Optional: see that the key changes</h2>
+<p>The core snippets stay within 25 lines, so this is a separate, optional extra. Add these lines to the end of your script to print the first 8 hex characters of a SHA-256 hash of the key. Each run should show a different value. A one-way hash this short shows the key changed without revealing it.</p>
+<p class="lbl">Python (end of <code>quickstart.py</code>)</p>
+<pre><code data-lang="python">import hashlib  # optional extra
+print("Key fingerprint:", hashlib.sha256(key).hexdigest()[:8])</code></pre>
+<p class="lbl">Node (end of <code>quickstart.mjs</code>)</p>
+<pre><code data-lang="js">const { createHash } = await import("node:crypto"); // optional extra
+const fp = createHash("sha256").update(key).digest("hex");
+console.log("Key fingerprint:", fp.slice(0, 8));</code></pre>
+<h2 id="h-prod">For production: mix in local randomness</h2>
+<p>Qrypt's service delivers the raw bytes to you, so a key made only from them depends on trusting that service and the connection. In production, mix the Qrypt bytes with your own machine's randomness through HKDF (HMAC-based Key Derivation Function), so the key stays secret even if one source is weak or seen by someone else. Replace step 3 of the snippet with:</p>
+<p class="lbl">Python</p>
+<pre><code data-lang="python">from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+qrypt_bytes = base64.b64decode(entropy_b64)[:32]
+key = HKDF(hashes.SHA256(), 32, None, b"aes-256 key").derive(
+    qrypt_bytes + os.urandom(32))</code></pre>
+<p class="lbl">Node</p>
+<pre><code data-lang="js">import { hkdfSync } from "node:crypto";  // put with the other imports
+const qryptBytes = Buffer.from(body.random[0], "base64").subarray(0, 32);
+const ikm = Buffer.concat([qryptBytes, randomBytes(32)]);
+const key = Buffer.from(hkdfSync("sha256", ikm, "", "aes-256 key", 32));</code></pre>
 <h2 id="h-trip">Things that trip people up</h2>
 <ul><li><code>size</code> counts <strong>KiB</strong>, not bytes. Ask for <code>size=1</code> (1,024 bytes) and take 32 bytes.</li>
 <li>Base64-decode the string first; never use the text itself as the key.</li>
@@ -42,7 +67,7 @@
 <p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
 <section id="h-agent" class="agent-section">
 <h2>For AI coding agents — Quick Setup and Isolated Setup</h2>
-<p>Machine-readable rules: <a href="/llms.txt"><code>llms.txt</code></a>. Repo: <code>AGENTS.md</code>. Paste a short prompt below; the agent should get everything else from those docs.</p>
+<p>Machine-readable rules: <a href="/llms.txt"><code>llms.txt</code></a>. Full rules for humans and agents are also in <code>AGENTS.md</code> in the <a href="/qrypt-quickstart-starter.zip">starter archive</a>. Paste a short prompt below; the agent should get everything else from those docs.</p>
 <p>Two modes. <strong>Quick Setup is the default</strong> (no Docker). Isolated Setup is optional when you want stronger credential boundaries.</p>
 
 <table class="cmp"><caption>Quick Setup vs Isolated Setup</caption>
@@ -85,7 +110,7 @@ Tell the agent only that it is set. Do not share the value.</li>
 <pre><code id="c-prompt-iso" data-lang="text">Use Isolated Setup for the Qrypt quickstart in this folder (see QRYPT-ISOLATED.txt).
 Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.</code></pre></div>
 <ol>
-<li>Download the sandbox into one folder: <a href="/agent-sandbox/Dockerfile">Dockerfile</a>, <a href="/agent-sandbox/run.sh">run.sh</a>, <a href="/agent-sandbox/verify.sh">verify.sh</a>, <a href="/agent-sandbox/test-isolation.sh">test-isolation.sh</a>, <a href="/agent-sandbox/README.md">README.md</a>. Then <code>chmod +x agent-sandbox/*.sh</code>.</li>
+<li>Download and unzip the <a href="/qrypt-quickstart-starter.zip">starter archive</a>. It holds the <code>agent-sandbox/</code> folder (Dockerfile, <code>run.sh</code>, <code>verify.sh</code>, <code>test-isolation.sh</code>, README) plus the fixed snippets that <code>verify.sh</code> runs. Run the commands below from the unzipped folder. (Single files are still at <a href="/agent-sandbox/README.md">/agent-sandbox/</a>.)</li>
 <li>Keep the token <em>outside</em> the project the agent will see:
 <div class="codebox"><button class="copy" data-target="c-iso-env" aria-label="Copy isolated env setup commands">Copy</button>
 <pre><code id="c-iso-env" data-lang="bash">mkdir -p ~/.config/qrypt

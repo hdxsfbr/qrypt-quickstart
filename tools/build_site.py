@@ -97,12 +97,13 @@ def inline_css(html):
 # ---- Docs shell (non-functional look-alike of docs.qrypt.com; see docs/design/NOTES.md)
 REAL = "https://docs.qrypt.com"
 OURS = [("/", "Quickstart", [("#h-token", "Get a token"), ("#h-env", "Save it in .env"),
-                             ("#h-run", "Run the snippet"), ("#h-trip", "Common pitfalls"),
+                             ("#h-run", "Run the snippet"), ("#h-prod", "For production"), ("#h-trip", "Common pitfalls"),
                              ("#h-agent", "AI coding agents")]),
         ("/troubleshooting", "Troubleshooting", [("#codes", "HTTP status codes"),
                                                  ("#mistakes", "Common mistakes"),
                                                  ("#env", "Environment issues"),
                                                  ("#agent", "AI agent modes"),
+                                                 ("#codex-bwrap", "Codex sandbox error"),
                                                  ("#proxy", "Proxy and TLS")])]
 THEIRS = [("Quantum Entropy reference", "/eaas/"), ("RNG Tools", "/eaas/rngd/"),
           ("Qseed", "/eaas/pkcs11/"), ("DQKD Key Generation", "/sdk/"),
@@ -154,3 +155,27 @@ txt = (root / "site-src/llms.tmpl.txt").read_text()
 for marker, path in SNIPPETS.items():
     txt = txt.replace(marker, path.read_text())
 (root / "site/llms.txt").write_text(txt)
+
+# ---- Starter archive: exact copies of repo files, deterministic bytes (CI diffs site/).
+STARTER = ["AGENTS.md", "Makefile", ".env.example",
+           "quickstart/python/quickstart.py", "quickstart/python/requirements.txt",
+           "quickstart/node/quickstart.mjs", "mock/server.py", "mock/run_cases.sh",
+           "agent-sandbox/Dockerfile", "agent-sandbox/README.md", "agent-sandbox/run.sh",
+           "agent-sandbox/verify.sh", "agent-sandbox/test-isolation.sh"]
+
+
+def build_starter():
+    import os
+    import zipfile
+    out = root / "site/qrypt-quickstart-starter.zip"
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+        for rel in STARTER:
+            src = root / rel
+            info = zipfile.ZipInfo("qrypt-quickstart/" + rel, (1980, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            mode = 0o755 if os.access(src, os.X_OK) else 0o644
+            info.external_attr = (0o100000 | mode) << 16
+            z.writestr(info, src.read_bytes())
+
+
+build_starter()
