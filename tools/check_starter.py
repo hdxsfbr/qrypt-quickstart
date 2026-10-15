@@ -10,6 +10,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
 src = (ROOT / "tools/build_site.py").read_text()
 STARTER = eval(re.search(r"STARTER = (\[.*?\])", src, re.S).group(1))
+STARTER_SRC = eval(re.search(r"STARTER_SRC = (\{.*?\})", src, re.S).group(1))
 z = zipfile.ZipFile(ROOT / "site/qrypt-quickstart-starter.zip")
 names = z.namelist()
 errors = []
@@ -22,8 +23,11 @@ for n in names:
         errors.append(f"secret-looking file in archive: {n}")
     data = z.read(n)
     rel = n.split("/", 1)[1]
-    if (ROOT / rel).exists() and data != (ROOT / rel).read_bytes():
-        errors.append(f"{rel} differs from the repo version")
+    srcrel = STARTER_SRC.get(rel, rel)
+    if not (ROOT / srcrel).exists():
+        errors.append(f"{rel}: source {srcrel} missing from the repo")
+    elif data != (ROOT / srcrel).read_bytes():
+        errors.append(f"{rel} differs from repo file {srcrel}")
     text = data.decode("utf-8", "replace")
     # Any QRYPT_API_KEY= assignment must be empty or an obvious placeholder.
     for m in re.finditer(r"QRYPT_API_KEY=([^\s\"'`]*)", text):

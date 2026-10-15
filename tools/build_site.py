@@ -174,6 +174,8 @@ for marker, path in SNIPPETS.items():
     txt = txt.replace(marker, path.read_text())
 (root / "site/llms.txt").write_text(txt)
 
+# Zip path -> repo source when the zip ships a trimmed variant.
+STARTER_SRC = {"Makefile": "starter/Makefile"}
 # ---- Starter archive: exact copies of repo files, deterministic bytes (CI diffs site/).
 STARTER = ["AGENTS.md", "Makefile", ".env.example",
            "quickstart/python/quickstart.py", "quickstart/python/requirements.txt",
@@ -188,7 +190,7 @@ def build_starter():
     out = root / "site/qrypt-quickstart-starter.zip"
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for rel in STARTER:
-            src = root / rel
+            src = root / STARTER_SRC.get(rel, rel)
             info = zipfile.ZipInfo("qrypt-quickstart/" + rel, (1980, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             mode = 0o755 if os.access(src, os.X_OK) else 0o644
