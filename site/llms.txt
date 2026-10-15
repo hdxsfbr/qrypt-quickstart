@@ -10,10 +10,12 @@ size counts KiB (1..512), NOT bytes. For one AES-256 key use size=1 and take the
 ## Rules
 - Python: use `requests` or set a custom User-Agent. Cloudflare blocks Python-urllib with 403 Error 1010.
 - Read the token from .env (QRYPT_API_KEY). Never print, log or commit the token or key.
+- Never show .env or any part of it (no `cat .env`, no `head -c N .env`). To check it is set: `grep -q '^QRYPT_API_KEY=.' .env && echo set`
+- Build the project in the directory that already holds .env. Do not copy .env into a new subfolder.
 - 400 bad size; 401 missing/malformed Authorization header; 403 wrong token OR quota reached (bad tokens return 403, not 401);
   429 rate limited (docs: 30 req/10 s, but live can return 429 about 1 s after a single prior call; no Retry-After): wait 10 s or more and never loop; 500/503 try again shortly. Exit non-zero on error.
 
-## Python (pip install requests cryptography python-dotenv)
+## Python (isolated install: python3 -m venv .venv && .venv/bin/pip install requests cryptography python-dotenv; run with .venv/bin/python)
 # Qrypt quickstart (Python): turn 1 KiB of quantum entropy into an AES-256-GCM key.
 # Needs: pip install -r requirements.txt  and a .env file with QRYPT_API_KEY=...
 import base64, os, sys

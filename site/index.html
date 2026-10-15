@@ -6,14 +6,14 @@
 <p>Create an account at <a href="https://portal.qrypt.com/register">portal.qrypt.com/register</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
 <h2>2. Save it in <code>.env</code></h2>
 <div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre><code id="c-env">QRYPT_API_KEY=paste-your-token-here</code></pre></div>
-<p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>.</p>
+<p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check it is set, run <code>grep -q '^QRYPT_API_KEY=.' .env &amp;&amp; echo set</code>.</p>
 <h2>3. Run the snippet</h2>
 <div role="tablist" aria-label="Language">
 <button role="tab" id="t-py" aria-selected="true" aria-controls="p-py">Python</button>
 <button role="tab" id="t-js" aria-selected="false" aria-controls="p-js" tabindex="-1">Node</button></div>
 <section role="tabpanel" id="p-py" aria-labelledby="t-py" tabindex="0">
 <p>Python 3.9+. Uses <code>requests</code>: Cloudflare blocks Python's built-in <code>urllib</code> User-Agent.</p>
-<div class="codebox"><button class="copy" data-target="c-pyi" aria-label="Copy Python install command">Copy</button><pre><code id="c-pyi">pip install requests cryptography python-dotenv</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-pyi" aria-label="Copy Python install command">Copy</button><pre><code id="c-pyi">python3 -m venv .venv &amp;&amp; .venv/bin/pip install requests cryptography python-dotenv</code></pre></div>
 <div class="codebox"><button class="copy" data-target="c-py" aria-label="Copy Python quickstart code">Copy</button><pre><code id="c-py"># Qrypt quickstart (Python): turn 1 KiB of quantum entropy into an AES-256-GCM key.
 # Needs: pip install -r requirements.txt  and a .env file with QRYPT_API_KEY=...
 import base64, os, sys
@@ -48,7 +48,7 @@ aes, nonce, message = AESGCM(key), os.urandom(12), b&quot;hello, quantum entropy
 assert aes.decrypt(nonce, aes.encrypt(nonce, message, None), None) == message
 print(&quot;Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).&quot;)
 </code></pre></div>
-<div class="codebox"><button class="copy" data-target="c-pyr" aria-label="Copy Python run command">Copy</button><pre><code id="c-pyr">python quickstart.py</code></pre></div></section>
+<div class="codebox"><button class="copy" data-target="c-pyr" aria-label="Copy Python run command">Copy</button><pre><code id="c-pyr">.venv/bin/python quickstart.py</code></pre></div></section>
 <section role="tabpanel" id="p-js" aria-labelledby="t-js" tabindex="0" hidden>
 <p>Node 20.12+ (built-in <code>fetch</code> and <code>process.loadEnvFile</code>). No dependencies.</p>
 <div class="codebox"><button class="copy" data-target="c-js" aria-label="Copy Node quickstart code">Copy</button><pre><code id="c-js">// Qrypt quickstart (Node 20.12+): turn 1 KiB of quantum entropy into an AES-256-GCM key.
