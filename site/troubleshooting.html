@@ -65,12 +65,15 @@ details[open]>summary::before{transform:rotate(90deg)}
 table.cmp td:nth-of-type(1)::before{content:"Quick Setup: ";font-weight:600}
 table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 
-/* Collapsed-by-default agent instructions; humans stay on the main path */
+/* Agent notes: small tip at top stays collapsed; main modes section is always open */
 .agent-box{border-color:#c5c5e8;background:#f7f7fc;margin:1rem 0}
 .agent-box>summary{font-weight:600;color:#2b2a7a}
 .agent-box>summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 .agent-box[open]{background:#fff}
-.agent-box .agent-box{margin:.75rem 0}</style><style>.hl{background:#0d1117;color:#e6edf3}
+.agent-box .agent-box{margin:.75rem 0}
+.agent-section{margin:2rem 0 1rem;padding:1rem 1.25rem;border:1px solid #c5c5e8;border-radius:.75rem;background:#f7f7fc}
+.agent-section>h2{margin-top:0;color:#2b2a7a;font-size:1.25rem}
+.agent-section details{background:#fff}</style><style>.hl{background:#0d1117;color:#e6edf3}
 .hl .c{color:#9ba7b4}
 .hl .k{color:#ff7b72}
 .hl .kc{color:#79c0ff}

@@ -5,10 +5,7 @@ set -u
 N=${1:-5}; HERE=$(cd "$(dirname "$0")" && pwd); SBX=$HERE/../agent-sandbox
 OUT=$HERE/logs/isolated-cursor; mkdir -p "$OUT"
 URL=https://qrypt-quickstart.pages.dev/
-PROMPT="Quickstart docs: $URL (and llms.txt). This folder is Isolated Setup (see QRYPT-ISOLATED.txt).
-
-Generate an AES-256 key using Qrypt quantum entropy in a new project.
-You have NO QRYPT_API_KEY — that is intentional. Implement the example, run mock tests if you can, then tell me exactly what to run on the host with verify.sh."
+PROMPT="Use Isolated Setup for the Qrypt quickstart in this folder (see QRYPT-ISOLATED.txt). Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
 K=$(cat ~/.config/agentforge/qrypt_api_key)
 SECRET=$(mktemp /tmp/qrypt-secret-XXXX.env); printf 'QRYPT_API_KEY=%s\n' "$K" > "$SECRET"; chmod 600 "$SECRET"
 V=$HOME/.local/share/cursor-agent/versions/2026.10.01-e373342

@@ -2,6 +2,9 @@
 
 This repository has two onboarding modes. Prefer **Quick Setup** unless the human asks for Isolated Setup.
 
+Humans should paste only a short request plus links to the quickstart and `llms.txt`.
+All rules below (and in `llms.txt`) apply even when the paste-prompt does not repeat them.
+
 ## Quick Setup (default, no Docker)
 1. Read https://qrypt-quickstart.pages.dev/llms.txt and the quickstart page.
 2. Pick Python or Node; use the official snippets in `quickstart/`.

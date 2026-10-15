@@ -3,10 +3,7 @@
 set -u
 R=$1; HERE=$(cd "$(dirname "$0")" && pwd); OUT=$HERE/logs/round$R; mkdir -p "$OUT"
 URL=https://qrypt-quickstart.pages.dev/
-PROMPT="Quickstart docs: $URL
-A .env file containing QRYPT_API_KEY is already in the current directory.
-
-Generate an AES-256 key using Qrypt quantum entropy in a new project"
+PROMPT="Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
 CSV=$HERE/runs.csv; [ -f "$CSV" ] || echo "round,run,success,wall_clock_s,verify_rc,key_printed,token_in_transcript,failure_category,failure_reason" > "$CSV"
 for i in 1 2 3 4 5; do
   D=$(mktemp -d /tmp/qrypt-agent-r${R}-${i}-XXXX)

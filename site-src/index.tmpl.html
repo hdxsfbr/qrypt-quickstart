@@ -40,9 +40,9 @@
 <li>A wrong token returns <strong>403</strong>, the same as an exhausted quota. Check the token first.</li>
 <li>Never print, log or commit the key or token. Use fresh entropy for each key.</li></ul>
 <p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
-<details id="h-agent" class="agent-box">
-<summary>For AI coding agents — Quick Setup and Isolated Setup</summary>
-<p>Machine-readable rules: <a href="/llms.txt"><code>llms.txt</code></a>. Repo: <code>AGENTS.md</code>.</p>
+<section id="h-agent" class="agent-section">
+<h2>For AI coding agents — Quick Setup and Isolated Setup</h2>
+<p>Machine-readable rules: <a href="/llms.txt"><code>llms.txt</code></a>. Repo: <code>AGENTS.md</code>. Paste a short prompt below; the agent should get everything else from those docs.</p>
 <p>Two modes. <strong>Quick Setup is the default</strong> (no Docker). Isolated Setup is optional when you want stronger credential boundaries.</p>
 
 <table class="cmp"><caption>Quick Setup vs Isolated Setup</caption>
@@ -64,23 +64,7 @@
 <ol>
 <li>Paste this prompt into Claude Code, Codex, Cursor or another coding agent:
 <div class="codebox"><button class="copy" data-target="c-prompt" aria-label="Copy Quick Setup agent prompt">Copy</button>
-<pre><code id="c-prompt" data-lang="text">Quickstart: https://qrypt-quickstart.pages.dev/  (also /llms.txt)
-
-Goal: AES-256-GCM round trip using 1 KiB of Qrypt quantum entropy.
-
-Rules (follow all of them):
-- Read the quickstart and pick Python or Node (ask me if unsure).
-- Use the official snippets from the quickstart. Do not invent an SDK.
-- Install dependencies and run the mocked tests first (no real token).
-- NEVER ask me to paste QRYPT_API_KEY into chat, a prompt, CLI args or source.
-- NEVER read, print, cat, head, or dump .env or environment variables.
-- NEVER enable verbose HTTP logging that would log Authorization headers.
-- Ask me to create .env myself (QRYPT_API_KEY=...) and confirm when it is set.
-- After I confirm, run the example. Keep the key in memory only (no key files).
-- If you read .env or a credential by accident, stop and tell me so I can rotate it.
-- Report success with the success line only. Never display the token, entropy or key.
-
-Security reminder for me at the end: review this agent session for credential exposure and rotate any exposed or potentially compromised API credentials, including unrelated project credentials. Rotating the Qrypt token alone does not protect other secrets.</code></pre></div></li>
+<pre><code id="c-prompt" data-lang="text">Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.</code></pre></div></li>
 <li>The agent reads the quickstart, picks a language, implements with the official snippets and runs the mock tests.</li>
 <li>When asked, create <code>.env</code> yourself (never paste the token into the chat):
 <div class="codebox"><button class="copy" data-target="c-env2" aria-label="Copy .env example line">Copy</button>
@@ -95,6 +79,9 @@ Tell the agent only that it is set. Do not share the value.</li>
 <details id="isolated-setup">
 <summary><strong>Option B — Isolated Setup</strong> (Docker; agent never sees the token)</summary>
 <p>The agent runs in a container with <strong>no</strong> <code>.env</code>, no host home, no SSH keys, no cloud credentials and no Docker socket. Live verification is a separate host-side step that runs <em>fixed</em> snippets from this repo — never agent-modifiable code — with the real token.</p>
+<p>Sample agent prompt (after the sandbox is running against a clean project):</p>
+<div class="codebox"><button class="copy" data-target="c-prompt-iso" aria-label="Copy Isolated Setup agent prompt">Copy</button>
+<pre><code id="c-prompt-iso" data-lang="text">Use Isolated Setup for the Qrypt quickstart in this folder (see QRYPT-ISOLATED.txt). Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.</code></pre></div>
 <ol>
 <li>Download the sandbox into one folder: <a href="/agent-sandbox/Dockerfile">Dockerfile</a>, <a href="/agent-sandbox/run.sh">run.sh</a>, <a href="/agent-sandbox/verify.sh">verify.sh</a>, <a href="/agent-sandbox/test-isolation.sh">test-isolation.sh</a>, <a href="/agent-sandbox/README.md">README.md</a>. Then <code>chmod +x agent-sandbox/*.sh</code>.</li>
 <li>Keep the token <em>outside</em> the project the agent will see:
@@ -113,7 +100,7 @@ chmod 600 ~/.config/qrypt/.env</code></pre></div></li>
 </ol>
 <p><strong>Honesty about isolation:</strong> this blocks the common failure mode (agents reading <code>.env</code>). It does <em>not</em> claim Docker guarantees zero leakage. A malicious <code>SANDBOX_DOCKER_ARGS</code> that remounts your home directory, a compromised agent binary, or a container escape is out of scope. The boundaries we <em>do</em> claim are checked by <code>agent-sandbox/test-isolation.sh</code>.</p>
 </details>
-</details>
+</section>
 
 <p id="copy-status" class="sr" aria-live="polite"></p>{{BOTTOM}}
 <script src="/app.js" defer></script></body></html>

@@ -4,10 +4,7 @@
 set -u
 A=$1; M=$2; HERE=$(cd "$(dirname "$0")" && pwd); SBX=$HERE/../agent-sandbox; OUT=$HERE/logs/$A-$M${3:+-$3}; mkdir -p "$OUT"
 URL=https://qrypt-quickstart.pages.dev/
-PROMPT="Quickstart docs: $URL
-A .env file containing QRYPT_API_KEY is already in the current directory.
-
-Generate an AES-256 key using Qrypt quantum entropy in a new project"
+PROMPT="Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
 K=$(cat ~/.config/agentforge/qrypt_api_key)
 CODEX_BIN=$(dirname "$(readlink -f "$(command -v codex)")"); CLAUDE_BIN=$(readlink -f "$(command -v claude)")
 case $A in
