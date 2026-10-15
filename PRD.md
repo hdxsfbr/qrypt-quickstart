@@ -1,6 +1,6 @@
 # PRD: Developer Quickstart & Onboarding Funnel for Qrypt Quantum Entropy
 
-Owner: Andre Batista (PM) · Status: Draft v1 · Date: Oct 14, 2026 · Reading time: about 10 minutes
+Owner: Andre Batista (PM) · Status: v1.1 · Date: Oct 14, 2026 (updated Oct 15) · Reading time: about 10 minutes
 
 ## Glossary
 - **Entropy:** truly random bytes. Qrypt's comes from quantum measurements.
@@ -11,6 +11,10 @@ Owner: Andre Batista (PM) · Status: Draft v1 · Date: Oct 14, 2026 · Reading t
 - **Funnel:** the ordered steps from first visit to activation, with how many people drop off at each one.
 - **AI coding agent:** a tool such as Claude Code, Cursor or Codex that writes and runs code from a prompt.
 - **llms.txt:** a plain-text copy of the docs that AI agents can read easily.
+- **PRD:** product requirements document (this file).
+- **CI:** continuous integration, tests that run automatically on every push.
+- **HTTP status code:** the number a server returns, e.g. 200 = OK, 401/403 = not allowed, 429 = too many requests, 500/503 = server problem.
+- **Mock server:** a fake local copy of the API used in tests, so no real token or entropy is spent.
 - **RICE:** a backlog score: Reach × Impact × Confidence ÷ Effort.
 
 ## 1. Problem
@@ -100,14 +104,14 @@ These numbers need checking against real analytics once the instrumentation belo
 > We prioritize a zero-install agent onboarding path for developer accessibility, while offering an optional sandboxed workflow for users requiring stronger credential isolation. Quick Setup relies on behavioral safeguards and cannot guarantee that existing credentials will remain inaccessible to unrestricted agents.
 
 **Why Quick Setup is the default:** most evaluators will not install Docker for a 10-minute trial. A copy-pasteable prompt unblocks Claude Code, Codex and Cursor immediately.
-**Why Isolated Setup exists:** in our agent-readiness tests, unrestricted agents read part of `.env` in 14 of 15 runs despite two doc revisions. Isolated Setup keeps the token off the agent container and runs live verification as fixed snippets on the host (`agent-sandbox/verify.sh`).
+**Why Isolated Setup exists:** in our first agent-readiness rounds, Cursor (with no restrictions) printed part of `.env` in 14 of 15 runs despite two doc revisions. **Result after the redesign (Oct 15):** Cursor, Codex and Claude Code each ran 5 Quick and 5 Isolated runs: 30/30 produced a working key and 0/30 leaked the token. Quick Setup still depends on the agent following instructions; only Isolated Setup physically blocks access. Isolated Setup keeps the token off the agent container and runs live verification as fixed snippets on the host (`agent-sandbox/verify.sh`).
 **What we are not claiming:** Docker does not guarantee zero leakage. Isolation boundaries (no token in agent env/FS, no docker.sock, `run.sh` refuses a project that contains `.env`) are tested by `agent-sandbox/test-isolation.sh`. Container escapes, compromised agent binaries and reckless `SANDBOX_DOCKER_ARGS` are out of scope.
 
 ## 8. Risks and mitigations
 | Risk | Mitigation |
 |---|---|
 | A bad token returns 403, so users mistake it for quota exhaustion | The snippet message says "token invalid **or** quota reached: check the token first". The troubleshooting page explains this, and there's a backlog item asking Qrypt to return 401. |
-| Cloudflare bot rules change and block `requests` or Node too | Snippets send an explicit User-Agent (`qrypt-quickstart/1.0`), and CI includes a monthly live smoke test (one cheap automated check against the real API). |
+| Cloudflare bot rules change and block `requests` or Node too | Snippets send an explicit User-Agent (`qrypt-quickstart/1.0`). A scheduled live smoke test (one cheap automated check against the real API) is proposed, not built: CI uses the mock only, to protect the 10 MB budget. |
 | No rate-limit headers, so agents retry tightly and hit 429 | Snippets never retry automatically, and the docs say "wait 10 seconds; the limit is 30 requests per 10 seconds". |
 | The quota is undocumented, and the test budget is ≤ 10 MB | Each run uses 1 KiB, CI uses the mock server only, and we log total live usage. |
 | Keys leak through logs or recordings | Snippets never print keys, `.env` is gitignored, and recordings mask the token. |
@@ -119,3 +123,16 @@ These numbers need checking against real analytics once the instrumentation belo
 - How big is the monthly quota per plan? It isn't documented.
 - Is the bad-token 403 intended? To raise with Qrypt (Sean Neal).
 - Will the portal accept a `src=qs` parameter and a `token_hash` event for stage 2?
+
+## 10. Submission documents
+| Document | What it holds |
+|---|---|
+| `README.md` | Grader quick-start (under 5 minutes), one-line description, how to build the site and rerun the agent test |
+| `PRD.md` | This document |
+| `AGENT_READINESS.md` | All agent-test rounds (5 runs each), failure taxonomy (the types of failure) and the doc fix for each |
+| `BACKLOG.md` | 16 follow-ups scored with RICE |
+| `docs/claims-to-source.md` | Every factual claim about Qrypt, with its official source and live check |
+| `AI_USAGE.md` | AI tools used, exact agent-test prompt, and corrected AI-drafted claims |
+| `docs/REQUIREMENTS_TRACE.md` | Each brief requirement mapped to evidence |
+| Site | https://qrypt-quickstart.pages.dev/ (quickstart, `/troubleshooting.html`, `/llms.txt`) |
+| Video (≤ 5 min) | Fresh quickstart run, a 401 troubleshooting path, this funnel, one agent run |

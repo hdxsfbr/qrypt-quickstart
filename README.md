@@ -1,5 +1,7 @@
 # Qrypt quantum entropy quickstart
 
+**One-line description (directory listing):** Quickstart, docs and agent-tested onboarding that turn Qrypt quantum entropy into an AES-256 key.
+
 Turn 1 KiB of Qrypt quantum entropy into an AES-256-GCM key in Python or Node, in about 5 minutes.
 
 **Site:** https://qrypt-quickstart.pages.dev/ · Agent docs: `/llms.txt` · Agent guide: `AGENTS.md`
@@ -8,6 +10,21 @@ Turn 1 KiB of Qrypt quantum entropy into an AES-256-GCM key in Python or Node, i
 1. `make check` — install Python deps and run **both snippets against the mock** (success, 401, 403, 429, 500, 503, network/non-JSON, missing token). No token needed.
 2. Optional live (1 KiB each): put a token in `quickstart/python/.env` and/or `quickstart/node/.env`, then `make live-py` / `make live-js`.
 3. Docs site: `site/` (Cloudflare Pages via CI).
+
+Manual live run without `make`: `cp .env.example quickstart/python/.env`, put your token in it, then `cd quickstart/python && pip install -r requirements.txt && python3 quickstart.py`. For Node: same `.env` in `quickstart/node`, then `node quickstart.mjs` (no install). Expected line: `Success: AES-256-GCM round trip with a Qrypt key (not shown).`
+
+## Build the site
+`make site` regenerates `site/` from `site-src/` templates and the real snippets in `quickstart/`. CI fails if `site/` doesn't match a fresh build, and deploys `site/` to Cloudflare Pages on every push to `main`. `make lighthouse URL=https://qrypt-quickstart.pages.dev/` runs the 10 mobile Lighthouse runs (results in `reports/lighthouse/`).
+
+## Reproduce the agent-readiness test
+Needs an AI coding agent CLI (Cursor `cursor-agent`, `codex` or `claude`) and a token. Details and results: `AGENT_READINESS.md`.
+```bash
+cd agent-readiness
+./run_round.sh 1                    # rounds 1-3: Cursor in a fresh temp folder
+./run_quick_setup.sh 5              # Quick Setup, two-phase (agent asks, human writes .env)
+./run_isolated_setup.sh 5           # Isolated Setup in Docker + host verify.sh
+./run_two_mode_agent.sh codex quick # same for Codex or Claude (see script header)
+```
 
 Requirements: Python 3.9+, Node 20.12+.
 
@@ -34,5 +51,18 @@ agent-sandbox/test-isolation.sh   # no real token; proves the boundaries
 - `agent-sandbox/` — Isolated Setup (Docker + trusted `verify.sh`)
 - `site/` — static docs; `site-src/` templates filled by `make site`
 - `AGENTS.md`, `PRD.md`, `AGENT_READINESS.md`, `BACKLOG.md`, `AI_USAGE.md`
+
+## Submission documents
+| Brief asks for | Where |
+|---|---|
+| Snippets (2 languages, CI-tested on a mock) | `quickstart/`, `mock/`, `.gitlab-ci.yml` |
+| Deployed site + troubleshooting | https://qrypt-quickstart.pages.dev/ · `/troubleshooting.html` · `/llms.txt` |
+| PRD | `PRD.md` |
+| Agent-readiness report (both rounds) | `AGENT_READINESS.md`, `agent-readiness/*.csv` |
+| RICE backlog | `BACKLOG.md` |
+| Claims-to-source table | `docs/claims-to-source.md` |
+| AI usage disclosure | `AI_USAGE.md` |
+| Requirement-by-requirement check | `docs/REQUIREMENTS_TRACE.md` |
+| Lighthouse reports, live usage log | `reports/` |
 
 Tokens are never printed; `.env` is gitignored.
