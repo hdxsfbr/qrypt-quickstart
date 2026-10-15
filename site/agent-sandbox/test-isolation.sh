@@ -7,10 +7,10 @@ repo=$(cd "$here/.." && pwd)
 tag=$( (sha256sum "$here/Dockerfile" 2>/dev/null || shasum -a 256 "$here/Dockerfile") | cut -c1-12)
 img="qrypt-agent-sandbox:$tag"
 docker image inspect "$img" >/dev/null 2>&1 || docker build -q -t "$img" "$here" >/dev/null
-# The image must be the current design: no entrypoint script, runs as agent.
+# The image must run as agent with no secret-handling entrypoint or helper.
 old=$(docker run --rm --entrypoint sh "$img" -c 'ls /usr/local/bin/entrypoint.sh /usr/local/bin/qrypt-run /usr/local/bin/qrypt-run-inner /etc/sudoers.d/qrypt 2>/dev/null | wc -l; id -un')
-[ "$old" = "$(printf '0\nagent')" ] && echo "PASS image is current design ($img): no old secret entrypoint/qrypt-run, runs as agent" \
-  || { echo "FAIL stale image ($img): $old"; exit 1; }
+[ "$old" = "$(printf '0\nagent')" ] && echo "PASS image ($img) runs as agent with no secret entrypoint or helper" \
+  || { echo "FAIL image ($img) has a secret entrypoint/helper or wrong user; rebuild it: $old"; exit 1; }
 
 fail=0
 pass() { echo "PASS $*"; }
@@ -83,7 +83,7 @@ kill $mpid 2>/dev/null || true; wait $mpid 2>/dev/null || true
 echo "$out" | grep -q 'mock-token' && bad "verify.sh echoed a token-shaped value" || pass "verify.sh output has no token"
 rm -f "$fake"
 
-# 4) Confirm old qrypt-run secret-passing path is gone (no QRYPT_DOTENV).
+# 4) Confirm no script passes the token into the container (no QRYPT_DOTENV).
 if grep -RIn 'QRYPT_DOTENV' "$here" --include='*.sh' --include='Dockerfile' --include='entrypoint*' 2>/dev/null | grep -v test-isolation; then
   bad "QRYPT_DOTENV still present (agent must not receive the token)"
 else
