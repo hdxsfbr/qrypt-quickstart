@@ -176,20 +176,22 @@ Logs: `agent-readiness/logs/quick-cursor/`, `agent-readiness/logs/isolated-curso
 
 
 
-### Cross-agent two-mode (Codex — complete; Claude in progress)
+### Cross-agent two-mode (Cursor / Codex / Claude — complete)
 
-Live site confirmed post-`02e79e3` (no `qrypt-run` banner; `test -f .env` in llms.txt). Isolated image: `qrypt-agent-sandbox:92cd0628f7f0`.
+Live site confirmed post-`02e79e3` (no `qrypt-run` banner; `test -f .env` in llms.txt). Isolated image: **`qrypt-agent-sandbox:92cd0628f7f0`** only (cf930d9). Functional and security are scored separately.
 
-| Agent | Mode | Functional | Security (token leaks) | Quiet/raw `.env` read | Median time |
+| Agent | Mode | Functional success | Security (token in transcripts/sessions) | `.env` read behavior | Median wall-clock |
 |---|---|---|---|---|---|
-| Cursor 2026.10.01 | Quick | 5/5 | 0/5 leaks | quiet `grep -q` (pre-fix docs) | 118 s |
-| Cursor | Isolated | 5/5 | 0/5; compliant | absence checks only | 70 s |
-| **Codex CLI 0.162.1** | **Quick** | **5/5** | **0/5 leaks** | **none** (`test -f .env` only) | **82 s** |
-| **Codex CLI 0.162.1** | **Isolated** | **5/5** (verify.sh PASS) | **0/5; compliant** | none of secret | **63 s** |
-| Claude Code 2.1.300 | Quick | 5/5 | 0/5 leaks | TBD in final writeup | ~73 s |
-| Claude Code 2.1.300 | Isolated | 4/5 so far (run 5 in flight) | 0/4 so far | TBD | — |
+| Cursor 2026.10.01 | Quick | **5/5** | **0/5 leaks** | quiet `grep -q` (runs used pre-`02e79e3` page text) | 118 s |
+| Cursor | Isolated | **5/5** | **0/5; compliant** | absence checks only | 70 s |
+| Codex CLI 0.162.1 | Quick | **5/5** | **0/5 leaks** | **none of value** — `test -f .env` only | **82 s** |
+| Codex CLI 0.162.1 | Isolated | **5/5** (verify.sh PASS) | **0/5; compliant** | no secret reads | **63 s** |
+| Claude Code 2.1.300 | Quick | **5/5** | **0/5 leaks** | `test -f .env`; **2/5 also `ls ~/.env`** (home probe, no value) | **73 s** |
+| Claude Code 2.1.300 | Isolated | **5/5** (verify.sh PASS) | **0/5; compliant** | no secret reads | **160 s** |
 
-Codex Quick: asked human for `.env` every run; two-phase resume; no `cat`/`head`/`grep -q` of `.env` contents. Codex Isolated: all on hashed image; host `verify.sh --lang py` PASS; leak=0.
+**Codex:** asked the human for `.env` every Quick run; two-phase resume; never `cat`/`head`/`grep -q` of contents. Isolated: told human `verify.sh`; host verify PASS; leak=0.
+**Claude:** same Quick pattern; 2 Quick runs probed `~/.env` / home paths (no token leaked). Isolated slower (more doc fetching) but 5/5 verify PASS; leak=0. Auth copies cleaned after each Isolated run.
+**Harness:** `agent-readiness/run_two_mode_agent.sh`; CSV `two_mode_runs.csv`. yuno-* / oc-* containers were left alone.
 
 ## How to reproduce
 ```bash

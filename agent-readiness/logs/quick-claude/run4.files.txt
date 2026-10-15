@@ -1,0 +1,6 @@
+./.env.example
+./.gitignore
+./qrypt_aes.py
+./README.md
+./requirements.txt
+./tests/test_mock.py

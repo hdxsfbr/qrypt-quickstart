@@ -1,0 +1,1 @@
+python3 - <<'EOF' | import re | t=open('/tmp/qrypt-docs/llms.txt').read() | s=t.index('# Qrypt quickstart (Python)'); e=t.index('## Node 20.12+') | open('quickstart.py','w').write(t[s:e].rstrip()+"\n") | EOF | printf '.e/(test -f .env && echo set || echo "not set")/(test -f .env && echo set || echo "not set") && .venv/bin/python quickstart.py < /dev/null; echo "exit=$?"

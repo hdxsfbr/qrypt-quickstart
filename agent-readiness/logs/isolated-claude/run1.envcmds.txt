@@ -1,0 +1,1 @@
+cat > quickstart.py <<'EOF' | # Qrypt quickstart (Python): 1 KiB of quantum entropy -> AES-256-GCM key. | # Setup: pip install requests cryptography python-dotenv | # Then put QRYPT_API_KEY=<your token> in a .env file ne/env -u QRYPT_API_KEY .venv/bin/python quickstart.py; echo "exit=$?"

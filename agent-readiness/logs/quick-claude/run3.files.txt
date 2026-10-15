@@ -1,0 +1,6 @@
+./.env.example
+./.gitignore
+./__pycache__/test_quickstart.cpython-312.pyc
+./quickstart.py
+./requirements.txt
+./test_quickstart.py

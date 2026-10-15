@@ -1,0 +1,5 @@
+./.env.example
+./.gitignore
+./quickstart.py
+./requirements.txt
+./test_quickstart.py

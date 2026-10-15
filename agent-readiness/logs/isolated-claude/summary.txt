@@ -1,0 +1,6 @@
+# claude isolated runs; image=92cd0628f7f0; 2026-10-15T17:35Z
+isolated,claude,1,wall_s=126,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=8,impl=./quickstart.py/,image=92cd0628f7f0
+isolated,claude,2,wall_s=187,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=12,impl=./quickstart.py/./quickstart.mjs/,image=92cd0628f7f0
+isolated,claude,3,wall_s=260,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=18,impl=./quickstart.py/./mock/__init__.py/./mock/mock_server.py/,image=92cd0628f7f0
+isolated,claude,4,wall_s=160,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=9,impl=./quickstart.py/./quickstart.mjs/,image=92cd0628f7f0
+isolated,claude,5,wall_s=150,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=12,impl=./qrypt-aes-key/.venv/lib/python3.11/site-packages/requests/packages.py/./qrypt-aes-key/.venv/lib/python3.11/site-packages/requests/exceptions.py/./qrypt-aes-key/.venv/lib/python3.11/site-packages/requests/utils.py/,image=92cd0628f7f0

@@ -1,0 +1,14 @@
+./.env.example
+./.gitignore
+./Makefile
+./QRYPT-ISOLATED.txt
+./quickstart.mjs
+./quickstart.py
+./README.md
+./requirements.txt
+./tests/mock_server.py
+./tests/test_quickstart.py
+VERIFY: 
+[notice] A new release of pip is available: 24.3.1 -> 26.2.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+verify python: PASS (AES-GCM round trip; key not shown)

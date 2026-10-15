@@ -33,4 +33,6 @@ Items #11 and #12 came from the cross-agent rounds (Codex and Claude Code). The 
 | 14 | ✅ **DONE (Oct 15): Wired Isolated + Quick Setup into the harness.** `run_quick_setup.sh` (two-phase) and `run_isolated_setup.sh` (hashed image `92cd0628f7f0` + host verify.sh). Cursor 5/5 each. See AGENT_READINESS.md two-mode section. | 50 | 2 | 90% | 1 | **90** | Eval complete; Codex/Claude on new modes still outstanding |
 | 15 | **Windows path notes for Isolated Setup** (Docker Desktop bind mounts, `%USERPROFILE%\.config\qrypt\.env`) | 80 | 1 | 60% | 0.5 | **96** | Current docs are macOS/Linux-first |
 
-**Added Oct 15 (two-mode redesign):** #13–15. Recommendation: keep #6 (curl Accept header) as the cheapest Qrypt-side ask; #13 is the top residual risk for Quick Setup users.
+| 16 | **Docs: tell agents not to probe `~/.env` or other home secret paths** during Quick Setup | 100 | 0.5 | 80% | 0.1 | **400** | Claude Code `ls ~/.env` in 2/5 Quick runs (no leak) |
+
+**Added Oct 15 (two-mode redesign):** #13–15. #16 from Claude Quick home-path probes. Recommendation: keep #6 (curl Accept header) as the cheapest Qrypt-side ask; #13 is the top residual risk for Quick Setup users.
