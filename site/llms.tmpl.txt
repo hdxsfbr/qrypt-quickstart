@@ -1,0 +1,21 @@
+# Qrypt quantum entropy quickstart (for AI agents)
+> Get an AES-256-GCM key from Qrypt quantum entropy. Plain HTTPS; no SDK exists for this API. Do not invent one.
+
+## API
+GET https://api-eus.qrypt.com/api/v1/quantum-entropy?size=1
+Headers: Authorization: Bearer $QRYPT_API_KEY ; Accept: application/json
+Response: {"random": ["<base64>"], "size": 1}. Each string decodes (standard base64) to 1024 bytes.
+size counts KiB (1..512), NOT bytes. For one AES-256 key use size=1 and take the first 32 decoded bytes.
+
+## Rules
+- Python: use `requests` or set a custom User-Agent. Cloudflare blocks Python-urllib with 403 Error 1010.
+- Read the token from .env (QRYPT_API_KEY). Never print, log or commit the token or key.
+- 400 bad size; 401 missing/malformed Authorization header; 403 wrong token OR quota reached (bad tokens return 403, not 401);
+  429 >30 req/10 s, no Retry-After header: wait 10 s, never tight-loop; 500/503 try again shortly. Exit non-zero on error.
+
+## Python (pip install requests cryptography python-dotenv)
+{{PY}}
+## Node 20.12+ (no deps)
+{{JS}}
+## More
+Troubleshooting: /troubleshooting

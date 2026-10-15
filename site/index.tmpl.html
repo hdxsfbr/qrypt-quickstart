@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main">
+<h1>Make an AES-256 key from quantum entropy</h1>
+<p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
+<h2>1. Get a token</h2>
+<p>Create an account at <a href="https://portal.qrypt.com/register">portal.qrypt.com/register</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
+<h2>2. Save it in <code>.env</code></h2>
+<div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre><code id="c-env">QRYPT_API_KEY=paste-your-token-here</code></pre></div>
+<p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>.</p>
+<h2>3. Run the snippet</h2>
+<div role="tablist" aria-label="Language">
+<button role="tab" id="t-py" aria-selected="true" aria-controls="p-py">Python</button>
+<button role="tab" id="t-js" aria-selected="false" aria-controls="p-js" tabindex="-1">Node</button></div>
+<section role="tabpanel" id="p-py" aria-labelledby="t-py" tabindex="0">
+<p>Python 3.9+. Uses <code>requests</code>: Cloudflare blocks Python's built-in <code>urllib</code> User-Agent.</p>
+<div class="codebox"><button class="copy" data-target="c-pyi" aria-label="Copy Python install command">Copy</button><pre><code id="c-pyi">pip install requests cryptography python-dotenv</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-py" aria-label="Copy Python quickstart code">Copy</button><pre><code id="c-py">{{PY}}</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-pyr" aria-label="Copy Python run command">Copy</button><pre><code id="c-pyr">python quickstart.py</code></pre></div></section>
+<section role="tabpanel" id="p-js" aria-labelledby="t-js" tabindex="0" hidden>
+<p>Node 20.12+ (built-in <code>fetch</code> and <code>process.loadEnvFile</code>). No dependencies.</p>
+<div class="codebox"><button class="copy" data-target="c-js" aria-label="Copy Node quickstart code">Copy</button><pre><code id="c-js">{{JS}}</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-jsr" aria-label="Copy Node run command">Copy</button><pre><code id="c-jsr">node quickstart.mjs</code></pre></div></section>
+<h2>4. Expected output</h2>
+<pre><code>Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).</code></pre>
+<h2>Things that trip people up</h2>
+<ul><li><code>size</code> counts <strong>KiB</strong>, not bytes. Ask for <code>size=1</code> (1,024 bytes) and take 32 bytes.</li>
+<li>Base64-decode the string first; never use the text itself as the key.</li>
+<li>A wrong token returns <strong>403</strong>, the same as an exhausted quota. Check the token first.</li>
+<li>Never print, log or commit the key or token. Use fresh entropy for each key.</li></ul>
+<p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
+</main><footer><p>Unofficial quickstart. API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com/eaas</a>. No analytics or cookies.</p></footer>
+<script src="/app.js" defer></script></body></html>

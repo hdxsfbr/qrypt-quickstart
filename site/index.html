@@ -1,0 +1,90 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main">
+<h1>Make an AES-256 key from quantum entropy</h1>
+<p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
+<h2>1. Get a token</h2>
+<p>Create an account at <a href="https://portal.qrypt.com/register">portal.qrypt.com/register</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
+<h2>2. Save it in <code>.env</code></h2>
+<div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre><code id="c-env">QRYPT_API_KEY=paste-your-token-here</code></pre></div>
+<p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>.</p>
+<h2>3. Run the snippet</h2>
+<div role="tablist" aria-label="Language">
+<button role="tab" id="t-py" aria-selected="true" aria-controls="p-py">Python</button>
+<button role="tab" id="t-js" aria-selected="false" aria-controls="p-js" tabindex="-1">Node</button></div>
+<section role="tabpanel" id="p-py" aria-labelledby="t-py" tabindex="0">
+<p>Python 3.9+. Uses <code>requests</code>: Cloudflare blocks Python's built-in <code>urllib</code> User-Agent.</p>
+<div class="codebox"><button class="copy" data-target="c-pyi" aria-label="Copy Python install command">Copy</button><pre><code id="c-pyi">pip install requests cryptography python-dotenv</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-py" aria-label="Copy Python quickstart code">Copy</button><pre><code id="c-py"># Qrypt quickstart (Python): turn 1 KiB of quantum entropy into an AES-256-GCM key.
+# Needs: pip install -r requirements.txt  and a .env file with QRYPT_API_KEY=...
+import base64, os, sys
+import requests
+from dotenv import load_dotenv
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+load_dotenv()
+token = os.getenv(&quot;QRYPT_API_KEY&quot;)
+if not token:
+    sys.exit(&quot;QRYPT_API_KEY is missing. Copy .env.example to .env and paste your token from portal.qrypt.com.&quot;)
+base = os.getenv(&quot;QRYPT_BASE_URL&quot;, &quot;https://api-eus.qrypt.com&quot;)  # override only for the mock server
+# size is in KiB, not bytes: size=1 returns 1,024 bytes. A custom User-Agent avoids Cloudflare&#x27;s urllib block.
+r = requests.get(f&quot;{base}/api/v1/quantum-entropy&quot;, params={&quot;size&quot;: 1}, timeout=15, headers={
+    &quot;Authorization&quot;: f&quot;Bearer {token}&quot;, &quot;Accept&quot;: &quot;application/json&quot;,
+    &quot;User-Agent&quot;: &quot;qrypt-quickstart/1.0&quot;, &quot;X-Qrypt-Client&quot;: &quot;quickstart-py/1.0&quot;})
+errors = {
+    400: &quot;400 Bad request: size must be an integer from 1 to 512 (it counts KiB, not bytes).&quot;,
+    401: &quot;401 Missing or malformed Authorization header: it must be &#x27;Bearer &lt;token&gt;&#x27;.&quot;,
+    403: &quot;403 Token invalid OR monthly quota reached. Check the token first (Qrypt returns 403 for a wrong token, not 401).&quot;,
+    429: &quot;429 Rate limited (30 requests per 10 s). Wait 10 seconds before trying again; do not retry in a loop.&quot;,
+    500: &quot;500 Qrypt internal error. Try again shortly; contact support@qrypt.com if it persists.&quot;,
+    503: &quot;503 Qrypt entropy supply is temporarily low. Try again shortly.&quot;}
+if r.status_code != 200:
+    sys.exit(errors.get(r.status_code, f&quot;Unexpected HTTP {r.status_code}. See the troubleshooting page.&quot;))
+key = base64.b64decode(r.json()[&quot;random&quot;][0])[:32]  # decode first, then take 32 bytes = AES-256 key
+nonce, message = os.urandom(12), b&quot;hello, quantum entropy&quot;
+aes = AESGCM(key)
+assert aes.decrypt(nonce, aes.encrypt(nonce, message, None), None) == message
+print(&quot;Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).&quot;)
+</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-pyr" aria-label="Copy Python run command">Copy</button><pre><code id="c-pyr">python quickstart.py</code></pre></div></section>
+<section role="tabpanel" id="p-js" aria-labelledby="t-js" tabindex="0" hidden>
+<p>Node 20.12+ (built-in <code>fetch</code> and <code>process.loadEnvFile</code>). No dependencies.</p>
+<div class="codebox"><button class="copy" data-target="c-js" aria-label="Copy Node quickstart code">Copy</button><pre><code id="c-js">// Qrypt quickstart (Node 20.12+): turn 1 KiB of quantum entropy into an AES-256-GCM key.
+// No dependencies. Needs a .env file with QRYPT_API_KEY=...
+import { existsSync } from &quot;node:fs&quot;;
+import { createCipheriv, createDecipheriv, randomBytes } from &quot;node:crypto&quot;;
+
+if (existsSync(&quot;.env&quot;)) process.loadEnvFile(&quot;.env&quot;);
+const token = process.env.QRYPT_API_KEY;
+const fail = (msg) =&gt; { console.error(msg); process.exit(1); };
+if (!token) fail(&quot;QRYPT_API_KEY is missing. Copy .env.example to .env and paste your token from portal.qrypt.com.&quot;);
+const base = process.env.QRYPT_BASE_URL ?? &quot;https://api-eus.qrypt.com&quot;; // override only for the mock server
+// size is in KiB, not bytes: size=1 returns 1,024 bytes.
+const res = await fetch(`${base}/api/v1/quantum-entropy?size=1`, { headers: {
+  Authorization: `Bearer ${token}`, Accept: &quot;application/json&quot;,
+  &quot;User-Agent&quot;: &quot;qrypt-quickstart/1.0&quot;, &quot;X-Qrypt-Client&quot;: &quot;quickstart-js/1.0&quot; } });
+const errors = {
+  400: &quot;400 Bad request: size must be an integer from 1 to 512 (it counts KiB, not bytes).&quot;,
+  401: &quot;401 Missing or malformed Authorization header: it must be &#x27;Bearer &lt;token&gt;&#x27;.&quot;,
+  403: &quot;403 Token invalid OR monthly quota reached. Check the token first (Qrypt returns 403 for a wrong token, not 401).&quot;,
+  429: &quot;429 Rate limited (30 requests per 10 s). Wait 10 seconds before trying again; do not retry in a loop.&quot;,
+  500: &quot;500 Qrypt internal error. Try again shortly; contact support@qrypt.com if it persists.&quot;,
+  503: &quot;503 Qrypt entropy supply is temporarily low. Try again shortly.&quot; };
+if (res.status !== 200) fail(errors[res.status] ?? `Unexpected HTTP ${res.status}. See the troubleshooting page.`);
+const key = Buffer.from((await res.json()).random[0], &quot;base64&quot;).subarray(0, 32); // decode, then 32 bytes
+const iv = randomBytes(12), msg = &quot;hello, quantum entropy&quot;;
+const c = createCipheriv(&quot;aes-256-gcm&quot;, key, iv), ct = Buffer.concat([c.update(msg), c.final()]);
+const d = createDecipheriv(&quot;aes-256-gcm&quot;, key, iv); d.setAuthTag(c.getAuthTag());
+if (Buffer.concat([d.update(ct), d.final()]).toString() !== msg) fail(&quot;Round trip failed.&quot;);
+console.log(&quot;Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).&quot;);
+</code></pre></div>
+<div class="codebox"><button class="copy" data-target="c-jsr" aria-label="Copy Node run command">Copy</button><pre><code id="c-jsr">node quickstart.mjs</code></pre></div></section>
+<h2>4. Expected output</h2>
+<pre><code>Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).</code></pre>
+<h2>Things that trip people up</h2>
+<ul><li><code>size</code> counts <strong>KiB</strong>, not bytes. Ask for <code>size=1</code> (1,024 bytes) and take 32 bytes.</li>
+<li>Base64-decode the string first; never use the text itself as the key.</li>
+<li>A wrong token returns <strong>403</strong>, the same as an exhausted quota. Check the token first.</li>
+<li>Never print, log or commit the key or token. Use fresh entropy for each key.</li></ul>
+<p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
+</main><footer><p>Unofficial quickstart. API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com/eaas</a>. No analytics or cookies.</p></footer>
+<script src="/app.js" defer></script></body></html>
