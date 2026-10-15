@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt"></head><body>
 {{TOP}}<h1>Troubleshooting</h1>
 <h2 id="codes">HTTP status codes</h2>
 <div class="tw"><table><caption>Symptom, likely cause and fix for each response</caption><thead><tr><th scope="col">Code</th><th scope="col">Symptom</th><th scope="col">Likely cause</th><th scope="col">Fix</th></tr></thead><tbody>
@@ -18,13 +18,16 @@
 <tr><th scope="row">Missing packages</th><td><code>ModuleNotFoundError: requests</code></td><td>Dependencies not installed in the active environment.</td><td><code>pip install -r requirements.txt</code> inside your virtualenv.</td></tr>
 <tr><th scope="row">Proxy / TLS</th><td><code>SSLError</code>, <code>CERTIFICATE_VERIFY_FAILED</code>, <code>UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code>, <code>fetch failed</code>, or timeouts</td><td>Corporate proxy or TLS-inspecting firewall.</td><td><strong>Python:</strong> <code>requests</code> honors <code>HTTPS_PROXY</code>; set <code>REQUESTS_CA_BUNDLE</code> to your company CA. <strong>Node:</strong> built-in <code>fetch</code> in Node 20 and 22 <strong>ignores <code>HTTPS_PROXY</code></strong>. On Node 24+, run with <code>NODE_USE_ENV_PROXY=1</code> plus <code>HTTPS_PROXY</code>. On older Node, <code>npm i undici</code> and call <code>setGlobalDispatcher(new EnvHttpProxyAgent())</code> before <code>fetch</code>. Set <code>NODE_EXTRA_CA_CERTS</code> to your company CA. Never disable certificate checks.</td></tr>
 </tbody></table></div>
-<h2 id="agent">AI agent modes</h2>
+<details id="agent" class="agent-box">
+<summary>For AI coding agents — mode troubleshooting</summary>
+<p>Full agent rules: <a href="/llms.txt"><code>llms.txt</code></a>. Repo: <code>AGENTS.md</code>.</p>
 <table><caption>Agent onboarding issues</caption><thead><tr><th scope="col">Issue</th><th scope="col">Symptom</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead><tbody>
 <tr><th scope="row">Agent asks for the token in chat</th><td>Prompt like "paste your QRYPT_API_KEY"</td><td>Model ignoring Quick Setup rules</td><td>Refuse. Create <code>.env</code> yourself and say only "it's set". Or switch to Isolated Setup.</td></tr>
 <tr><th scope="row"><code>run.sh: refuse … contains a .env</code></th><td>Isolated Setup will not start</td><td>Project directory has a <code>.env</code>, which would be bind-mounted into the agent</td><td><code>mv .env ~/.config/qrypt/.env &amp;&amp; chmod 600 ~/.config/qrypt/.env</code>, then re-run <code>run.sh</code>.</td></tr>
 <tr><th scope="row">Agent has no token in Isolated Setup</th><td>Example fails with "QRYPT_API_KEY is missing"</td><td>Expected. The agent container has no secret.</td><td>Finish mock tests inside the container, then on the host run <code>agent-sandbox/verify.sh --env ~/.config/qrypt/.env</code>.</td></tr>
 <tr><th scope="row">verify.sh refuses mode</th><td>"refusing … chmod 600"</td><td><code>.env</code> is group/world-readable</td><td><code>chmod 600</code> the file and retry.</td></tr>
 </tbody></table>
+</details>
 
 <h2 id="proxy">Proxy and TLS setup commands</h2>
 <p>Python (<code>requests</code> reads these variables):</p>

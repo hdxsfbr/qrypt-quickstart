@@ -20,7 +20,7 @@ Audit date: Oct 15, 2026 (PT). Every requirement from the portal brief (`docs/br
 | Base64 decode, take 32 bytes as AES-256 key | Met | `b64decode(...)[:32]`; `Buffer.from(..., "base64").subarray(0, 32)` | |
 | AES-GCM encrypt + decrypt round trip | Met | `AESGCM` assert; `aes-256-gcm` cipher/decipher + `assert.equal` | |
 | Prints success line, never the key | Met | `Success: AES-256-GCM round trip with a Qrypt key (not shown).` | Key never printed, logged or written to disk |
-| Missing token → helpful message (where to get one, how to set it) | Met | `QRYPT_API_KEY is missing: add to .env. Token: portal.qrypt.com`; mock test asserts it | **Fixed in this audit** (`f93c412`): before, it didn't say where to get a token |
+| Missing token → helpful message (where to get one, how to set it) | Met | `QRYPT_API_KEY is missing: add to .env. Token: portal.qrypt.com/trial-signup-entropy`; mock test asserts it | **Fixed in this audit** (`f93c412`): before, it didn't say where to get a token |
 | CI runs both against a mock: success, 401, 429, 503 | Met | `.gitlab-ci.yml` → `mock/run_cases.sh`: 18/18 pass (also 403, 500, non-JSON, network error, missing token) | GitLab pipeline on every push |
 | 401/403 explained, no tight retry loop | Met | Snippets exit once with a message, no retry. 403 message: "Token invalid OR monthly quota used" (live bad token returns 403, not 401) | |
 | 503/500 → "try again shortly", non-zero exit | Met | `run_cases.sh` checks exit 1 + "Try again shortly" | |

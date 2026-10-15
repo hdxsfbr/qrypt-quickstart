@@ -13,7 +13,7 @@ API = os.getenv("QRYPT_BASE_URL", "https://api-eus.qrypt.com")  # mock override
 
 # One friendly message per failure. We never retry automatically.
 HELP = {400: "400: size must be 1-512. It counts KiB, not bytes.",
-        None: "QRYPT_API_KEY is missing: add to .env. Token: portal.qrypt.com",
+        None: "QRYPT_API_KEY is missing: add to .env. Token: portal.qrypt.com/trial-signup-entropy",
         401: "401: Authorization header missing, malformed or expired.",
         403: "403: Token invalid OR monthly quota used. Check the token first.",
         429: "429: rate limited. Live can return 429 about 1 s after a single "

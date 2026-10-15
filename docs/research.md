@@ -23,7 +23,7 @@ Source A = https://docs.qrypt.com/eaas/ · Source B = https://docs.qrypt.com/faq
 | Expired token gives 401 | "After an access token expires, any quantum entropy service requests using that token will return an error code of 401." | B |
 | Token is shown only once | "Qrypt only displays access tokens when they are first generated." Lost tokens: support@qrypt.com | B |
 | The token is what you're billed by | "the mechanism by which your account will be charged for entropy data … treat as … a password" | B |
-| Getting a token | The docs say "contact us to obtain one". The brief says portal.qrypt.com/register. Search also turned up portal.qrypt.com/trial ("Start your Qrypt trial") | A, brief |
+| Getting a token | Brief said portal.qrypt.com/register (SPA 404). Live: /trial-signup-entropy → /trial has the signup form; /signup is contact-sales only. We link /trial-signup-entropy. Official docs still say "contact us". | A, brief, live probe 2026-10-15 |
 | SDK | There is a separate Key Generation SDK (https://docs.qrypt.com/sdk/), but it is for a different product. The brief says "No SDK required". | brief |
 
 The docs do not say what the token's lifetime is, what token types exist, how big the monthly quota is, or which rate-limit headers are returned.

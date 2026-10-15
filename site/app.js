@@ -21,3 +21,8 @@ const set=o=>{w.classList.toggle('open',o);b.setAttribute('aria-expanded',o);};
 b.addEventListener('click',()=>{const o=b.getAttribute('aria-expanded')!=='true';set(o);if(o)document.querySelector('#sidebar a').focus();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&w.classList.contains('open')){set(false);b.focus();}});
 document.querySelectorAll('#sidebar a').forEach(a=>a.addEventListener('click',()=>set(false)));})();
+
+// Open a <details> when the URL hash points at it (sidebar "AI coding agents").
+(()=>{const open=()=>{const id=location.hash.slice(1);if(!id)return;
+  const el=document.getElementById(id);if(el&&el.tagName==="DETAILS"){el.open=true;el.scrollIntoView({block:"start"});}};
+open();addEventListener("hashchange",open);})();

@@ -59,7 +59,14 @@ details summary{cursor:pointer;font-size:1.05rem;padding:.4rem 0}
 .tw th,.tw td,table.cmp td,table.cmp th{border:none}
 .tw td:nth-of-type(1)::before{content:"Symptom: ";font-weight:600}.tw td:nth-of-type(2)::before{content:"Cause: ";font-weight:600}.tw td:nth-of-type(3)::before{content:"Fix: ";font-weight:600}
 table.cmp td:nth-of-type(1)::before{content:"Quick Setup: ";font-weight:600}
-table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}</style><style>.hl{background:#0d1117;color:#e6edf3}
+table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
+
+/* Collapsed-by-default agent instructions; humans stay on the main path */
+.agent-box{border-color:#c5c5e8;background:#f7f7fc;margin:1rem 0}
+.agent-box>summary{font-weight:600;color:#2b2a7a;list-style-position:outside}
+.agent-box>summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.agent-box[open]{background:#fff}
+.agent-box .agent-box{margin:.75rem 0}</style><style>.hl{background:#0d1117;color:#e6edf3}
 .hl .c{color:#9ba7b4}
 .hl .k{color:#ff7b72}
 .hl .kc{color:#79c0ff}
@@ -92,14 +99,17 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 .hl .na{color:#79c0ff}
 .hl .p{color:#e6edf3}
 .hl .err{color:#ffa198}
-.hl .c,.hl .c1,.hl .cm,.hl .ch,.hl .cs{color:#9ba7b4;font-style:italic}</style></head><body>
+.hl .c,.hl .c1,.hl .cm,.hl .ch,.hl .cs{color:#9ba7b4;font-style:italic}</style><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt"></head><body>
 <a class="skip" href="#main">Skip to content</a><p class="unoff" role="note">Unofficial prototype. Not affiliated with or endorsed by Qrypt.</p><div class="wrap"><header class="top"><a class="mark" href="/"><b>Qrypt</b> Docs <small>quickstart prototype</small></a><button class="menu" aria-controls="sidebar" aria-expanded="false">Menu</button></header><nav id="sidebar" aria-label="Documentation"><ul class="topics"><li class=on><a href="/" aria-current="page">Quickstart</a><ul><li><a href="#h-token">Get a token</a></li><li><a href="#h-env">Save it in .env</a></li><li><a href="#h-run">Run the snippet</a></li><li><a href="#h-trip">Common pitfalls</a></li><li><a href="#h-agent">AI coding agents</a></li></ul></li><li><a href="/troubleshooting">Troubleshooting</a><ul><li><a href="/troubleshooting#codes">HTTP status codes</a></li><li><a href="/troubleshooting#mistakes">Common mistakes</a></li><li><a href="/troubleshooting#env">Environment issues</a></li><li><a href="/troubleshooting#agent">AI agent modes</a></li><li><a href="/troubleshooting#proxy">Proxy and TLS</a></li></ul></li></ul><p class="grp">Official Qrypt docs</p><ul class="topics"><li><a class="ext" href="https://docs.qrypt.com/eaas/" rel="noopener">Quantum Entropy reference<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/eaas/rngd/" rel="noopener">RNG Tools<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/eaas/pkcs11/" rel="noopener">Qseed<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/sdk/" rel="noopener">DQKD Key Generation<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/faqs/" rel="noopener">FAQs<span class="sr"> (official Qrypt docs)</span></a></li></ul><p class="grp"><a href="/llms.txt">llms.txt</a></p></nav><main id="main">
 <h1>Make an AES-256 key from quantum entropy</h1>
-<aside class="agent-note" aria-label="Note for AI coding agents"><p><strong>AI coding agents, read this first:</strong> never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Full rules: <a href="#quick-setup">Quick Setup</a> and <a href="/llms.txt">llms.txt</a>.</p></aside>
+<details class="agent-box">
+<summary>For AI coding agents</summary>
+<p>Prefer <a href="/llms.txt"><code>llms.txt</code></a> (also linked in the page head) or the repo <code>AGENTS.md</code>. Never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Human-readable modes: <a href="#h-agent">below</a>.</p>
+</details>
 
 <p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
 <h2 id="h-token">1. Get a token</h2>
-<p>Create an account at <a href="https://portal.qrypt.com/register">portal.qrypt.com/register</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
+<p>Create an account at <a href="https://portal.qrypt.com/trial-signup-entropy">portal.qrypt.com/trial-signup-entropy</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
 <h2 id="h-env">2. Save it in <code>.env</code></h2>
 <div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre class="hl" tabindex="0"><code id="c-env" data-lang="env"><span class="line"><span class="nv">QRYPT_API_KEY</span><span class="o">=</span>paste-your-token-here</span></code></pre></div>
 <p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check the file exists, run <code>test -f .env &amp;&amp; echo set</code>.</p>
@@ -125,7 +135,7 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 <span class="line"></span>
 <span class="line"><span class="c1"># One friendly message per failure. We never retry automatically.</span></span>
 <span class="line"><span class="n">HELP</span> <span class="o">=</span> <span class="p">{</span><span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;400: size must be 1-512. It counts KiB, not bytes.&quot;</span><span class="p">,</span></span>
-<span class="line">        <span class="kc">None</span><span class="p">:</span> <span class="s2">&quot;QRYPT_API_KEY is missing: add to .env. Token: portal.qrypt.com&quot;</span><span class="p">,</span></span>
+<span class="line">        <span class="kc">None</span><span class="p">:</span> <span class="s2">&quot;QRYPT_API_KEY is missing: add to .env. Token: portal.qrypt.com/trial-signup-entropy&quot;</span><span class="p">,</span></span>
 <span class="line">        <span class="mi">401</span><span class="p">:</span> <span class="s2">&quot;401: Authorization header missing, malformed or expired.&quot;</span><span class="p">,</span></span>
 <span class="line">        <span class="mi">403</span><span class="p">:</span> <span class="s2">&quot;403: Token invalid OR monthly quota used. Check the token first.&quot;</span><span class="p">,</span></span>
 <span class="line">        <span class="mi">429</span><span class="p">:</span> <span class="s2">&quot;429: rate limited. Live can return 429 about 1 s after a single &quot;</span></span>
@@ -172,7 +182,7 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 <span class="line"></span>
 <span class="line"><span class="c1">// One friendly message per failure. We never retry automatically.</span></span>
 <span class="line"><span class="kd">const</span><span class="w"> </span><span class="nx">HELP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">400</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;400: size must be 1-512. It counts KiB, not bytes.&quot;</span><span class="p">,</span></span>
-<span class="line"><span class="w">  </span><span class="nx">missing</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;QRYPT_API_KEY is missing: add to .env. Token: portal.qrypt.com&quot;</span><span class="p">,</span></span>
+<span class="line"><span class="w">  </span><span class="nx">missing</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;QRYPT_API_KEY is missing: add to .env. Token: portal.qrypt.com/trial-signup-entropy&quot;</span><span class="p">,</span></span>
 <span class="line"><span class="w">  </span><span class="nx">network</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Network error or non-JSON reply: check proxy/TLS, retry soon.&quot;</span><span class="p">,</span></span>
 <span class="line"><span class="w">  </span><span class="mf">401</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;401: Authorization header missing, malformed or expired.&quot;</span><span class="p">,</span></span>
 <span class="line"><span class="w">  </span><span class="mf">403</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;403: Token invalid OR monthly quota used. Check the token first.&quot;</span><span class="p">,</span></span>
@@ -221,8 +231,9 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 <li>A wrong token returns <strong>403</strong>, the same as an exhausted quota. Check the token first.</li>
 <li>Never print, log or commit the key or token. Use fresh entropy for each key.</li></ul>
 <p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
-<section aria-labelledby="h-agent">
-<h2 id="h-agent">Using an AI coding agent?</h2>
+<details id="h-agent" class="agent-box">
+<summary>For AI coding agents — Quick Setup and Isolated Setup</summary>
+<p>Machine-readable rules: <a href="/llms.txt"><code>llms.txt</code></a>. Repo: <code>AGENTS.md</code>.</p>
 <p>Two modes. <strong>Quick Setup is the default</strong> (no Docker). Isolated Setup is optional when you want stronger credential boundaries.</p>
 
 <table class="cmp"><caption>Quick Setup vs Isolated Setup</caption>
@@ -293,7 +304,7 @@ Tell the agent only that it is set. Do not share the value.</li>
 </ol>
 <p><strong>Honesty about isolation:</strong> this blocks the common failure mode (agents reading <code>.env</code>). It does <em>not</em> claim Docker guarantees zero leakage. A malicious <code>SANDBOX_DOCKER_ARGS</code> that remounts your home directory, a compromised agent binary, or a container escape is out of scope. The boundaries we <em>do</em> claim are checked by <code>agent-sandbox/test-isolation.sh</code>.</p>
 </details>
-</section>
+</details>
 
 <p id="copy-status" class="sr" aria-live="polite"></p></main><footer class="foot"><p>Unofficial prototype built on the public API docs; not a Qrypt product and not endorsed by Qrypt. API reference: <a href="https://docs.qrypt.com/eaas/">docs.qrypt.com/eaas</a>. No analytics or cookies.</p></footer></div>
 <script src="/app.js" defer></script></body></html>

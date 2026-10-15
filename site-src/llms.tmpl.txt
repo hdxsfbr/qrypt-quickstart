@@ -1,4 +1,9 @@
 # Qrypt quantum entropy quickstart (for AI agents)
+
+This file is the canonical agent instructions. The human-facing HTML pages collapse
+agent sections into closed <details>; read THIS file (or AGENTS.md in the repo) instead
+of relying on the HTML expandables.
+
 > Get an AES-256-GCM key from Qrypt quantum entropy. Plain HTTPS; no SDK exists for this API. Do not invent one.
 
 ## Choose a mode
@@ -18,7 +23,7 @@
 2. Pick Python or Node (ask if unsure).
 3. Implement using the official snippets below.
 4. Install deps and run mocked tests (QRYPT_BASE_URL pointing at a mock, or `make check` in this repo).
-5. Ask the human to create `.env` with QRYPT_API_KEY and confirm it is set — without sharing the value.
+5. Ask the human to create `.env` with QRYPT_API_KEY (token from https://portal.qrypt.com/trial-signup-entropy) and confirm it is set — without sharing the value.
 6. Run the example. Report the success line only.
 
 ## Workflow (Isolated Setup)
@@ -43,4 +48,5 @@ size counts KiB (1..512), NOT bytes. For one AES-256 key use size=1 and take the
 {{JS}}
 ## More
 Troubleshooting: /troubleshooting
-Human docs: /  (Quick Setup default; Isolated Setup under "Using an AI coding agent?")
+Human docs: /  (agent sections are collapsed <details> labeled "For AI coding agents"; full rules are THIS file and AGENTS.md)
+Token signup: https://portal.qrypt.com/trial-signup-entropy  (brief /register is a SPA 404)

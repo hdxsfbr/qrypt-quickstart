@@ -27,7 +27,7 @@ A = https://docs.qrypt.com/eaas/ · F = https://docs.qrypt.com/faqs/ · B = proj
 | 19 | Tokens are shown only once | F | "Qrypt only displays access tokens when they are first generated." | No |
 | 20 | Treat tokens like passwords; your account is billed by token | F | "the mechanism by which your account will be charged for entropy data … treated as secure and secret information" | No |
 | 21 | Expired tokens return 401 | F | "After an access token expires, any quantum entropy service requests using that token will return an error code of 401." | No |
-| 22 | Get a token at portal.qrypt.com/register | B | "create an account at https://portal.qrypt.com/register and generate an access token for the Entropy service" (the official docs say "contact us to obtain one") | No |
+| 22 | Get a token at portal.qrypt.com/trial-signup-entropy | B→live | Brief said /register (404 SPA page). Live portal routes: /signup (contact sales), /trial-signup and /trial-signup-entropy (both redirect to /trial signup form). We link /trial-signup-entropy. | Yes |
 | 23 | No SDK is needed for the entropy API | B | "No SDK required. Call the REST endpoint directly from any language." | Yes (plain HTTP works) |
 
 ## Observed behavior not covered by the docs (live, Oct 14, 2026)

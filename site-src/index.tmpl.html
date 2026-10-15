@@ -1,11 +1,14 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt"></head><body>
 {{TOP}}
 <h1>Make an AES-256 key from quantum entropy</h1>
-<aside class="agent-note" aria-label="Note for AI coding agents"><p><strong>AI coding agents, read this first:</strong> never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Full rules: <a href="#quick-setup">Quick Setup</a> and <a href="/llms.txt">llms.txt</a>.</p></aside>
+<details class="agent-box">
+<summary>For AI coding agents</summary>
+<p>Prefer <a href="/llms.txt"><code>llms.txt</code></a> (also linked in the page head) or the repo <code>AGENTS.md</code>. Never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Human-readable modes: <a href="#h-agent">below</a>.</p>
+</details>
 
 <p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
 <h2 id="h-token">1. Get a token</h2>
-<p>Create an account at <a href="https://portal.qrypt.com/register">portal.qrypt.com/register</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
+<p>Create an account at <a href="https://portal.qrypt.com/trial-signup-entropy">portal.qrypt.com/trial-signup-entropy</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
 <h2 id="h-env">2. Save it in <code>.env</code></h2>
 <div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre><code id="c-env" data-lang="env">QRYPT_API_KEY=paste-your-token-here</code></pre></div>
 <p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check the file exists, run <code>test -f .env &amp;&amp; echo set</code>.</p>
@@ -37,8 +40,9 @@
 <li>A wrong token returns <strong>403</strong>, the same as an exhausted quota. Check the token first.</li>
 <li>Never print, log or commit the key or token. Use fresh entropy for each key.</li></ul>
 <p>Errors? See <a href="/troubleshooting">Troubleshooting</a>.</p>
-<section aria-labelledby="h-agent">
-<h2 id="h-agent">Using an AI coding agent?</h2>
+<details id="h-agent" class="agent-box">
+<summary>For AI coding agents — Quick Setup and Isolated Setup</summary>
+<p>Machine-readable rules: <a href="/llms.txt"><code>llms.txt</code></a>. Repo: <code>AGENTS.md</code>.</p>
 <p>Two modes. <strong>Quick Setup is the default</strong> (no Docker). Isolated Setup is optional when you want stronger credential boundaries.</p>
 
 <table class="cmp"><caption>Quick Setup vs Isolated Setup</caption>
@@ -109,7 +113,7 @@ chmod 600 ~/.config/qrypt/.env</code></pre></div></li>
 </ol>
 <p><strong>Honesty about isolation:</strong> this blocks the common failure mode (agents reading <code>.env</code>). It does <em>not</em> claim Docker guarantees zero leakage. A malicious <code>SANDBOX_DOCKER_ARGS</code> that remounts your home directory, a compromised agent binary, or a container escape is out of scope. The boundaries we <em>do</em> claim are checked by <code>agent-sandbox/test-isolation.sh</code>.</p>
 </details>
-</section>
+</details>
 
 <p id="copy-status" class="sr" aria-live="polite"></p>{{BOTTOM}}
 <script src="/app.js" defer></script></body></html>

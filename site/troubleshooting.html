@@ -59,7 +59,14 @@ details summary{cursor:pointer;font-size:1.05rem;padding:.4rem 0}
 .tw th,.tw td,table.cmp td,table.cmp th{border:none}
 .tw td:nth-of-type(1)::before{content:"Symptom: ";font-weight:600}.tw td:nth-of-type(2)::before{content:"Cause: ";font-weight:600}.tw td:nth-of-type(3)::before{content:"Fix: ";font-weight:600}
 table.cmp td:nth-of-type(1)::before{content:"Quick Setup: ";font-weight:600}
-table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}</style><style>.hl{background:#0d1117;color:#e6edf3}
+table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
+
+/* Collapsed-by-default agent instructions; humans stay on the main path */
+.agent-box{border-color:#c5c5e8;background:#f7f7fc;margin:1rem 0}
+.agent-box>summary{font-weight:600;color:#2b2a7a;list-style-position:outside}
+.agent-box>summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.agent-box[open]{background:#fff}
+.agent-box .agent-box{margin:.75rem 0}</style><style>.hl{background:#0d1117;color:#e6edf3}
 .hl .c{color:#9ba7b4}
 .hl .k{color:#ff7b72}
 .hl .kc{color:#79c0ff}
@@ -92,7 +99,7 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 .hl .na{color:#79c0ff}
 .hl .p{color:#e6edf3}
 .hl .err{color:#ffa198}
-.hl .c,.hl .c1,.hl .cm,.hl .ch,.hl .cs{color:#9ba7b4;font-style:italic}</style></head><body>
+.hl .c,.hl .c1,.hl .cm,.hl .ch,.hl .cs{color:#9ba7b4;font-style:italic}</style><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt"></head><body>
 <a class="skip" href="#main">Skip to content</a><p class="unoff" role="note">Unofficial prototype. Not affiliated with or endorsed by Qrypt.</p><div class="wrap"><header class="top"><a class="mark" href="/"><b>Qrypt</b> Docs <small>quickstart prototype</small></a><button class="menu" aria-controls="sidebar" aria-expanded="false">Menu</button></header><nav id="sidebar" aria-label="Documentation"><ul class="topics"><li><a href="/">Quickstart</a><ul><li><a href="/#h-token">Get a token</a></li><li><a href="/#h-env">Save it in .env</a></li><li><a href="/#h-run">Run the snippet</a></li><li><a href="/#h-trip">Common pitfalls</a></li><li><a href="/#h-agent">AI coding agents</a></li></ul></li><li class=on><a href="/troubleshooting" aria-current="page">Troubleshooting</a><ul><li><a href="#codes">HTTP status codes</a></li><li><a href="#mistakes">Common mistakes</a></li><li><a href="#env">Environment issues</a></li><li><a href="#agent">AI agent modes</a></li><li><a href="#proxy">Proxy and TLS</a></li></ul></li></ul><p class="grp">Official Qrypt docs</p><ul class="topics"><li><a class="ext" href="https://docs.qrypt.com/eaas/" rel="noopener">Quantum Entropy reference<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/eaas/rngd/" rel="noopener">RNG Tools<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/eaas/pkcs11/" rel="noopener">Qseed<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/sdk/" rel="noopener">DQKD Key Generation<span class="sr"> (official Qrypt docs)</span></a></li><li><a class="ext" href="https://docs.qrypt.com/faqs/" rel="noopener">FAQs<span class="sr"> (official Qrypt docs)</span></a></li></ul><p class="grp"><a href="/llms.txt">llms.txt</a></p></nav><main id="main"><h1>Troubleshooting</h1>
 <h2 id="codes">HTTP status codes</h2>
 <div class="tw"><table><caption>Symptom, likely cause and fix for each response</caption><thead><tr><th scope="col">Code</th><th scope="col">Symptom</th><th scope="col">Likely cause</th><th scope="col">Fix</th></tr></thead><tbody>
@@ -112,13 +119,16 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 <tr><th scope="row">Missing packages</th><td><code>ModuleNotFoundError: requests</code></td><td>Dependencies not installed in the active environment.</td><td><code>pip install -r requirements.txt</code> inside your virtualenv.</td></tr>
 <tr><th scope="row">Proxy / TLS</th><td><code>SSLError</code>, <code>CERTIFICATE_VERIFY_FAILED</code>, <code>UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code>, <code>fetch failed</code>, or timeouts</td><td>Corporate proxy or TLS-inspecting firewall.</td><td><strong>Python:</strong> <code>requests</code> honors <code>HTTPS_PROXY</code>; set <code>REQUESTS_CA_BUNDLE</code> to your company CA. <strong>Node:</strong> built-in <code>fetch</code> in Node 20 and 22 <strong>ignores <code>HTTPS_PROXY</code></strong>. On Node 24+, run with <code>NODE_USE_ENV_PROXY=1</code> plus <code>HTTPS_PROXY</code>. On older Node, <code>npm i undici</code> and call <code>setGlobalDispatcher(new EnvHttpProxyAgent())</code> before <code>fetch</code>. Set <code>NODE_EXTRA_CA_CERTS</code> to your company CA. Never disable certificate checks.</td></tr>
 </tbody></table></div>
-<h2 id="agent">AI agent modes</h2>
+<details id="agent" class="agent-box">
+<summary>For AI coding agents — mode troubleshooting</summary>
+<p>Full agent rules: <a href="/llms.txt"><code>llms.txt</code></a>. Repo: <code>AGENTS.md</code>.</p>
 <table><caption>Agent onboarding issues</caption><thead><tr><th scope="col">Issue</th><th scope="col">Symptom</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead><tbody>
 <tr><th scope="row">Agent asks for the token in chat</th><td>Prompt like "paste your QRYPT_API_KEY"</td><td>Model ignoring Quick Setup rules</td><td>Refuse. Create <code>.env</code> yourself and say only "it's set". Or switch to Isolated Setup.</td></tr>
 <tr><th scope="row"><code>run.sh: refuse … contains a .env</code></th><td>Isolated Setup will not start</td><td>Project directory has a <code>.env</code>, which would be bind-mounted into the agent</td><td><code>mv .env ~/.config/qrypt/.env &amp;&amp; chmod 600 ~/.config/qrypt/.env</code>, then re-run <code>run.sh</code>.</td></tr>
 <tr><th scope="row">Agent has no token in Isolated Setup</th><td>Example fails with "QRYPT_API_KEY is missing"</td><td>Expected. The agent container has no secret.</td><td>Finish mock tests inside the container, then on the host run <code>agent-sandbox/verify.sh --env ~/.config/qrypt/.env</code>.</td></tr>
 <tr><th scope="row">verify.sh refuses mode</th><td>"refusing … chmod 600"</td><td><code>.env</code> is group/world-readable</td><td><code>chmod 600</code> the file and retry.</td></tr>
 </tbody></table>
+</details>
 
 <h2 id="proxy">Proxy and TLS setup commands</h2>
 <p>Python (<code>requests</code> reads these variables):</p>
