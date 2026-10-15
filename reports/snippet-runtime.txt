@@ -1,0 +1,11 @@
+# Snippet runtime, live API, Oct 15 2026 ~11:05 AM PT (wall clock incl. interpreter start; 20 s between runs)
+py run1 rc=0 0.73s Success: AES-256-GCM round trip with a Q
+js run1 rc=0 0.55s Success: AES-256-GCM round trip with a Q
+py run2 rc=0 0.55s Success: AES-256-GCM round trip with a Q
+js run2 rc=0 0.48s Success: AES-256-GCM round trip with a Q
+py run3 rc=0 0.77s Success: AES-256-GCM round trip with a Q
+js run3 rc=0 0.45s Success: AES-256-GCM round trip with a Q
+py run4 rc=0 0.66s Success: AES-256-GCM round trip with a Q
+js run4 rc=0 0.49s Success: AES-256-GCM round trip with a Q
+py run5 rc=0 0.48s Success: AES-256-GCM round trip with a Q
+js run5 rc=0 0.45s Success: AES-256-GCM round trip with a Q
