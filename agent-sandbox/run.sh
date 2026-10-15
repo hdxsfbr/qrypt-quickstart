@@ -27,8 +27,12 @@ printf '%s\n' \
   > "$proj/QRYPT-ISOLATED.txt"
 chmod 444 "$proj/QRYPT-ISOLATED.txt" 2>/dev/null || true
 
-docker image inspect qrypt-agent-sandbox >/dev/null 2>&1 \
-  || docker build -q -t qrypt-agent-sandbox "$here" >/dev/null
+# Tag the image by a hash of the Dockerfile so a stale image from an older
+# design (e.g. one with a secret-handling entrypoint) is never reused.
+tag=$( (sha256sum "$here/Dockerfile" 2>/dev/null || shasum -a 256 "$here/Dockerfile") | cut -c1-12)
+img="qrypt-agent-sandbox:$tag"
+docker image inspect "$img" >/dev/null 2>&1 \
+  || docker build -q -t "$img" "$here" >/dev/null
 # SANDBOX_DOCKER_ARGS may mount an agent CLI binary (read-only) and its login
 # state, but MUST NOT add -v for home secrets, docker.sock, or -e QRYPT_*.
 # shellcheck disable=SC2086
@@ -39,4 +43,4 @@ exec docker run --rm "${tty[@]}" \
   --security-opt no-new-privileges \
   -v "$proj":/work \
   ${SANDBOX_DOCKER_ARGS:-} \
-  qrypt-agent-sandbox "${@:-bash}"
+  "$img" "${@:-bash}"

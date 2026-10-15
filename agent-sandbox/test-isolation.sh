@@ -4,8 +4,13 @@
 set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
 repo=$(cd "$here/.." && pwd)
-img=qrypt-agent-sandbox
+tag=$( (sha256sum "$here/Dockerfile" 2>/dev/null || shasum -a 256 "$here/Dockerfile") | cut -c1-12)
+img="qrypt-agent-sandbox:$tag"
 docker image inspect "$img" >/dev/null 2>&1 || docker build -q -t "$img" "$here" >/dev/null
+# The image must be the current design: no entrypoint script, runs as agent.
+old=$(docker run --rm --entrypoint sh "$img" -c 'ls /usr/local/bin/entrypoint.sh /usr/local/bin/qrypt-run /usr/local/bin/qrypt-run-inner /etc/sudoers.d/qrypt 2>/dev/null | wc -l; id -un')
+[ "$old" = "$(printf '0\nagent')" ] && echo "PASS image is current design ($img): no old secret entrypoint/qrypt-run, runs as agent" \
+  || { echo "FAIL stale image ($img): $old"; exit 1; }
 
 fail=0
 pass() { echo "PASS $*"; }

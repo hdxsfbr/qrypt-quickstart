@@ -4,8 +4,13 @@
 set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
 repo=$(cd "$here/.." && pwd)
-img=qrypt-agent-sandbox
+tag=$( (sha256sum "$here/Dockerfile" 2>/dev/null || shasum -a 256 "$here/Dockerfile") | cut -c1-12)
+img="qrypt-agent-sandbox:$tag"
 docker image inspect "$img" >/dev/null 2>&1 || docker build -q -t "$img" "$here" >/dev/null
+# The image must be the current design: no entrypoint script, runs as agent.
+old=$(docker run --rm --entrypoint sh "$img" -c 'ls /usr/local/bin/entrypoint.sh /usr/local/bin/qrypt-run /usr/local/bin/qrypt-run-inner /etc/sudoers.d/qrypt 2>/dev/null | wc -l; id -un')
+[ "$old" = "$(printf '0\nagent')" ] && echo "PASS image is current design ($img): no old secret entrypoint/qrypt-run, runs as agent" \
+  || { echo "FAIL stale image ($img): $old"; exit 1; }
 
 fail=0
 pass() { echo "PASS $*"; }
@@ -37,14 +42,12 @@ out=$(docker run --rm \
     echo "SOCK=$(test -e /var/run/docker.sock && echo yes || echo no)"
     echo "PLANTED=$(test -e /tmp/qrypt-planted-secret-'"$$"' && echo yes || echo no)"
     echo "HOME_SSH=$(test -e /home/agent/.ssh && echo yes || echo no)"
-    # Agent can still run the mock cases (no token needed beyond mock-token).
     export QRYPT_API_KEY=mock-token-not-secret QRYPT_BASE_URL=http://127.0.0.1:18787
-    python3 -m pip install -q -r /work/quickstart/python/requirements.txt >/dev/null 2>&1
-    # Start mock briefly and hit success once.
+    python3 -m venv /tmp/v && /tmp/v/bin/pip -q install -r /work/quickstart/python/requirements.txt >/dev/null
     MOCK_MODE=success MOCK_PORT=18787 python3 /work/mock/server.py >/dev/null 2>&1 &
-    pid=$!; sleep 0.5
-    (cd /work/quickstart/python && python3 quickstart.py); rc=$?
-    kill $pid 2>/dev/null
+    pid=$!; sleep 0.6
+    (cd /work/quickstart/python && /tmp/v/bin/python quickstart.py); rc=$?
+    kill $pid 2>/dev/null; wait $pid 2>/dev/null
     echo "MOCK_RC=$rc"
   ')
 rm -f /tmp/qrypt-planted-secret-$$
@@ -75,7 +78,7 @@ if out=$("$here/verify.sh" --env "$fake" --lang both --base-url http://127.0.0.1
 else
   bad "verify.sh mock failed: $out"
 fi
-kill $mpid 2>/dev/null; wait $mpid 2>/dev/null
+kill $mpid 2>/dev/null || true; wait $mpid 2>/dev/null || true
 # Output must never contain the mock token string either (habit check).
 echo "$out" | grep -q 'mock-token' && bad "verify.sh echoed a token-shaped value" || pass "verify.sh output has no token"
 rm -f "$fake"
