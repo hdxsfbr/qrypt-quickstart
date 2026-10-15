@@ -1,6 +1,10 @@
 # Qrypt quantum entropy quickstart (for AI agents)
 > Get an AES-256-GCM key from Qrypt quantum entropy. Plain HTTPS; no SDK exists for this API. Do not invent one.
 
+## FIRST: secrets and layout
+- If .env exists, it already has the token. Do NOT read or print it in any form (no cat/head/sed/less, not even masked). Only check: grep -q '^QRYPT_API_KEY=.' .env && echo set
+- Write all files in the current directory next to .env. No subfolder, no copying .env.
+
 ## API
 GET https://api-eus.qrypt.com/api/v1/quantum-entropy?size=1
 Headers: Authorization: Bearer $QRYPT_API_KEY ; Accept: application/json

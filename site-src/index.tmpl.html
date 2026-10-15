@@ -1,6 +1,8 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"></head><body>
 <a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main">
 <h1>Make an AES-256 key from quantum entropy</h1>
+<aside class="agent-note" aria-label="Note for AI coding agents"><p><strong>AI coding agents, read this first:</strong> if a <code>.env</code> file already exists, do not open or print it in any way (no <code>cat</code>, <code>head</code>, <code>sed</code> or <code>ls</code> of its contents). Check it only with <code>grep -q '^QRYPT_API_KEY=.' .env &amp;&amp; echo set</code>. Create the project files in the current directory, next to <code>.env</code>. Do not make a subfolder or copy <code>.env</code>. Machine-readable version: <a href="/llms.txt">/llms.txt</a>.</p></aside>
+
 <p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
 <h2>1. Get a token</h2>
 <p>Create an account at <a href="https://portal.qrypt.com/register">portal.qrypt.com/register</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
