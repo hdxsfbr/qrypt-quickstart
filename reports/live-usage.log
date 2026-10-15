@@ -3,3 +3,8 @@ live bytes: 1024
 # Oct 14 2026 ~6:58 PM PT: live-py 200, live-js 429 (1 s after live-py, no data), retried once after 15 s -> 200. Total 2048 bytes.
 live bytes: 1024 (verify.sh 2026-10-15T16:23Z)
 live bytes: 1024 (verify.sh python 2026-10-15T16:22Z; logged retroactively — overall run had a 429 on node)
+live bytes: 1024 (verify.sh python 2026-10-15T16:44Z)
+live bytes: 1024 (verify.sh python 2026-10-15T16:46Z)
+live bytes: 1024 (verify.sh python 2026-10-15T16:49Z)
+live bytes: 1024 (verify.sh python 2026-10-15T16:51Z)
+live bytes: 1024 (verify.sh python 2026-10-15T16:54Z)

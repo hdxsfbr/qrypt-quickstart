@@ -37,3 +37,15 @@ All agents got the same prompt, below.
 
 ## Two-mode agent onboarding (Oct 15, 2026)
 Redesigned agent docs and `agent-sandbox/` so Quick Setup (no Docker) is the default and Isolated Setup keeps the real token off the agent container. Trusted live verification is `agent-sandbox/verify.sh`, which runs fixed snippets from this repo — never agent-modifiable code — and prints only sanitized PASS/FAIL. Historical agent-readiness rounds 1–4 (including the older `qrypt-run` design) are preserved in `AGENT_READINESS.md` and were not re-run as part of this change; Butler owns follow-up evals (`BACKLOG` #14).
+
+## Two-mode redesign eval (Oct 15)
+- **Agent:** Cursor CLI (pinned path under `~/.local/share/cursor-agent/versions/`; Isolated runs used whatever binary that path resolved to, typically 2026.10.01).
+- **Quick Setup prompt (exact brief sentence + URL only):**
+  ```
+  Quickstart docs: https://qrypt-quickstart.pages.dev/
+
+  Generate an AES-256 key using Qrypt quantum entropy in a new project
+  ```
+- **Human simulation (resume, no token in chat):** `I've created .env with QRYPT_API_KEY (mode 600). Go ahead and run the example. Do not read, print or dump .env.`
+- **Isolated Setup:** same brief sentence inside Docker; agent told it has no key and to direct the human to `verify.sh`.
+- Codex / Claude Code on the new modes: not run in this pass (outstanding).
