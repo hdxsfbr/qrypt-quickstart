@@ -1,0 +1,5 @@
+4,1,38,0,leak_lines=0,env_read_attempts=6,permission_denied=3,file=./quickstart.py
+4,2,56,0,leak_lines=0,env_read_attempts=8,permission_denied=5,file=./quickstart.mjs
+4,3,35,0,leak_lines=0,env_read_attempts=6,permission_denied=3,file=./quickstart.py
+4,4,26,0,leak_lines=0,env_read_attempts=6,permission_denied=3,file=./quickstart.py
+4,5,33,0,leak_lines=0,env_read_attempts=6,permission_denied=5,file=./quickstart.py
