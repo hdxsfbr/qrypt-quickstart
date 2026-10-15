@@ -5,7 +5,8 @@ deps:            ## install Python deps (Node needs none; Node 20.12+)
 test:            ## run both snippets against the mock: success, 401, 403, 429, 500, 503, missing token
 	./mock/run_cases.sh
 check: deps test
-site:            ## regenerate site pages from the snippet sources
+site:            ## regenerate site pages (Pygments highlighting) from sources
+	python3 -m pip install -q -r tools/requirements-site.txt
 	python3 tools/build_site.py
 live-py:         ## real API, 1 KiB. Needs .env in quickstart/python
 	cd quickstart/python && python3 quickstart.py && echo "live bytes: 1024" >> ../../reports/live-usage.log

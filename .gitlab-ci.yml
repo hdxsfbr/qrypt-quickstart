@@ -7,6 +7,9 @@ snippets:
   script:
     - pip install -q -r quickstart/python/requirements.txt
     - ./mock/run_cases.sh
+    # site/ must match a fresh build (highlighting + snippets from quickstart/)
+    - pip install -q -r tools/requirements-site.txt
+    - python3 tools/build_site.py && git diff --exit-code -- site
 
 pages-deploy:
   stage: deploy
