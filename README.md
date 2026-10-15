@@ -1,12 +1,20 @@
-# Qrypt Quickstart
+# Qrypt quantum entropy quickstart
 
-Go from zero to an AES-256 key made from Qrypt quantum entropy in under 10 minutes, in Python or Node.
+Turn 1 KiB of Qrypt quantum entropy into an AES-256-GCM key in Python or Node, in about 5 minutes.
 
-> Work in progress. Snippets, docs site and CI are coming next.
+## Grader path (under 5 minutes)
+1. `make check` installs Python deps and runs **both snippets against the mock server** for success, 401, 403, 429, 500, 503 and a missing token. No token needed.
+2. Optional, real API (1 KiB each): `cp .env.example quickstart/python/.env` (and/or `quickstart/node/.env`), paste your token, then `make live-py` / `make live-js`.
+3. Docs site: `site/` (deployed to Cloudflare Pages by CI); agent docs at `site/llms.txt`.
 
-- `PRD.md`: the onboarding PRD (personas, activation funnel, metrics)
-- `docs/claims-to-source.md`: every claim about Qrypt, traced back to the official docs
-- `docs/research.md`: doc review and live API findings
-- `docs/brief/`: the original project brief
+Requirements: Python 3.9+, Node 20.12+.
 
-Setup: `cp .env.example .env`, then put your token in `QRYPT_API_KEY`. `.env` is gitignored.
+## Layout
+- `quickstart/python`, `quickstart/node` — the snippets (≤25 lines excluding comments/imports)
+- `mock/` — stdlib mock of the entropy API + `run_cases.sh`
+- `site/` — static docs (`*.tmpl.html` are filled from the snippets by `make site`)
+- `tools/lighthouse.sh` — 10 mobile Lighthouse runs; reports in `reports/lighthouse/`
+- `.gitlab-ci.yml` — mock tests on every push; Pages deploy on main (needs masked `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`)
+- `PRD.md`, `docs/` — PRD, research, claims-to-source
+
+Tokens are never printed; `.env` is gitignored.

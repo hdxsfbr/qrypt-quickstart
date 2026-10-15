@@ -1,0 +1,15 @@
+# Grader quickstart: `make check` (no token needed, ~1 min) then optionally `make live` (uses 1 KiB of real entropy).
+.PHONY: check deps test site live-py live-js lighthouse
+deps:            ## install Python deps (Node needs none; Node 20.12+)
+	python3 -m pip install -q -r quickstart/python/requirements.txt
+test:            ## run both snippets against the mock: success, 401, 403, 429, 500, 503, missing token
+	./mock/run_cases.sh
+check: deps test
+site:            ## regenerate site pages from the snippet sources
+	python3 tools/build_site.py
+live-py:         ## real API, 1 KiB. Needs .env in quickstart/python
+	cd quickstart/python && python3 quickstart.py && echo "live bytes: 1024" >> ../../reports/live-usage.log
+live-js:         ## real API, 1 KiB. Needs .env in quickstart/node
+	cd quickstart/node && node quickstart.mjs && echo "live bytes: 1024" >> ../../reports/live-usage.log
+lighthouse:      ## make lighthouse URL=https://qrypt-quickstart.pages.dev/
+	./tools/lighthouse.sh $(URL)
