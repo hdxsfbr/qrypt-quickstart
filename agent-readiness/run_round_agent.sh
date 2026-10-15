@@ -17,7 +17,7 @@ case $A in
           SESS=("$HOME/.claude/projects"); MOUNT="-v $CLAUDE_BIN:/opt/agent/claude:ro"; AUTH_SRC=$HOME/.claude/.credentials.json; AUTH_DST=.claude/.credentials.json;;
 esac
 [ "$M" = sandbox ] && docker build -q -t qrypt-agent-sandbox "$SBX" >/dev/null
-for i in 1 2 3 4 5; do
+for i in $(seq ${START:-1} 5); do  # START=N resumes an interrupted round
   D=$(mktemp -d /tmp/qrypt-$A-$M-$i-XXXX); printf 'QRYPT_API_KEY=%s\n' "$K" > "$D/.env"; chmod 600 "$D/.env"
   RAW=$(mktemp /dev/shm/qraw-XXXX); STAMP=$(mktemp); t0=$(date +%s)
   if [ "$M" = plain ]; then
