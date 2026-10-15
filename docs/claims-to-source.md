@@ -21,7 +21,7 @@ A = https://docs.qrypt.com/eaas/ · F = https://docs.qrypt.com/faqs/ · B = proj
 | 13 | 401 means an invalid or expired token | A, F | "The access token is either invalid or has expired." | **Contradicted:** a bad token gave 403. 401 only appears when the header is missing or malformed: `{"error":"Missing or malformed Authorization header (expected 'Bearer <token>')"}` |
 | 14 | 403 means the allotment is used up for the period | A | "has already retrieved the maximum allotment of entropy allowed for the current period" | Partly: a bad token *also* returns 403 `{"error":"Forbidden or entropy quota reached"}` |
 | 15 | The allotment period is monthly | F | "Once the monthly entropy quota has been reached, quantum entropy service requests will return an error code of 403." | No |
-| 16 | 429 means more than 30 requests per 10 seconds | A | "exceeded the maximum number of requests (30) allowed for the designated time interval (10 seconds)" | No (deliberately not triggered) |
+| 16 | 429 means more than 30 requests per 10 seconds | A | "exceeded the maximum number of requests (30) allowed for the designated time interval (10 seconds)" | **Stricter live:** Oct 14 ~6:58 PM PT, a 429 came back about 1 s after a single prior call (2nd request total). Retry after 15 s gave 200. Guidance: wait 10 s or more, never loop. |
 | 17 | 500 means an internal error; contact support | A | "The Qrypt service has encountered an internal error. Please contact Qrypt support" | No |
 | 18 | 503 means not enough entropy supply; retry later | A | "Qrypt’s supply of entropy is temporarily insufficient … Please wait and try the request again." | No |
 | 19 | Tokens are shown only once | F | "Qrypt only displays access tokens when they are first generated." | No |
@@ -37,4 +37,5 @@ A = https://docs.qrypt.com/eaas/ · F = https://docs.qrypt.com/faqs/ · B = proj
 | No rate-limit headers on a 200 | No `Retry-After` or `X-RateLimit-*` headers in the response |
 | Error bodies are JSON `{"error":"…"}` | Seen on the 400, 401 and 403 responses |
 | The docs' curl example leaves out the `Accept` header | Compare with Request table in A |
+| Live 429 after one prior call | `make live-js` got 429 ~1 s after `make live-py` (Oct 14, 2026 ~6:58 PM PT); 200 after waiting 15 s. See `reports/live-usage.log`. |
 | Quota size isn't documented | Not stated in A or F |
