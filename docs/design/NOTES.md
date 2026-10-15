@@ -27,3 +27,8 @@ Reference files are kept for study only; no Qrypt asset is hotlinked or served b
   (marked ↗, `rel=noopener`) – no 404s. Our pages: Quickstart, AI coding agents, Troubleshooting (+ anchors).
 - Code blocks keep our Pygments dark theme + CSS line numbers (theirs is a light `pre`).
 - Visible banner on every page: "Unofficial prototype – not affiliated with or endorsed by Qrypt".
+
+## Result (c8fbca1, deployed)
+- Screens: `screens/before-*.png` vs `screens/after-*.png`, plus `after-mobile-menu-open.png`.
+- Lighthouse mobile ×10 on `/`: LCP 0.88–1.03 s (p95 1.03 s), accessibility 100. `/troubleshooting` single run: LCP 0.93 s, a11y 100.
+- Inlined style.css 3.7 KB → 5.4 KB. Mobile menu tested: Enter opens + focuses first link, Escape closes + returns focus.
