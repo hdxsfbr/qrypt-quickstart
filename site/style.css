@@ -75,5 +75,5 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 .agent-section>h2{margin-top:0;color:#2b2a7a;font-size:1.25rem}
 .agent-section details{background:#fff}
 
-/* Short agent prompts: wrap long URLs instead of clipping */
-#c-prompt, #c-prompt-iso { white-space: pre-wrap; overflow-wrap: anywhere; }
+/* Short agent prompts: wrap only at spaces so each URL stays on one line; the code block scrolls sideways if a URL is wider than it */
+#c-prompt, #c-prompt-iso { white-space: pre-wrap; overflow-wrap: normal; word-break: normal; }
