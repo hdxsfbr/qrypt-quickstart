@@ -78,6 +78,8 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 /* Short agent prompts: wrap only at spaces so each URL stays on one line; the code block scrolls sideways if a URL is wider than it */
 #c-prompt, #c-prompt-iso { white-space: pre-wrap; overflow-wrap: normal; word-break: normal; }
 #c-prompt .url, #c-prompt-iso .url { white-space: nowrap; }
+/* Short file/path tokens (build adds .nb, max 32 chars) never split at - or / */
+code .nb{white-space:nowrap}
 
 /* Intro sentence and small labels above code blocks */
 .lede{font-size:1.075rem;color:#33384d;margin:.25rem 0 1rem}
@@ -120,7 +122,7 @@ p.lbl{margin:1rem 0 .25rem;font-weight:600;font-size:.9rem}</style><style>.hl{ba
 <p class="lede">Qrypt's API gives you random bytes from its quantum entropy source over one HTTPS call. You turn 32 of those bytes into an ordinary AES-256 key (AES is the Advanced Encryption Standard) and use it with the standard crypto library you already have.</p>
 <details class="agent-box">
 <summary>For AI coding agents</summary>
-<p>Prefer <a href="/llms.txt"><code>llms.txt</code></a> (also linked in the page head) or <code>AGENTS.md</code> in the <a href="/qrypt-quickstart-starter.zip">starter archive</a>. Never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Human-readable modes: <a href="#h-agent">below</a>.</p>
+<p>Prefer <a href="/llms.txt"><code>llms.txt</code></a> (also linked in the page head) or <code>AGENTS.md</code> in the <a href="/qrypt-quickstart-starter.zip">starter archive</a>. Never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code><span class="nb">QRYPT-ISOLATED.txt</span></code> exists you have no token on purpose: run mock tests and ask the human to run <code><span class="nb">agent-sandbox/verify.sh</span></code> on the host. Human-readable modes: <a href="#h-agent">below</a>.</p>
 </details>
 
 <p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
@@ -129,7 +131,7 @@ p.lbl{margin:1rem 0 .25rem;font-weight:600;font-size:.9rem}</style><style>.hl{ba
 <p>The trial form asks for two things: your full name and a work email. It does not say what the trial quota is, so check the portal after you sign up.</p>
 <h2 id="h-env">2. Save it in <code>.env</code></h2>
 <div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre class="hl" tabindex="0"><code id="c-env" data-lang="env"><span class="line"><span class="nv">QRYPT_API_KEY</span><span class="o">=</span>paste-your-token-here</span></code></pre></div>
-<p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check the file exists, run <code>test -f .env &amp;&amp; echo set</code>.</p>
+<p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check the file exists, run <code>test <span class="nb">-f</span> .env &amp;&amp; echo set</code>.</p>
 <h2 id="h-run">3. Run the snippet</h2>
 <p>Copy a snippet below, or download the <a href="/qrypt-quickstart-starter.zip">starter archive</a> (zip): both snippets, <code>requirements.txt</code>, <code>.env.example</code>, a mock server with tests, <code>AGENTS.md</code>, a <code>Makefile</code> and the Isolated Setup files. Inside it, <code>make check</code> runs every test against the mock with no token.</p>
 <div role="tablist" aria-label="Language">
@@ -241,7 +243,7 @@ p.lbl{margin:1rem 0 .25rem;font-weight:600;font-size:.9rem}</style><style>.hl{ba
 <span class="line"><span class="w">  </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span></span>
 <span class="line"><span class="p">}</span></span></code></pre>
 <h2 id="h-output">4. Expected output</h2>
-<pre class="hl" tabindex="0"><code data-lang="text"><span class="line">Success: AES-256-GCM round trip with a Qrypt key (not shown).</span></code></pre>
+<pre class="hl" tabindex="0"><code data-lang="text"><span class="line">Success: <span class="nb">AES-256-GCM</span> round trip with a Qrypt key (not shown).</span></code></pre>
 <h2 id="h-fp">Optional: see that the key changes</h2>
 <p>The core snippets stay within 25 lines, so this is a separate, optional extra. Add these lines to the end of your script to print the first 8 hex characters of a SHA-256 hash of the key. Each run should show a different value. A one-way hash this short shows the key changed without revealing it.</p>
 <p class="lbl">Python (end of <code>quickstart.py</code>)</p>
@@ -283,8 +285,8 @@ p.lbl{margin:1rem 0 .25rem;font-weight:600;font-size:.9rem}</style><style>.hl{ba
 <tr><th scope="row">Docker required</th><td>No</td><td>Yes</td></tr>
 <tr><th scope="row">Agent can access existing project secrets</th><td>Yes — unrestricted agents can read files, including <code>.env</code></td><td>No — project must not contain <code>.env</code>; host secrets stay off the mount</td></tr>
 <tr><th scope="row">Credential exposure risk</th><td>Behavioral only. Agents may log file contents. Use a disposable token.</td><td>Token never enters the agent container. Live verify runs fixed snippets on the host.</td></tr>
-<tr><th scope="row">Human credential setup</th><td>You create <code>.env</code> yourself; never paste the token into chat</td><td>You keep <code>.env</code> outside the project (e.g. <code>~/.config/qrypt/.env</code>)</td></tr>
-<tr><th scope="row">Live verification</th><td>Agent runs the example after you confirm <code>.env</code> is set</td><td>You run <code>agent-sandbox/verify.sh --env …</code> (sanitized PASS/FAIL only)</td></tr>
+<tr><th scope="row">Human credential setup</th><td>You create <code>.env</code> yourself; never paste the token into chat</td><td>You keep <code>.env</code> outside the project (e.g. <code><span class="nb">~/.config/qrypt/.env</span></code>)</td></tr>
+<tr><th scope="row">Live verification</th><td>Agent runs the example after you confirm <code>.env</code> is set</td><td>You run <code><span class="nb">agent-sandbox/verify.sh</span> <span class="nb">--env</span> …</code> (sanitized PASS/FAIL only)</td></tr>
 </tbody></table>
 
 <details open id="quick-setup">
@@ -313,10 +315,10 @@ Tell the agent only that it is set. Do not share the value.</li>
 <p>The agent runs in a container with <strong>no</strong> <code>.env</code>, no host home, no SSH keys, no cloud credentials and no Docker socket. Live verification is a separate host-side step that runs <em>fixed</em> snippets from this repo — never agent-modifiable code — with the real token.</p>
 <p>Sample agent prompt (after the sandbox is running against a clean project):</p>
 <div class="codebox"><button class="copy" data-target="c-prompt-iso" aria-label="Copy Isolated Setup agent prompt">Copy</button>
-<pre class="hl" tabindex="0"><code id="c-prompt-iso" data-lang="text"><span class="line">Use Isolated Setup for the Qrypt quickstart in this folder (see QRYPT-ISOLATED.txt).</span>
+<pre class="hl" tabindex="0"><code id="c-prompt-iso" data-lang="text"><span class="line">Use Isolated Setup for the Qrypt quickstart in this folder (see <span class="nb">QRYPT-ISOLATED.txt</span>).</span>
 <span class="line">Follow <span class="url">https://qrypt-quickstart.pages.dev/</span> and <span class="url">https://qrypt-quickstart.pages.dev/llms.txt.</span></span></code></pre></div>
 <ol>
-<li>Download and unzip the <a href="/qrypt-quickstart-starter.zip">starter archive</a>. It holds the <code>agent-sandbox/</code> folder (Dockerfile, <code>run.sh</code>, <code>verify.sh</code>, <code>test-isolation.sh</code>, README) plus the fixed snippets that <code>verify.sh</code> runs. Run the commands below from the unzipped folder. (Single files are still at <a href="/agent-sandbox/README.md">/agent-sandbox/</a>.)</li>
+<li>Download and unzip the <a href="/qrypt-quickstart-starter.zip">starter archive</a>. It holds the <code><span class="nb">agent-sandbox/</span></code> folder (Dockerfile, <code>run.sh</code>, <code>verify.sh</code>, <code><span class="nb">test-isolation.sh</span></code>, README) plus the fixed snippets that <code>verify.sh</code> runs. Run the commands below from the unzipped folder. (Single files are still at <a href="/agent-sandbox/README.md">/agent-sandbox/</a>.)</li>
 <li>Keep the token <em>outside</em> the project the agent will see:
 <div class="codebox"><button class="copy" data-target="c-iso-env" aria-label="Copy isolated env setup commands">Copy</button>
 <pre class="hl" tabindex="0"><code id="c-iso-env" data-lang="bash"><span class="line">mkdir<span class="w"> </span>-p<span class="w"> </span>~/.config/qrypt</span>
@@ -331,7 +333,7 @@ Tell the agent only that it is set. Do not share the value.</li>
 <pre class="hl" tabindex="0"><code id="c-iso-verify" data-lang="bash"><span class="line">agent-sandbox/verify.sh<span class="w"> </span>--env<span class="w"> </span>~/.config/qrypt/.env</span>
 <span class="line"><span class="c1"># -&gt; verify python: PASS (AES-GCM round trip; key not shown)</span></span></code></pre></div></li>
 </ol>
-<p><strong>Honesty about isolation:</strong> this blocks the common failure mode (agents reading <code>.env</code>). It does <em>not</em> claim Docker guarantees zero leakage. A malicious <code>SANDBOX_DOCKER_ARGS</code> that remounts your home directory, a compromised agent binary, or a container escape is out of scope. The boundaries we <em>do</em> claim are checked by <code>agent-sandbox/test-isolation.sh</code>.</p>
+<p><strong>Honesty about isolation:</strong> this blocks the common failure mode (agents reading <code>.env</code>). It does <em>not</em> claim Docker guarantees zero leakage. A malicious <code>SANDBOX_DOCKER_ARGS</code> that remounts your home directory, a compromised agent binary, or a container escape is out of scope. The boundaries we <em>do</em> claim are checked by <code><span class="nb">agent-sandbox/test-isolation.sh</span></code>.</p>
 </details>
 </section>
 

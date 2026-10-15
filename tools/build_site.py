@@ -57,6 +57,22 @@ def theme_css():
     return "\n".join(rules) + "\n"
 
 
+NOBREAK_MAX = 32  # longer tokens may still wrap, so they never overflow a 390 px screen
+
+
+def nobreak(m):
+    """Keep a short file/path token (e.g. agent-sandbox/, QRYPT-ISOLATED.txt) on one line. Markup only."""
+    tok = m.group(0)
+    return f'<span class="nb">{tok}</span>' if len(tok) <= NOBREAK_MAX else tok
+
+
+def nobreak_inline(m):
+    body = m.group(1)
+    if "<" in body:
+        return m.group(0)
+    return "<code>" + re.sub(r"\S+", lambda t: nobreak(t) if re.search(r"\w[-/]|[-/]\w", t.group(0)) else t.group(0), body) + "</code>"
+
+
 def highlight_block(match):
     attrs, lang, code = match.group(1), match.group(2), match.group(3)
     source = html.unescape(code)
@@ -65,6 +81,7 @@ def highlight_block(match):
     # Pygments maps unknown/"Text" tokens to no class: keep them as-is.
     if lang == "text":  # prose prompts: keep each URL unbroken (markup only; copied text is unchanged)
         out = re.sub(r"https?://[^\s<]+", lambda m: f'<span class="url">{m.group(0)}</span>', out)
+        out = re.sub(r"(?<![\w/.~>-])[\w.~/-]*\w[-/][\w.~/-]*\w(?![^<]*</span>)", nobreak, out)
     lines = out.rstrip("\n").split("\n")
     body = "\n".join(f'<span class="line">{line}</span>' for line in lines)
     if source.endswith("\n"):
@@ -79,6 +96,7 @@ BLOCK = re.compile(r'<pre><code([^>]*data-lang="([a-z]+)"[^>]*)>(.*?)</code></pr
 def render(text):
     for marker, path in SNIPPETS.items():
         text = text.replace(marker, html.escape(path.read_text()))
+    text = re.sub(r"<code>(.*?)</code>", nobreak_inline, text, flags=re.S)  # inline code only (blocks carry attributes)
     return BLOCK.sub(highlight_block, text)
 
 

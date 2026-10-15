@@ -78,6 +78,8 @@ table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}
 /* Short agent prompts: wrap only at spaces so each URL stays on one line; the code block scrolls sideways if a URL is wider than it */
 #c-prompt, #c-prompt-iso { white-space: pre-wrap; overflow-wrap: normal; word-break: normal; }
 #c-prompt .url, #c-prompt-iso .url { white-space: nowrap; }
+/* Short file/path tokens (build adds .nb, max 32 chars) never split at - or / */
+code .nb{white-space:nowrap}
 
 /* Intro sentence and small labels above code blocks */
 .lede{font-size:1.075rem;color:#33384d;margin:.25rem 0 1rem}
