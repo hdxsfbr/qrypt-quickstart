@@ -1,33 +1,48 @@
-# Qrypt quickstart (Python): turn 1 KiB of quantum entropy into an AES-256-GCM key.
-# Needs: pip install -r requirements.txt  and a .env file with QRYPT_API_KEY=...
-import base64, os, sys
-import requests
-from dotenv import load_dotenv
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+# Qrypt quickstart (Python): 1 KiB of quantum entropy -> AES-256-GCM key.
+# Setup: pip install requests cryptography python-dotenv
+# Then put QRYPT_API_KEY=<your token> in a .env file next to this script.
+import base64
+import os
+import sys
 
+import requests
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from dotenv import load_dotenv
+
+API = os.getenv("QRYPT_BASE_URL", "https://api-eus.qrypt.com")  # mock override
+
+# One friendly message per failure. We never retry automatically.
+HELP = {None: "QRYPT_API_KEY is missing: add it to .env (see .env.example).",
+        400: "400: size must be 1-512. It counts KiB, not bytes.",
+        401: "401: Authorization header missing, malformed or expired.",
+        403: "403: Token invalid OR monthly quota used. Check the token first.",
+        429: "429: rate limited. Live can return 429 about 1 s after a single "
+             "prior call; wait 10 s or more and never loop."}
+# 500, 503 and anything else: Qrypt is busy or erroring, so try again later.
+
+# Step 1: read the token from .env. Never print or log it.
 load_dotenv()
-token = os.getenv("QRYPT_API_KEY")
-if not token:
-    sys.exit("QRYPT_API_KEY is missing. Copy .env.example to .env and paste your token from portal.qrypt.com.")
-base = os.getenv("QRYPT_BASE_URL", "https://api-eus.qrypt.com")  # override only for the mock server
-# size is in KiB, not bytes: size=1 returns 1,024 bytes. A custom User-Agent avoids Cloudflare's urllib block.
+token = os.getenv("QRYPT_API_KEY") or sys.exit(HELP[None])
+
+# Step 2: fetch 1 KiB of entropy. A custom User-Agent avoids Cloudflare's
+# block on Python's urllib; X-Qrypt-Client tags quickstart traffic.
+headers = {
+    "Authorization": f"Bearer {token}", "Accept": "application/json",
+    "User-Agent": "qrypt-quickstart/1.0", "X-Qrypt-Client": "quickstart-py/1.0"}
 try:
-    r = requests.get(f"{base}/api/v1/quantum-entropy", params={"size": 1}, timeout=15, headers={
-        "Authorization": f"Bearer {token}", "Accept": "application/json",
-        "User-Agent": "qrypt-quickstart/1.0", "X-Qrypt-Client": "quickstart-py/1.0"})
-    data = r.json() if r.status_code == 200 else None
-except (requests.RequestException, ValueError) as e:
-    sys.exit(f"Network error or non-JSON reply from Qrypt ({type(e).__name__}). Check your connection, proxy or TLS settings, then try again shortly.")
-errors = {
-    400: "400 Bad request: size must be an integer from 1 to 512 (it counts KiB, not bytes).",
-    401: "401 Missing, malformed or expired token header: it must be 'Bearer <token>'.",
-    403: "403 Token invalid OR monthly quota reached. Check the token first (Qrypt returns 403 for a wrong token, not 401).",
-    429: "429 Rate limited. Live can return 429 about 1 s after a single prior call; wait 10 s or more and never loop.",
-    500: "500 Qrypt internal error. Try again shortly; contact support@qrypt.com if it persists.",
-    503: "503 Qrypt entropy supply is temporarily low. Try again shortly."}
-if r.status_code != 200:
-    sys.exit(errors.get(r.status_code, f"Unexpected HTTP {r.status_code}. See the troubleshooting page."))
-key = base64.b64decode(data["random"][0])[:32]  # decode first, then take 32 bytes = AES-256 key
+    resp = requests.get(f"{API}/api/v1/quantum-entropy", params={"size": 1},
+                        headers=headers, timeout=15)
+    if resp.status_code != 200:
+        sys.exit(HELP.get(resp.status_code, f"{resp.status_code}: Qrypt is "
+                          "busy or erroring. Try again shortly."))
+    entropy_b64 = resp.json()["random"][0]
+except (requests.RequestException, ValueError):
+    sys.exit("Network error or non-JSON reply: check proxy/TLS, retry soon.")
+
+# Step 3: decode first, then keep 32 bytes as the AES-256 key.
+key = base64.b64decode(entropy_b64)[:32]
+
+# Step 4: encrypt and decrypt a sample message with AES-256-GCM.
 aes, nonce, message = AESGCM(key), os.urandom(12), b"hello, quantum entropy"
 assert aes.decrypt(nonce, aes.encrypt(nonce, message, None), None) == message
-print("Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).")
+print("Success: AES-256-GCM round trip with a Qrypt key (not shown).")
