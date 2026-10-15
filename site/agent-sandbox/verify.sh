@@ -52,6 +52,10 @@ run_one() {
   # we show the user. Only the success/error line should remain.
   if [ $rc -eq 0 ] && grep -q '^Success:' <<<"$out"; then
     echo "verify $name: PASS (AES-GCM round trip; key not shown)"
+    if [ -z "$base" ]; then
+      mkdir -p "$repo/reports"
+      echo "live bytes: 1024 (verify.sh $name $(date -u +%Y-%m-%dT%H:%MZ))" >> "$repo/reports/live-usage.log"
+    fi
     return 0
   fi
   # Map known friendly errors; never echo raw output (may contain headers).
@@ -70,16 +74,10 @@ fail=0
 if [ "$lang" = py ] || [ "$lang" = both ]; then
   python3 -m venv "$work/py/.venv" >/dev/null
   "$work/py/.venv/bin/pip" -q install -r "$work/py/requirements.txt" >/dev/null
-  run_one python "$work/py/.venv/bin/python" "$work/py/quickstart.py" || fail=1
+  (cd "$work/py" && run_one python .venv/bin/python quickstart.py) || fail=1
 fi
 if [ "$lang" = js ] || [ "$lang" = both ]; then
-  run_one node node "$work/js/quickstart.mjs" || fail=1
+  (cd "$work/js" && run_one node node quickstart.mjs) || fail=1
 fi
 # Log bytes used without recording the token (1 KiB per successful call).
-if [ $fail -eq 0 ] && [ -z "$base" ]; then
-  n=0; [ "$lang" = both ] && n=2 || n=1
-  mkdir -p "$repo/reports"
-  echo "live bytes: $((n * 1024)) (verify.sh $(date -u +%Y-%m-%dT%H:%MZ))" \
-    >> "$repo/reports/live-usage.log"
-fi
 exit $fail

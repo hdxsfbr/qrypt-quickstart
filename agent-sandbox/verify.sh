@@ -52,6 +52,10 @@ run_one() {
   # we show the user. Only the success/error line should remain.
   if [ $rc -eq 0 ] && grep -q '^Success:' <<<"$out"; then
     echo "verify $name: PASS (AES-GCM round trip; key not shown)"
+    if [ -z "$base" ]; then
+      mkdir -p "$repo/reports"
+      echo "live bytes: 1024 (verify.sh $name $(date -u +%Y-%m-%dT%H:%MZ))" >> "$repo/reports/live-usage.log"
+    fi
     return 0
   fi
   # Map known friendly errors; never echo raw output (may contain headers).
@@ -76,10 +80,4 @@ if [ "$lang" = js ] || [ "$lang" = both ]; then
   (cd "$work/js" && run_one node node quickstart.mjs) || fail=1
 fi
 # Log bytes used without recording the token (1 KiB per successful call).
-if [ $fail -eq 0 ] && [ -z "$base" ]; then
-  n=0; [ "$lang" = both ] && n=2 || n=1
-  mkdir -p "$repo/reports"
-  echo "live bytes: $((n * 1024)) (verify.sh $(date -u +%Y-%m-%dT%H:%MZ))" \
-    >> "$repo/reports/live-usage.log"
-fi
 exit $fail
