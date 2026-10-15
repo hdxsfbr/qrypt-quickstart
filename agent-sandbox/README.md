@@ -1,23 +1,62 @@
-# Agent sandbox: keep AI agents from reading .env
+# Isolated Setup (Docker)
 
-**Why:** in our agent-readiness tests, agents ran `head -c 20 .env` in 14 of 15 runs, despite the docs telling them not to. File permissions stop that. Docs don't.
+Run an AI coding agent **without giving it your Qrypt token**. The agent can
+read the docs, write the example, install dependencies and run the **mock**
+tests. Live verification is a separate, trusted step you run yourself.
 
-**How it works:**
-- The agent runs in Docker as user `agent`.
-- `run.sh` passes `.env` into the container by an environment-variable *name*, never on the command line, and removes the readable copy from the project folder. The entrypoint writes it to `/work/.env`, owned by a separate user `qrypt` with mode 600, then starts the agent with that variable removed from its environment.
-- The entrypoint also writes a read-only `QRYPT-SANDBOX-README.txt` hint into the folder (added after a Claude Code run gave up without finding `qrypt-run`).
-- `qrypt-run file.py|file.mjs|file.js` is the only way in. It's a fixed sudo rule that runs one program file from `/work` as `qrypt`, so the snippet still reads `QRYPT_API_KEY` from `.env`.
+## What this isolates (and what it does not)
 
+| Property | Status |
+|---|---|
+| Agent process has no `QRYPT_API_KEY` in its environment | Yes (enforced, tested) |
+| Agent filesystem has no `.env` | Yes (`run.sh` refuses to start if the project contains one) |
+| Host home, SSH keys, cloud creds, Docker socket not mounted | Yes (default `run.sh`) |
+| Agent cannot modify the code that runs with the real token | Yes (`verify.sh` copies fixed snippets from this repo into a private temp dir) |
+| Docker guarantees zero leakage | **No.** A compromised agent CLI binary, a malicious `SANDBOX_DOCKER_ARGS`, or a kernel/container escape is out of scope. Review what you mount. |
+
+## Quick start
 ```bash
-agent-sandbox/run.sh ~/my-project ~/my-project/.env your-agent-command   # or no command, for a shell
-# inside: cat .env -> Permission denied;  qrypt-run quickstart.py -> Success
+# 1. Put your token somewhere the agent will never see:
+mkdir -p ~/.config/qrypt
+cp .env.example ~/.config/qrypt/.env   # then edit; chmod 600
+chmod 600 ~/.config/qrypt/.env
+
+# 2. Work in a clean project folder (no .env inside it):
+mkdir -p ~/qrypt-demo && cd ~/qrypt-demo
+# (agent will create the example files here)
+
+# 3. Start the agent inside the sandbox (no secrets enter the container):
+path/to/qrypt-quickstart/agent-sandbox/run.sh ~/qrypt-demo your-agent-command
+
+# 4. Inside: implement from https://qrypt-quickstart.pages.dev/ , then
+#    run the mock tests (no real token needed):
+#      QRYPT_BASE_URL=http://host.docker.internal:...  (or use the repo mock)
+
+# 5. On the HOST, after the agent finishes, verify against the live API:
+path/to/qrypt-quickstart/agent-sandbox/verify.sh --env ~/.config/qrypt/.env
+# -> "verify python: PASS ..." / "verify node: PASS ..."
 ```
-`.env` now lives in the project folder as uid 1500, mode 600. To remove it: `docker run --rm -v ~/my-project:/w alpine rm /w/.env`.
 
-**Checked by hand (Oct 14, 2026):**
-- As `agent`: `cat .env`, `head .env`, `sudo -u qrypt cat .env` and `sudo cat .env` are all denied.
-- `qrypt-run .env` and `qrypt-run /etc/shadow` are refused.
-- The agent's environment doesn't contain the token.
-- `qrypt-run quickstart.py` prints the success line.
+## Existing repos
+Do **not** mount a repo that already contains `.env`, `*.pem`, SSH keys or
+cloud credentials. Either:
+- work in a fresh directory and copy only the source you want the agent to see, or
+- move secrets out of the tree first (`mv .env ~/.config/qrypt/.env`).
 
-**Limits:** this blocks accidental reads, not a deliberately malicious agent. An agent could still write a program that prints the token and run it with `qrypt-run`. Use a test token, and review what the agent runs.
+`run.sh` refuses to start if `$project/.env` exists, so a forgotten secret
+file cannot ride in through the bind mount. `.dockerignore` excludes common
+secret names from the **image build** context; that does **not** protect you
+from bind mounts — `run.sh`'s refusal does.
+
+## Isolation tests
+```bash
+agent-sandbox/test-isolation.sh    # no real token; exits 0 on PASS
+```
+
+## Limits (read this)
+- This is stronger than "please don't read .env" in a prompt. It is **not** a
+  formal guarantee against a determined attacker with a container escape.
+- `SANDBOX_DOCKER_ARGS` lets you mount an agent CLI. If you mount your home
+  directory or docker.sock there, you undo the isolation. Don't.
+- `verify.sh` spends 1 KiB of real entropy per language. Use a disposable
+  token when you can.
