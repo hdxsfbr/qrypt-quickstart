@@ -1,3 +1,0 @@
-#!/bin/sh
-# Usage: qrypt-run quickstart.py | quickstart.mjs   (runs it in /work as the user who can read .env)
-exec sudo -n -u qrypt /usr/local/bin/qrypt-run-inner "$@"
