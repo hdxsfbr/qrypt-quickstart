@@ -1,14 +1,14 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qrypt quantum entropy quickstart: AES-256 key in 5 minutes</title><meta name="description" content="Get an AES-256-GCM key from Qrypt quantum entropy in about 5 minutes with Python or Node."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"></head><body>
 <a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main">
 <h1>Make an AES-256 key from quantum entropy</h1>
-<aside class="agent-note" aria-label="Note for AI coding agents"><p><strong>AI coding agents, read this first:</strong> if a <code>.env</code> file already exists, do not open or print it in any way (no <code>cat</code>, <code>head</code>, <code>sed</code> or <code>ls</code> of its contents). Check it only with <code>grep -q '^QRYPT_API_KEY=.' .env &amp;&amp; echo set</code>. If <code>.env</code> says <em>Permission denied</em>, you are in the Qrypt agent sandbox on purpose: do not try to read it, and <strong>you must</strong> run your program with <code>qrypt-run quickstart.py</code> (or <code>qrypt-run quickstart.mjs</code>). Keep the generated key in memory only. Never write it to a file (such as <code>aes-256.key</code>), print it or log it. Create the project files in the current directory, next to <code>.env</code>. Do not make a subfolder or copy <code>.env</code>. Machine-readable version: <a href="/llms.txt">/llms.txt</a>.</p></aside>
+<aside class="agent-note" aria-label="Note for AI coding agents"><p><strong>AI coding agents, read this first:</strong> never read, print or dump <code>.env</code> or environment variables, and never ask the human to paste the token into chat. Ask them to create <code>.env</code> themselves and confirm it is set. If <code>QRYPT-ISOLATED.txt</code> exists you have no token on purpose: run mock tests and ask the human to run <code>agent-sandbox/verify.sh</code> on the host. Full rules: <a href="#quick-setup">Quick Setup</a> and <a href="/llms.txt">llms.txt</a>.</p></aside>
 
 <p><span class="time">Time target: about 5 minutes</span> No SDK needed: one HTTPS GET, then standard crypto.</p>
 <h2>1. Get a token</h2>
 <p>Create an account at <a href="https://portal.qrypt.com/register">portal.qrypt.com/register</a> and generate a token for the <strong>Entropy</strong> service. It is shown only once and is billed like a password: keep it secret.</p>
 <h2>2. Save it in <code>.env</code></h2>
 <div class="codebox"><button class="copy" data-target="c-env" aria-label="Copy .env line">Copy</button><pre class="hl" tabindex="0"><code id="c-env" data-lang="env"><span class="line"><span class="nv">QRYPT_API_KEY</span><span class="o">=</span>paste-your-token-here</span></code></pre></div>
-<p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check it is set, run <code>grep -q '^QRYPT_API_KEY=.' .env &amp;&amp; echo set</code>.</p>
+<p>Put <code>.env</code> next to the script and add it to <code>.gitignore</code>. Never print it, not even partly (no <code>cat .env</code>). To check the file exists, run <code>test -f .env &amp;&amp; echo set</code>.</p>
 <h2>3. Run the snippet</h2>
 <div role="tablist" aria-label="Language">
 <button role="tab" id="t-py" aria-selected="true" aria-controls="p-py">Python</button>
@@ -119,7 +119,7 @@
 <span class="line"><span class="w">  </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span></span>
 <span class="line"><span class="p">}</span></span></code></pre>
 <h2>4. Expected output</h2>
-<pre class="hl" tabindex="0"><code data-lang="text"><span class="line">Success: AES-256-GCM round trip with a Qrypt entropy key (key not shown).</span></code></pre>
+<pre class="hl" tabindex="0"><code data-lang="text"><span class="line">Success: AES-256-GCM round trip with a Qrypt key (not shown).</span></code></pre>
 <h2>Things that trip people up</h2>
 <ul><li><code>size</code> counts <strong>KiB</strong>, not bytes. Ask for <code>size=1</code> (1,024 bytes) and take 32 bytes.</li>
 <li>Base64-decode the string first; never use the text itself as the key.</li>
@@ -163,6 +163,7 @@
 <span class="line">- NEVER enable verbose HTTP logging that would log Authorization headers.</span>
 <span class="line">- Ask me to create .env myself (QRYPT_API_KEY=...) and confirm when it is set.</span>
 <span class="line">- After I confirm, run the example. Keep the key in memory only (no key files).</span>
+<span class="line">- If you read .env or a credential by accident, stop and tell me so I can rotate it.</span>
 <span class="line">- Report success with the success line only. Never display the token, entropy or key.</span>
 <span class="line"></span>
 <span class="line">Security reminder for me at the end: review this agent session for credential exposure and rotate any exposed or potentially compromised API credentials, including unrelated project credentials. Rotating the Qrypt token alone does not protect other secrets.</span></code></pre></div></li>

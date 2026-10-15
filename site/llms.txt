@@ -9,6 +9,7 @@
 - NEVER ask the human to paste QRYPT_API_KEY into chat, a prompt, CLI args or source code.
 - NEVER read, print, cat, head, sed, less, or dump `.env` or environment variables. NEVER enable verbose HTTP logging of Authorization headers.
 - To check a `.env` exists without reading it: `test -f .env && echo set` (Quick Setup only). If that fails with Permission denied, you are misconfigured — stop and tell the human to use Isolated Setup.
+- If you read .env or any credential by accident, stop and tell the human so they can rotate it.
 - Keep the generated key in memory only. Do NOT write it to a file (no aes-256.key, no key.bin). "Generate a key" means: run the AES-GCM round trip and print the success line.
 - At the end, remind the human: review this agent session for credential exposure and rotate any exposed or potentially compromised API credentials, including unrelated project credentials. Rotating the Qrypt token alone does not protect other secrets.
 
