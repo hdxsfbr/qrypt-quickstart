@@ -64,7 +64,8 @@
 <ol>
 <li>Paste this prompt into Claude Code, Codex, Cursor or another coding agent:
 <div class="codebox"><button class="copy" data-target="c-prompt" aria-label="Copy Quick Setup agent prompt">Copy</button>
-<pre><code id="c-prompt" data-lang="text">Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.</code></pre></div></li>
+<pre><code id="c-prompt" data-lang="text">Set up the Qrypt quickstart and run the Python snippet.
+Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.</code></pre></div></li>
 <li>The agent reads the quickstart, picks a language, implements with the official snippets and runs the mock tests.</li>
 <li>When asked, create <code>.env</code> yourself (never paste the token into the chat):
 <div class="codebox"><button class="copy" data-target="c-env2" aria-label="Copy .env example line">Copy</button>
@@ -81,7 +82,8 @@ Tell the agent only that it is set. Do not share the value.</li>
 <p>The agent runs in a container with <strong>no</strong> <code>.env</code>, no host home, no SSH keys, no cloud credentials and no Docker socket. Live verification is a separate host-side step that runs <em>fixed</em> snippets from this repo — never agent-modifiable code — with the real token.</p>
 <p>Sample agent prompt (after the sandbox is running against a clean project):</p>
 <div class="codebox"><button class="copy" data-target="c-prompt-iso" aria-label="Copy Isolated Setup agent prompt">Copy</button>
-<pre><code id="c-prompt-iso" data-lang="text">Use Isolated Setup for the Qrypt quickstart in this folder (see QRYPT-ISOLATED.txt). Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.</code></pre></div>
+<pre><code id="c-prompt-iso" data-lang="text">Use Isolated Setup for the Qrypt quickstart in this folder (see QRYPT-ISOLATED.txt).
+Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.</code></pre></div>
 <ol>
 <li>Download the sandbox into one folder: <a href="/agent-sandbox/Dockerfile">Dockerfile</a>, <a href="/agent-sandbox/run.sh">run.sh</a>, <a href="/agent-sandbox/verify.sh">verify.sh</a>, <a href="/agent-sandbox/test-isolation.sh">test-isolation.sh</a>, <a href="/agent-sandbox/README.md">README.md</a>. Then <code>chmod +x agent-sandbox/*.sh</code>.</li>
 <li>Keep the token <em>outside</em> the project the agent will see:
