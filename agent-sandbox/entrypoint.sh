@@ -7,4 +7,4 @@ if [ -n "${QRYPT_DOTENV:-}" ]; then
   rm -f /work/.env
   (umask 077; printf '%s\n' "$QRYPT_DOTENV" > /work/.env); chown qrypt:qrypt /work/.env
 fi
-exec env -u QRYPT_DOTENV sudo -u agent -H --preserve-env=TERM,PATH "$@"
+exec env -u QRYPT_DOTENV sudo -u agent -H --preserve-env=TERM env PATH="$PATH" "$@"
