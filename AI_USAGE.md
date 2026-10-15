@@ -17,7 +17,14 @@
 
 There were also 2 undocumented behaviors we added that weren't in any source: Cloudflare blocking `Python-urllib`, and the missing rate-limit headers. See `docs/claims-to-source.md`.
 
-## Agent-readiness test subject
+## Agent-readiness test subjects
+- Cursor CLI `cursor-agent` 2026.10.01-e373342 (model "Auto"): rounds 1–4
+- OpenAI Codex CLI `codex-cli 0.162.1` (ChatGPT login, default model), via `codex exec --dangerously-bypass-approvals-and-sandbox --json`: plain and sandbox rounds
+- Claude Code `2.1.296` (Claude subscription login, default model), via `claude -p --dangerously-skip-permissions --output-format stream-json`: plain and sandbox rounds
+
+All agents got the same prompt, below.
+
+### Original Cursor details
 - **Agent:** Cursor CLI `cursor-agent` `2026.10.01-e373342`, model "Auto", headless (`-p --force --trust`).
 - **Exact prompt** (identical for all 15 runs):
   ```

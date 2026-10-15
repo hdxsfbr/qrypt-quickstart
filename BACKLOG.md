@@ -21,5 +21,10 @@ Evidence links point to `AGENT_READINESS.md`, `agent-readiness/runs.csv`, `docs/
 | 9 | **Clean-machine agent test in CI** (a container with no home-directory configs, run monthly) | 50 | 1 | 80% | 1 | **40** | Our runs read the user's home skills and MCP tools, and found pre-installed packages |
 | 10 | **Third-language snippet (Go) and an official-docs link to this quickstart** | 100 | 1 | 50% | 1 | **50** | The brief lists it as a stretch goal. Developers in other languages hit the same base64 and KiB gotchas. |
 
+| 11 | **Say "no key-derived output"** in the docs and snippets: no fingerprints or hashes of the key. Print only the success line. | 100 | 0.5 | 70% | 0.1 | **350** | Claude Code printed a 16-hex SHA-256 fingerprint of the key in 3 runs |
+| 12 | **Ship `QRYPT-SANDBOX-README.txt`-style hints with any restricted setup.** Agents read the folder listing before the docs. | 100 | 1 | 80% | 0.1 | ✅ done (`42c864f`) | Claude gave up 1/5 runs without the hint and succeeded 5/5 with it |
+
+Items #11 and #12 came from the cross-agent rounds (Codex and Claude Code). The key-to-disk finding (Codex 5/5) was fixed directly in the docs (`8985bbd`) and is not a backlog item.
+
 **Sorted by score:** #6 (2000), #1 (960), #3 (720), #5 (432), #4 (240), #8 (160), #7 (105), #2 (100), #10 (50), #9 (40).
 **Recommendation:** #1 is done (`agent-sandbox/`, see AGENT_READINESS.md round 4). Do #6 this week, since it's cheap. #3, #5 and #4 are asks for Qrypt (Sean Neal) and can go in one email.
