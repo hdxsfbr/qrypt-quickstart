@@ -10,7 +10,7 @@ Evidence links point to `AGENT_READINESS.md`, `agent-readiness/runs.csv`, `docs/
 
 | # | Item | Reach | Impact | Conf. | Effort (wk) | **RICE** | Evidence |
 |---|---|---|---|---|---|---|---|
-| 1 | **Agent mode without a token on disk:** recommend `export QRYPT_API_KEY` from a secret manager, or a `.env` the agent can't read (an ignore rule in `.cursorignore`/`.claudeignore`), and document it for each agent | 200 | 3 | 80% | 0.5 | **960** | A secret peek in 14 of 15 runs, despite two doc revisions |
+| 1 | ✅ **DONE (Oct 14): `agent-sandbox/`.** Round 4: 5/5 working, 0/5 leaks. *Original item:* **Agent mode without a token on disk:** recommend `export QRYPT_API_KEY` from a secret manager, or a `.env` the agent can't read (an ignore rule in `.cursorignore`/`.claudeignore`), and document it for each agent | 200 | 3 | 80% | 0.5 | **960** | A secret peek in 14 of 15 runs, despite two doc revisions |
 | 2 | **Ask Qrypt for short-lived or scoped tokens** (for example 1-hour test tokens) so a leaked transcript is low-risk | 400 | 2 | 50% | 4 | **100** | Up to 36 of 40 token characters reached transcripts (round 2) |
 | 3 | **Ask Qrypt to return 401 for a wrong token** (keep 403 for quota only) | 400 | 2 | 90% | 1 | **720** | Live test: a bad token returned 403 "Forbidden or entropy quota reached" |
 | 4 | **Ask Qrypt to send `Retry-After` / `X-RateLimit-*` headers** and to document the real 429 behavior | 150 | 2 | 80% | 1 | **240** | No rate-limit headers on any response. A 429 came back about 1 s after a single call, stricter than "30 per 10 s". |
@@ -22,4 +22,4 @@ Evidence links point to `AGENT_READINESS.md`, `agent-readiness/runs.csv`, `docs/
 | 10 | **Third-language snippet (Go) and an official-docs link to this quickstart** | 100 | 1 | 50% | 1 | **50** | The brief lists it as a stretch goal. Developers in other languages hit the same base64 and KiB gotchas. |
 
 **Sorted by score:** #6 (2000), #1 (960), #3 (720), #5 (432), #4 (240), #8 (160), #7 (105), #2 (100), #10 (50), #9 (40).
-**Recommendation:** do #6 and #1 this week, since both are cheap. #3, #5 and #4 are asks for Qrypt (Sean Neal) and can go in one email.
+**Recommendation:** #1 is done (`agent-sandbox/`, see AGENT_READINESS.md round 4). Do #6 this week, since it's cheap. #3, #5 and #4 are asks for Qrypt (Sean Neal) and can go in one email.

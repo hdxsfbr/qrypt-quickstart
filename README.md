@@ -18,3 +18,10 @@ Requirements: Python 3.9+, Node 20.12+.
 - `PRD.md`, `docs/` — PRD, research, claims-to-source
 
 Tokens are never printed; `.env` is gitignored.
+
+## Using an AI coding agent?
+In our tests, agents read part of `.env` in 14 of 15 runs, whatever the docs said. Run the agent in `agent-sandbox/` instead: `.env` is owned by a separate user, so the agent gets *Permission denied*, and `qrypt-run quickstart.py` runs the snippet as the user who can read it. Round 4 of the agent test: 5/5 working, 0/5 token leaks. See `agent-sandbox/README.md` and `AGENT_READINESS.md`.
+```bash
+agent-sandbox/run.sh ~/my-project ~/my-project/.env your-agent-command
+```
+
