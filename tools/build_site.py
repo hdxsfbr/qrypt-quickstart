@@ -63,6 +63,8 @@ def highlight_block(match):
     lexer = get_lexer_by_name(LEXERS[lang])
     out = highlight(source, lexer, HtmlFormatter(nowrap=True))
     # Pygments maps unknown/"Text" tokens to no class: keep them as-is.
+    if lang == "text":  # prose prompts: keep each URL unbroken (markup only; copied text is unchanged)
+        out = re.sub(r"https?://[^\s<]+", lambda m: f'<span class="url">{m.group(0)}</span>', out)
     lines = out.rstrip("\n").split("\n")
     body = "\n".join(f'<span class="line">{line}</span>' for line in lines)
     if source.endswith("\n"):
