@@ -1,4 +1,83 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/highlight.css"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Troubleshooting Qrypt quickstart errors</title><meta name="description" content="Symptom, cause and fix for every Qrypt entropy API error code."><style>:root{--fg:#111;--bg:#fff;--mut:#444;--acc:#0b57d0;--code:#f4f4f6}
+*{box-sizing:border-box}
+body{margin:0;font:1rem/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--fg);background:var(--bg)}
+.skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:#fff;padding:.5rem;z-index:9}
+header,main,footer{max-width:52rem;margin:0 auto;padding:1rem}
+nav a{margin-right:1rem}
+a{color:var(--acc)}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1{font-size:1.8rem;line-height:1.25}
+pre{background:#0d1117;color:#e6edf3;padding:1rem;overflow-x:auto;white-space:pre;font-size:.875rem;line-height:1.55;border-radius:6px;margin:0}
+:not(pre)>code{background:var(--code);padding:0 .2em;border-radius:3px}
+code{font-family:ui-monospace,Menlo,Consolas,monospace}
+.codebox{position:relative;margin:.5rem 0 1.25rem}
+.copy{position:absolute;top:.4rem;right:.4rem;font:inherit;font-size:.85rem;padding:.25rem .6rem;border:1px solid #888;border-radius:4px;background:#fff;color:#111;cursor:pointer}
+[role=tablist]{display:flex;gap:.25rem;border-bottom:2px solid #ccc}
+[role=tab]{font:inherit;padding:.5rem 1rem;border:1px solid #ccc;border-bottom:none;background:#eee;color:#111;cursor:pointer;border-radius:6px 6px 0 0}
+[role=tab][aria-selected=true]{background:#fff;font-weight:600;border-color:#555}
+.time{display:inline-block;background:#e6f0ff;color:#0a2a66;padding:.2rem .6rem;border-radius:4px;font-weight:600}
+table{border-collapse:collapse;width:100%}th,td{border:1px solid #bbb;padding:.4rem;text-align:left;vertical-align:top}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+body{overflow-wrap:break-word}pre,pre code{overflow-wrap:normal;word-break:normal}
+:not(pre)>code{overflow-wrap:anywhere}
+.tw{overflow-x:auto}
+@media (max-width:40rem){.tw caption{display:block;text-align:left;font-weight:600;margin-bottom:.5rem}.tw table,.tw thead,.tw tbody,.tw tr,.tw th,.tw td{display:block}.tw thead{position:absolute;left:-9999px}.tw tr{border:1px solid #bbb;margin-bottom:.75rem}.tw th,.tw td{border:none}
+.tw td:nth-of-type(1)::before{content:"Symptom: ";font-weight:600}.tw td:nth-of-type(2)::before{content:"Cause: ";font-weight:600}.tw td:nth-of-type(3)::before{content:"Fix: ";font-weight:600}}
+nav{display:flex;flex-wrap:wrap;gap:.5rem 1rem}nav a{margin:0}
+code.numbered{counter-reset:ln}
+code.numbered .line{counter-increment:ln}
+code.numbered .line::before{content:counter(ln);display:inline-block;width:2.2ch;margin-right:1.2ch;text-align:right;color:#9ba7b4;user-select:none;-webkit-user-select:none}
+pre.hl:focus-visible{outline:3px solid #79c0ff;outline-offset:2px}
+.codebox pre{padding-top:2.4rem}
+@media (max-width:40rem){pre{font-size:.8rem}}
+
+.warn{background:#fff6e6;border-left:4px solid #b36b00;padding:.75rem 1rem;margin:1rem 0;color:#3b2a00}
+.warn code{background:#f5ecd7}
+table.cmp{width:100%;border-collapse:collapse;font-size:.95rem;margin:1rem 0}
+table.cmp th,table.cmp td{border:1px solid #bbb;padding:.5rem;vertical-align:top;text-align:left}
+table.cmp thead th{background:#f4f4f6}
+details{border:1px solid #ccc;border-radius:6px;padding:.5rem 1rem;margin:1rem 0;background:#fafafa}
+details[open]{background:#fff}
+details summary{cursor:pointer;font-size:1.05rem;padding:.4rem 0}
+details summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+@media (max-width:40rem){table.cmp,table.cmp thead,table.cmp tbody,table.cmp tr,table.cmp th,table.cmp td{display:block}
+table.cmp thead{position:absolute;left:-9999px}
+table.cmp tr{border:1px solid #bbb;margin-bottom:.75rem}
+table.cmp td:nth-of-type(1)::before{content:"Quick Setup: ";font-weight:600}
+table.cmp td:nth-of-type(2)::before{content:"Isolated Setup: ";font-weight:600}}</style><style>.hl{background:#0d1117;color:#e6edf3}
+.hl .c{color:#9ba7b4}
+.hl .k{color:#ff7b72}
+.hl .kc{color:#79c0ff}
+.hl .kd{color:#ff7b72}
+.hl .kr{color:#ff7b72}
+.hl .ne{color:#ffa657}
+.hl .kn{color:#ff7b72}
+.hl .o{color:#ff7b72}
+.hl .ow{color:#ff7b72}
+.hl .s{color:#a5d6ff}
+.hl .s1{color:#a5d6ff}
+.hl .s2{color:#a5d6ff}
+.hl .sa{color:#a5d6ff}
+.hl .si{color:#ffa657}
+.hl .se{color:#79c0ff}
+.hl .sb{color:#a5d6ff}
+.hl .dl{color:#a5d6ff}
+.hl .m{color:#79c0ff}
+.hl .mi{color:#79c0ff}
+.hl .mf{color:#79c0ff}
+.hl .nb{color:#ffa657}
+.hl .bp{color:#ffa657}
+.hl .nf{color:#d2a8ff}
+.hl .fm{color:#d2a8ff}
+.hl .nc{color:#f0883e}
+.hl .nn{color:#e6edf3}
+.hl .nv{color:#ffa657}
+.hl .no{color:#79c0ff}
+.hl .nt{color:#7ee787}
+.hl .na{color:#79c0ff}
+.hl .p{color:#e6edf3}
+.hl .err{color:#ffa198}
+.hl .c,.hl .c1,.hl .cm,.hl .ch,.hl .cs{color:#9ba7b4;font-style:italic}</style></head><body>
 <a class="skip" href="#main">Skip to content</a><header><nav aria-label="Site"><a href="/">Quickstart</a><a href="/troubleshooting">Troubleshooting</a><a href="/llms.txt">llms.txt</a></nav></header><main id="main"><h1>Troubleshooting</h1>
 <h2 id="codes">HTTP status codes</h2>
 <div class="tw"><table><caption>Symptom, likely cause and fix for each response</caption><thead><tr><th scope="col">Code</th><th scope="col">Symptom</th><th scope="col">Likely cause</th><th scope="col">Fix</th></tr></thead><tbody>

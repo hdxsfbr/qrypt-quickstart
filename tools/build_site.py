@@ -80,12 +80,24 @@ def render(text):
     return BLOCK.sub(highlight_block, text)
 
 
+(root / "site/highlight.css").write_text(theme_css())
+
+
+def inline_css(html):
+    # Inline both stylesheets: saves two render-blocking requests on mobile.
+    for css in ("style.css", "highlight.css"):
+        tag = f'<link rel="stylesheet" href="/{css}">'
+        body = (root / "site" / css).read_text().strip()
+        html = html.replace(tag, f"<style>{body}</style>")
+    return html
+
+
 for name in ("index.tmpl.html", "troubleshooting.tmpl.html"):
     src = root / "site-src" / name
     if src.exists():
         out_name = name.replace(".tmpl", "")
-        (root / "site" / out_name).write_text(render(src.read_text()))
-(root / "site/highlight.css").write_text(theme_css())
+        page = inline_css(render(src.read_text()))
+        (root / "site" / out_name).write_text(page)
 
 txt = (root / "site-src/llms.tmpl.txt").read_text()
 for marker, path in SNIPPETS.items():
