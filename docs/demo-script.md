@@ -1,6 +1,6 @@
 # Demo video script: Qrypt Developer Quickstart (v1)
 
-Output: `/workspace/qrypt-demo/qrypt-demo-v3.mp4` (box), 1080p30, 3:26 (limit 5:00). Narration: Andre's cloned voice, Chatterbox standard, exaggeration 0.35, cfg 0.55.
+Output: `/workspace/qrypt-demo/qrypt-demo-v4.mp4` (box), 1080p30, 3:21 (limit 5:00). Narration: Andre's cloned voice, Chatterbox standard, exaggeration 0.35, cfg 0.55.
 
 Rules: the token never appears on screen (terminal and agent scenes are live recordings; every frame of them OCR-scanned). The site is an unofficial prototype, not affiliated with or made by Qrypt. Numbers come only from PRD.md and AGENT_READINESS.md.
 
@@ -11,9 +11,9 @@ Rules: the token never appears on screen (terminal and agent scenes are live rec
 | s3 | 0:50 | 27.8 s | Fresh run, live terminal recording: starter zip, venv, `.env` written by script (never shown), `test -f .env`, quickstart.py -> Success |
 | s4 | 1:17 | 22.5 s | Error paths, live terminal recording: missing-token message; mock server 401 |
 | s5 | 1:40 | 47.5 s | Claude Code fresh Quick Setup run with the short prompt, live terminal recording, idle time sped up |
-| s6 | 2:27 | 18.2 s | Agent-readiness results slide (AGENT_READINESS.md), Codex sandbox-on results |
-| s7 | 2:46 | 24.0 s | Activation funnel slide (PRD.md section 4) |
-| s8 | 3:10 | 16.0 s | Close slide |
+| s6 | 2:27 | 14.0 s | Agent-readiness results slide (AGENT_READINESS.md): 30/30 working key, 0/30 token leaks, medians 42-160 s |
+| s7 | 2:41 | 24.0 s | Activation funnel slide (PRD.md section 4) |
+| s8 | 3:05 | 16.0 s | Close slide |
 
 ## Narration
 
@@ -35,12 +35,12 @@ Rules: the token never appears on screen (terminal and agent scenes are live rec
 > It reads the docs, downloads the starter, installs the dependencies, and runs the mock tests. They pass. Then it checks for a dot E N V file, finds none, and asks me to create it, instead of hunting for the token. I create it and say go ahead. It looks in the wrong folder first, then finds the file by name, without reading it, and runs the snippet. Success. The whole run took under two minutes, sped up here.
 
 ### s6 (2:27)
-> We tested this properly. Cursor... Codex, and Claude Code each did five runs in two setup modes. Thirty out of thirty produced a working key, and none leaked the token. Codex ran with its own sandbox on.
+> We tested this properly. Cursor... Codex, and Claude Code each did five runs in two setup modes. Thirty out of thirty produced a working key, and none leaked the token.
 
-### s7 (2:46)
+### s7 (2:41)
 > To know if it's working for real developers, the plan defines an activation funnel. Landing on the page. Creating a token. The first successful call. The first key. And coming back within seven days. Activation means a working key, and the targets are placeholders until we have four weeks of real data.
 
-### s8 (3:10)
+### s8 (3:05)
 > So that's the Crypt Developer Quick Start. A newcomer, or their A I agent, gets from zero to a working A E S key in minutes, with clear errors and the token kept off screen. Thanks for watching.
 
 ## Live API use
