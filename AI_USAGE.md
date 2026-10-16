@@ -19,7 +19,7 @@ There were also 2 undocumented behaviors we added that weren't in any source: Cl
 
 ## Agent-readiness test subjects
 - Cursor CLI `cursor-agent` 2026.10.01-e373342 (model "Auto"): rounds 1–4
-- OpenAI Codex CLI `codex-cli 0.162.1` (ChatGPT login, default model), via `codex exec --dangerously-bypass-approvals-and-sandbox --json`: plain and sandbox rounds. **Every Codex run used this flag, so Codex's own sandbox was off; the results describe Codex with its sandbox off.** Default Codex on Ubuntu 24.04 hits `bwrap: loopback: Failed RTM_NEWADDR` until AppArmor allows bubblewrap (BACKLOG #17).
+- OpenAI Codex CLI `codex-cli 0.162.1` (ChatGPT login, default model), headline two-mode runs via `codex exec -c sandbox_mode="workspace-write" -c approval_policy="never" -c sandbox_workspace_write.network_access=true --json` (Codex sandbox on, Quick Setup; Isolated Setup runs inside the Docker container, which is the sandbox there). Historical footnote: the earlier plain/sandbox rounds and first two-mode runs used `--dangerously-bypass-approvals-and-sandbox` before AppArmor allowed bubblewrap on the lab.
 - Claude Code `2.1.296` (Claude subscription login, default model), via `claude -p --dangerously-skip-permissions --output-format stream-json`: plain and sandbox rounds
 
 All agents got the same prompt, below.
@@ -54,7 +54,7 @@ Redesigned agent docs and `agent-sandbox/` so Quick Setup (no Docker) is the def
 - Codex CLI 0.162.1 via `codex exec` / `codex exec resume` (ChatGPT login).
 - Claude Code 2.1.300 via `claude -p --resume` (claude.ai Max subscription; `ANTHROPIC_API_KEY` unset).
 - Same Quick Setup two-phase prompt/resume as Cursor; Isolated on `qrypt-agent-sandbox:92cd0628f7f0`.
-- Result across all three agents: 30/30 working keys, 0/30 token leaks (commits `b52f699`, `5f2ee78`).
+- Result across all three agents: 30/30 working keys, 0/30 token leaks (commits `b52f699`, `5f2ee78`; Codex rows redone with its sandbox on: Quick 5/5, Isolated 5/5, 0 leaks).
 
 
 ## Short-prompt round (Oct 15 evening)

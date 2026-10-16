@@ -1,0 +1,1 @@
+/bin/bash -lc "cat > .gitignore <<'EOF' | .env | .env.* | "'!.env.example | .venv/ | __pycache__/ | *.py[cod] | EOF'

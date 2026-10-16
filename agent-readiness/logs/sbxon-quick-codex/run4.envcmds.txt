@@ -1,0 +1,1 @@
+/bin/bash -lc "python3 - <<'PY' | import zipfile | from pathlib import Path | with zipfile.ZipFile('/tmp/qrypt-starter.zip') as z: |     for entry in z.infolist(): |         path = Path(*Path(entry.filename).parts[1:]) |

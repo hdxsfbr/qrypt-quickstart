@@ -1,0 +1,2 @@
+# codex quick runs; image=92cd0628f7f0; 2026-10-16T05:01Z
+quick,codex,1,works=yes,wall_s=70,p1_s=48,asked_env=5,vrc=124,stream_ok=2,leak=0,quiet_read=0,raw_read=0,file=./qrypt-quickstart/.venv/lib/python3.12/site-packages/requests/packages.py,p1=0,p2=0

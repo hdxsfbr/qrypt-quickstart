@@ -151,7 +151,7 @@ console.log("Success: AES-256-GCM round trip with a Qrypt key (not shown).");
 - For production: Qrypt's service delivers the raw bytes, so mix them with local randomness via HKDF (HMAC-based Key Derivation Function). Python: `key = HKDF(hashes.SHA256(), 32, None, b"aes-256 key").derive(qrypt_bytes + os.urandom(32))`. Node: `key = Buffer.from(hkdfSync("sha256", Buffer.concat([qryptBytes, randomBytes(32)]), "", "aes-256 key", 32))`.
 
 ## Codex on Ubuntu 23.10+/24.04
-If every shell command fails with `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`, AppArmor is blocking Codex's sandbox. Stop and tell the human to see /troubleshooting#codex-bwrap. Do NOT switch to --dangerously-bypass-approvals-and-sandbox on the host yourself.
+If every shell command fails with `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`, AppArmor is blocking Codex's sandbox. Stop and tell the human to see /troubleshooting#codex-bwrap. After the fix, `codex sandbox -- /bin/true` exits 0 (codex-cli 0.162.1; `codex sandbox linux -- ...` is not valid on that version). Do NOT switch to --dangerously-bypass-approvals-and-sandbox on the host yourself.
 
 ## More
 Troubleshooting: /troubleshooting

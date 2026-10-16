@@ -1,0 +1,1 @@
+/bin/bash -lc 'env -u QRYPT_BASE_URL -u QRYPT_API_KEY -u PYTHON_DOTENV_DISABLED ../../.venv/bin/python quickstart.py'

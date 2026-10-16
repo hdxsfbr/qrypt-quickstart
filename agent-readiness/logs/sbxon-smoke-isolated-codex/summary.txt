@@ -1,0 +1,2 @@
+# codex isolated runs; image=92cd0628f7f0; 2026-10-16T05:04Z
+isolated,codex,1,wall_s=15,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=0,impl=,image=92cd0628f7f0

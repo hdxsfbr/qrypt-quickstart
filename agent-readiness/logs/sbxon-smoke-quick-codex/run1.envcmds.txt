@@ -1,0 +1,1 @@
+/bin/bash -lc "pwd && rg --files -g AGENTS.md -g '*.py' -g 'README*' -g 'pyproject.toml' -g 'requirements*' -g '.env*'"//bin/bash -lc "python3 - <<'PY' | from zipfile import ZipFile | from pathlib import Path | with ZipFile('/tmp/qrypt-starter.zip') as z: |     for info in z.infolist(): |         p=Path(info.filename) |         if p.is_ab

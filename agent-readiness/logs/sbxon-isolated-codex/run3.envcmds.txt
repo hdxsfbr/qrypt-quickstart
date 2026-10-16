@@ -1,0 +1,1 @@
+/bin/bash -lc "chmod +x mock/run_cases.sh agent-sandbox/run.sh agent-sandbox/verify.sh agent-sandbox/test-isolation.sh | cat > .gitignore <<'EOF' | .env | .env.* | "'!.env.example | .venv/ | __pycache__/ | reports/ | EOF

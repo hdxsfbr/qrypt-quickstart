@@ -56,7 +56,7 @@ Audit date: Oct 15, 2026 (PT). Every requirement from the portal brief (`docs/br
 | Only the URL + the brief's prompt, fresh environment, 5 runs | Met | `AGENT_READINESS.md` setup; prompt in `AI_USAGE.md` | Original rounds added one line saying where `.env` is; two-mode rounds use the URL + exact sentence only |
 | Record success, wall-clock time, failure reason per run | Met | `agent-readiness/runs.csv`, `two_mode_runs.csv`, `cross_agent_runs.csv` | |
 | Revise docs, repeat; both rounds logged | Met | Rounds 1→2→3→4 (docs v1–v4), then two-mode | |
-| ≥ 4/5 after revision | Met | Every round 5/5 working; two-mode 30/30 across Cursor, Codex, Claude Code (`b52f699`, `5f2ee78`) | |
+| ≥ 4/5 after revision | Met | Every round 5/5 working; two-mode 30/30 across Cursor, Codex (sandbox on), Claude Code (`5f2ee78`; Codex sandbox-on rerun in `two_mode_runs.csv`) | |
 | Median ≤ 10 min | Met | Medians 30 s – 160 s | |
 | Failure taxonomy mapped to doc fixes | Met | `AGENT_READINESS.md` taxonomy table | |
 | No tokens in agent logs | Met | Committed logs scrubbed; repo + history scanned for the token prefix: 0 hits (Oct 15) | Rounds 1–3 leaked partial token into Cursor's *local* transcripts; disclosed. The token has not been rotated (owner's decision, test token) |

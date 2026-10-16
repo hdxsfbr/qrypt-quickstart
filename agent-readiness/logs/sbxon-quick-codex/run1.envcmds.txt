@@ -1,0 +1,1 @@
+/bin/bash -lc "if test -f QRYPT-ISOLATED.txt; then cat QRYPT-ISOLATED.txt; else echo 'Quick Setup'; fi | if test -f .env; then echo '.env exists'; else echo '.env absent'; fi"

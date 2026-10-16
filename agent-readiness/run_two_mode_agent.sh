@@ -2,9 +2,12 @@
 # Two-mode eval for Codex or Claude Code.
 # Usage: run_two_mode_agent.sh codex|claude quick|isolated [N=5]
 set -u
+# Codex runs with its sandbox ON (workspace-write, network allowed, approvals never; exec is non-interactive).
+# Config keys (not -s) so the same flags also work for `codex exec resume`, which has no --sandbox option.
+CODEX_SANDBOX_FLAGS=(-c 'sandbox_mode="workspace-write"' -c 'approval_policy="never"' -c 'sandbox_workspace_write.network_access=true')
 A=$1; M=$2; N=${3:-5}
 HERE=$(cd "$(dirname "$0")" && pwd); SBX=$HERE/../agent-sandbox
-OUT=$HERE/logs/${M}-${A}; mkdir -p "$OUT"
+OUT=$HERE/logs/${TAG:-}${M}-${A}; mkdir -p "$OUT"
 URL=https://qrypt-quickstart.pages.dev/
 PROMPT_Q="Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
 PROMPT_I="Use Isolated Setup for the Qrypt quickstart in this folder (see QRYPT-ISOLATED.txt). Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
@@ -39,10 +42,10 @@ run_agent_plain() {
   if [ "$A" = codex ]; then
     if [ -n "$rid" ]; then
       ( cd "$cwd" && env -i HOME="$HOME" PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin" TERM=dumb \
-        timeout 360 codex exec resume --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check --json "$rid" "$prompt" < /dev/null ) > "$out" 2>&1
+        timeout 360 codex exec resume "${CODEX_SANDBOX_FLAGS[@]}" --skip-git-repo-check --json "$rid" "$prompt" < /dev/null ) > "$out" 2>&1
     else
       ( cd "$cwd" && env -i HOME="$HOME" PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin" TERM=dumb \
-        timeout 360 codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check --json "$prompt" < /dev/null ) > "$out" 2>&1
+        timeout 360 codex exec "${CODEX_SANDBOX_FLAGS[@]}" --skip-git-repo-check --json "$prompt" < /dev/null ) > "$out" 2>&1
     fi
   else
     if [ -n "$rid" ]; then
@@ -126,6 +129,10 @@ for i in $(seq 1 "$N"); do
     if [ "$A" = codex ]; then
       mkdir -p "$H/.codex"; install -m 600 "$HOME/.codex/auth.json" "$H/.codex/auth.json"
       MOUNT="-v $CODEX_BIN:/opt/agent:ro -v $H:/home/agent -v $HERE/../mock:/opt/mock:ro"
+      # Isolated: the Docker container IS the sandbox. Codex's own bubblewrap sandbox cannot start inside
+      # Docker (no unprivileged user namespaces under Docker's seccomp/AppArmor profile; tested Oct 15),
+      # and enabling it would mean weakening the container (seccomp/apparmor=unconfined). So inside the
+      # container Codex uses OpenAI's documented setting for externally sandboxed environments.
       CMD=(codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check --json "$PROMPT_I")
     else
       mkdir -p "$H/.claude"; install -m 600 "$HOME/.claude/.credentials.json" "$H/.claude/.credentials.json"

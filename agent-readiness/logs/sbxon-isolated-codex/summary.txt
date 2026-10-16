@@ -1,0 +1,6 @@
+# codex isolated runs; image=92cd0628f7f0; 2026-10-16T05:20Z
+isolated,codex,1,wall_s=43,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=6,impl=./mock/server.py/./quickstart/node/quickstart.mjs/./quickstart/python/quickstart.py/,image=92cd0628f7f0
+isolated,codex,2,wall_s=41,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=7,impl=./qrypt-quickstart/.venv/lib/python3.11/site-packages/requests/packages.py/./qrypt-quickstart/.venv/lib/python3.11/site-packages/requests/exceptions.py/./qrypt-quickstart/.venv/lib/python3.11/site-packages/requests/utils.py/,image=92cd0628f7f0
+isolated,codex,3,wall_s=42,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=7,impl=./mock/server.py/./quickstart/node/quickstart.mjs/./quickstart/python/quickstart.py/,image=92cd0628f7f0
+isolated,codex,4,wall_s=41,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=5,impl=./mock/server.py/./quickstart/node/quickstart.mjs/./quickstart/python/quickstart.py/,image=92cd0628f7f0
+isolated,codex,5,wall_s=45,agent_exit=0,verify_rc=0,leak=0,has_iso=yes,told_verify=7,impl=./mock/server.py/./quickstart/node/quickstart.mjs/./quickstart/python/quickstart.py/,image=92cd0628f7f0

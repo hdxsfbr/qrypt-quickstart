@@ -17,7 +17,7 @@ Manual live run without `make`: `cp .env.example quickstart/python/.env`, put yo
 `make site` regenerates `site/` from `site-src/` templates and the real snippets in `quickstart/`. CI fails if `site/` doesn't match a fresh build, and deploys `site/` to Cloudflare Pages on every push to `main`. `make lighthouse URL=https://qrypt-quickstart.pages.dev/` runs the 10 mobile Lighthouse runs (results in `reports/lighthouse/`).
 
 ## Reproduce the agent-readiness test
-Needs an AI coding agent CLI (Cursor `cursor-agent`, `codex` or `claude`) and a token. Details and results: `AGENT_READINESS.md`.
+Needs an AI coding agent CLI (Cursor `cursor-agent`, `codex` or `claude`) and a token. Details and results: `AGENT_READINESS.md`. Codex runs use its own sandbox (`-c sandbox_mode="workspace-write" -c approval_policy="never" -c sandbox_workspace_write.network_access=true`); on Ubuntu 24.04 load the bwrap AppArmor profile first (`codex sandbox -- /bin/true` must exit 0).
 ```bash
 cd agent-readiness
 ./run_round.sh 1                    # rounds 1-3: Cursor in a fresh temp folder

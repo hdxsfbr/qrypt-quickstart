@@ -1,4 +1,4 @@
-# Backlog: 21 items (17 open, 4 done), RICE-scored
+# Backlog: 21 items (16 open, 5 done), RICE-scored
 
 **RICE = Reach × Impact × Confidence ÷ Effort.** Higher scores go first.
 - **Reach:** new developers or agent sessions affected per quarter, out of the PRD's assumed 400 signups.
@@ -18,7 +18,7 @@ Items are numbered in the order we found them; the open table is sorted by RICE 
 | 20 | **Move the agent modes (Quick/Isolated) to their own page** so the 5-minute human path is shorter | 400 | 1 | 60% | 0.5 | **480** | Opus review, Oct 15: the human page feels heavy below step 4 |
 | 5 | **Allow the default Python User-Agent** (or document the Cloudflare rule in the official docs) | 120 | 2 | 90% | 0.5 | **432** | `Python-urllib` got 403 "Error 1010" from Cloudflare. The other clients passed. |
 | 16 | **Docs: tell agents not to probe `~/.env` or other home secret paths** during Quick Setup | 100 | 0.5 | 80% | 0.1 | **400** | Claude Code `ls ~/.env` in 2/5 Quick runs (no leak) |
-| 17 | **Rerun Codex with its sandbox on** (no `--dangerously-bypass-approvals-and-sandbox`) once the bwrap AppArmor profile is loaded on hdx-lab (needs Andre's sudo) | 100 | 1 | 80% | 0.2 | **400** | All Codex runs so far used the bypass flag; default Codex fails with `bwrap: loopback: Failed RTM_NEWADDR` on Ubuntu 24.04 |
+| 17 | ~~Rerun Codex with its sandbox on~~ **Done (Oct 15):** Quick 5/5 with Codex sandbox on (`workspace-write`, network on, approvals never), Isolated 5/5 inside the Docker sandbox; 0/10 leaks (AGENT_READINESS, "Codex sandbox-on rerun") | 100 | 1 | 80% | 0.2 | **400** | Done; earlier runs used the bypass flag before AppArmor allowed bubblewrap |
 | 11 | **Say "no unprompted key-derived output"** to agents: print only the success line. Since Oct 15 the page has an *optional, human-opted-in* 8-hex fingerprint block; llms.txt tells agents to add it only if asked and never print more. | 100 | 0.5 | 70% | 0.1 | **350** | Claude Code printed a 16-hex SHA-256 fingerprint of the key in 3 runs |
 | 4 | **Ask Qrypt to send `Retry-After` / `X-RateLimit-*` headers** and to document the real 429 behavior | 150 | 2 | 80% | 1 | **240** | No rate-limit headers on any response. A 429 came back about 1 s after a single call, stricter than "30 per 10 s". |
 | 13 | **Disposable / short-lived tokens in Quick Setup UX** — deep-link to portal trial with "test token" framing | 200 | 2 | 50% | 1 | **200** | Quick Setup cannot stop agents reading `.env`; disposable tokens are the residual control |

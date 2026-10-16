@@ -1,0 +1,19 @@
+./agent-sandbox/Dockerfile
+./agent-sandbox/README.md
+./agent-sandbox/run.sh
+./agent-sandbox/test-isolation.sh
+./agent-sandbox/verify.sh
+./AGENTS.md
+./.env.example
+./.gitignore
+./Makefile
+./mock/run_cases.sh
+./mock/server.py
+./QRYPT-ISOLATED.txt
+./quickstart/node/quickstart.mjs
+./quickstart/python/quickstart.py
+./quickstart/python/requirements.txt
+VERIFY: 
+[notice] A new release of pip is available: 24.3.1 -> 26.2.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+verify python: PASS (AES-GCM round trip; key not shown)

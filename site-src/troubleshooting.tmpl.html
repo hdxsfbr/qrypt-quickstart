@@ -39,8 +39,9 @@ sudo install -m 0644 \
   /usr/share/apparmor/extra-profiles/bwrap-userns-restrict \
   /etc/apparmor.d/bwrap-userns-restrict
 sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
-codex sandbox linux -- /bin/true   # no output, exit 0 = fixed</code></pre></div>
-<p>OpenAI lists <code>sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0</code> only as a fallback. It turns the protection off for every program on the machine, so prefer the profile. Another option is <a href="/#isolated-setup">Isolated Setup</a>: Docker is then the boundary, and the token stays on the host.</p>
+codex sandbox -- /bin/true   # no output, exit 0 = fixed</code></pre></div>
+<p>The test command is for <code>codex-cli</code> 0.162.1, where <code>codex sandbox</code> takes the command directly (check <code>codex sandbox --help</code> on other versions). Codex then works with its sandbox on, for example <code>codex exec --sandbox workspace-write</code>.</p>
+<p>OpenAI lists <code>sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0</code> only as a fallback. It turns the protection off for every program on the machine, so prefer the profile. Another option is <a href="/#isolated-setup">Isolated Setup</a>: Docker is then the boundary, and the token stays on the host. Codex's own sandbox cannot start inside that container, because Docker also blocks user namespaces; the container is the sandbox there.</p>
 <p class="warn"><strong>Do not use <code>--dangerously-bypass-approvals-and-sandbox</code> on your own machine to get past this.</strong> It turns off Codex's sandbox and approvals, so the agent can read any file, including <code>.env</code> and other secrets, and reach the network freely.</p>
 <p>Sources: <a href="https://developers.openai.com/codex/concepts/sandboxing">OpenAI Codex docs, Sandbox: Prerequisites</a>; <a href="https://github.com/openai/codex/issues/14919">openai/codex issue 14919</a>; <a href="https://github.com/openai/codex/pull/14963">openai/codex pull request 14963</a>.</p>
 <h2 id="proxy">Proxy and TLS setup commands</h2>
