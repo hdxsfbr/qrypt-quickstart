@@ -63,3 +63,5 @@ Conclusion: one compliant run did not leak, but nothing stops a non-compliant ag
 4. Butler: re-run agent-readiness on the new Isolated Setup image (`qrypt-agent-sandbox:<hash>`), not the old `qrypt-run` image.
 
 Throwaway dir, canary files and mocks were removed after the probe.
+
+**Follow-up (Oct 18):** the open item above is closed. Real agents ran inside the new image (`qrypt-agent-sandbox:92cd0628f7f0`): Cursor, Codex and Claude Code, 5 Isolated runs each, 15/15 working with host `verify.sh` PASS and 0 leaks (`AGENT_READINESS.md`, "Cross-agent two-mode" and "Codex sandbox-on rerun"; `BACKLOG.md` #14 done). `test-isolation.sh` still reports 12/12 PASS (re-run Oct 18 on hdx-lab). The limits listed above (open network, `SANDBOX_DOCKER_ARGS`, container escapes) still stand, and the isolation test is skipped in CI when the runner has no Docker.

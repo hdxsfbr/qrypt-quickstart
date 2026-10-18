@@ -30,5 +30,5 @@ Reference files are kept for study only; no Qrypt asset is hotlinked or served b
 
 ## Result (c8fbca1, deployed)
 - Screens: `screens/before-*.png` vs `screens/after-*.png`, plus `after-mobile-menu-open.png`.
-- Lighthouse mobile ×10 on `/`: LCP 0.88–1.03 s (p95 1.03 s), accessibility 100. `/troubleshooting` single run: LCP 0.93 s, a11y 100.
+- Lighthouse mobile ×10 on `/` at the time of this design pass: LCP 0.88–1.03 s (p95 1.03 s), accessibility 100. `/troubleshooting` single run: LCP 0.93 s, a11y 100. Latest numbers: `reports/lighthouse/feedback-batch/summary.json` (p95 1.32 s on `/`, 1.11 s on `/troubleshooting`).
 - Inlined style.css 3.7 KB → 5.4 KB. Mobile menu tested: Enter opens + focuses first link, Escape closes + returns focus.

@@ -34,3 +34,5 @@ live bytes: 1024 (verify.sh python 2026-10-16T05:23Z)
 live bytes: 1024 (verify.sh python 2026-10-16T05:24Z)
 live bytes: 1024 (verify.sh python 2026-10-16T05:26Z)
 live bytes: 1024 (verify.sh python 2026-10-16T05:28Z)
+# Oct 15-16 2026: demo video recordings (one fresh live run + one Claude Code Quick Setup run): about 2-4 KiB, not logged per call at the time (estimate, added Oct 18).
+# Oct 18 2026 final audit: 0 live bytes (snippets unchanged; mock and logs only).
