@@ -174,6 +174,11 @@ for marker, path in SNIPPETS.items():
     txt = txt.replace(marker, path.read_text())
 (root / "site/llms.txt").write_text(txt)
 
+# Served single-file copies of agent-sandbox/ (linked from the page). Exact bytes,
+# so CI's site/ drift check also catches a stale served copy.
+for f in ("Dockerfile", "README.md", "run.sh", "verify.sh", "test-isolation.sh"):
+    (root / "site/agent-sandbox" / f).write_bytes((root / "agent-sandbox" / f).read_bytes())
+
 # Zip path -> repo source when the zip ships a trimmed variant.
 STARTER_SRC = {"Makefile": "starter/Makefile"}
 # ---- Starter archive: exact copies of repo files, deterministic bytes (CI diffs site/).
