@@ -4,7 +4,8 @@
 - **Grok Bot agents** (an AI assistant team working for Andre Batista) did these:
   - Researched the Qrypt docs.
   - Ran the live API tests (6 test calls, 1 KiB of entropy used).
-  - Drafted `PRD.md`, `docs/research.md`, `docs/claims-to-source.md`, `AGENT_READINESS.md` and `BACKLOG.md`.
+  - Drafted `PRD.md`, `docs/PRD-funnel-metrics.md` (Oct 18), `docs/research.md`, `docs/claims-to-source.md`, `AGENT_READINESS.md`, `BACKLOG.md` and `docs/REQUIREMENTS_TRACE.md`.
+  - Produced the demo video (`docs/demo-script.md`): screen recordings, slides, and narration in a synthetic copy of Andre's voice (Chatterbox voice cloning), with every recorded frame OCR-checked for the token.
   - Built the snippets, mock server, CI and site, and ran the agent-readiness harness.
 - **Andre** set direction, reviewed, and approved decisions such as GitLab hosting and scope.
 
@@ -55,6 +56,7 @@ Redesigned agent docs and `agent-sandbox/` so Quick Setup (no Docker) is the def
 - Claude Code 2.1.300 via `claude -p --resume` (claude.ai Max subscription; `ANTHROPIC_API_KEY` unset).
 - Same Quick Setup two-phase prompt/resume as Cursor; Isolated on `qrypt-agent-sandbox:92cd0628f7f0`.
 - Result across all three agents: 30/30 working keys, 0/30 token leaks (commits `b52f699`, `5f2ee78`; Codex rows redone with its sandbox on: Quick 5/5, Isolated 5/5, 0 leaks).
+- Prompt note: the Codex sandbox-on rerun used the site's short paste prompt, not the brief's sentence. See "Which prompt each round used" in `AGENT_READINESS.md`.
 
 
 ## Short-prompt round (Oct 15 evening)
@@ -70,3 +72,6 @@ Redesigned agent docs and `agent-sandbox/` so Quick Setup (no Docker) is the def
   Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt.
   ```
 - Verification: 3 Cursor Quick + 1 Codex Quick + 1 Claude Quick with the short prompt only → **5/5 working, 0/5 leaks** (see `AGENT_READINESS.md` short-prompt round).
+
+## Final pre-submission audit (Oct 18)
+A Grok Bot agent re-checked every brief line against the code, tests and measured results (`docs/REQUIREMENTS_TRACE.md`), wrote the funnel-metrics PRD, and fixed the stale docs it found. The funnel PRD's numbers are either labeled placeholders or quoted from measured results in this repo; its sample-size figures are computed with the standard two-proportion formula, not measured. No AI-drafted claim about Qrypt was added in this pass, so the correction count above is unchanged.
