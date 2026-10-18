@@ -28,9 +28,11 @@ mkdir -p ~/qrypt-demo && cd ~/qrypt-demo
 # 3. Start the agent inside the sandbox (no secrets enter the container):
 path/to/qrypt-quickstart/agent-sandbox/run.sh ~/qrypt-demo your-agent-command
 
-# 4. Inside: implement from https://qrypt-quickstart.pages.dev/ , then
-#    run the mock tests (no real token needed):
-#      QRYPT_BASE_URL=http://host.docker.internal:...  (or use the repo mock)
+# 4. Inside: implement from https://qrypt-quickstart.pages.dev/ , then run
+#    the mock tests (no real token needed). With the starter archive unzipped
+#    in the project, the image has no make, so:
+#      python3 -m venv .venv && . .venv/bin/activate
+#      pip install -r quickstart/python/requirements.txt && ./mock/run_cases.sh
 
 # 5. On the HOST, after the agent finishes, verify against the live API:
 path/to/qrypt-quickstart/agent-sandbox/verify.sh --env ~/.config/qrypt/.env
