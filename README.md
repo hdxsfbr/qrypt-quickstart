@@ -4,10 +4,12 @@
 
 Turn 1 KiB of Qrypt quantum entropy into an AES-256-GCM key in Python or Node, in about 5 minutes.
 
+Unofficial prototype built on Qrypt's public API docs. It is not made by, affiliated with or endorsed by Qrypt.
+
 **Site:** https://qrypt-quickstart.pages.dev/ · Agent docs: `/llms.txt` · Agent guide: `AGENTS.md`
 
 ## Grader path (under 5 minutes)
-1. `make check` — install Python deps and run **both snippets against the mock** (success, 401, 403, 429, 500, 503, network/non-JSON, missing token). No token needed.
+1. `make check` — install Python deps and run **both snippets against the mock** (success, 401, 403, 429, 500, 503, non-JSON, network error, missing token: 9 cases per language, 18 in total). No token needed. Optional, with Docker: `make isolation` (12 Isolated Setup boundary checks, no token).
 2. Optional live (1 KiB each): put a token in `quickstart/python/.env` and/or `quickstart/node/.env`, then `make live-py` / `make live-js`.
 3. Docs site: `site/` (Cloudflare Pages via CI).
 
@@ -17,7 +19,7 @@ Manual live run without `make`: `cp .env.example quickstart/python/.env`, put yo
 `make site` regenerates `site/` from `site-src/` templates and the real snippets in `quickstart/`. CI fails if `site/` doesn't match a fresh build, and deploys `site/` to Cloudflare Pages on every push to `main`. `make lighthouse URL=https://qrypt-quickstart.pages.dev/` runs the 10 mobile Lighthouse runs (results in `reports/lighthouse/`).
 
 ## Reproduce the agent-readiness test
-Needs an AI coding agent CLI (Cursor `cursor-agent`, `codex` or `claude`) and a token. Details and results: `AGENT_READINESS.md`. Codex runs use its own sandbox (`-c sandbox_mode="workspace-write" -c approval_policy="never" -c sandbox_workspace_write.network_access=true`); on Ubuntu 24.04 load the bwrap AppArmor profile first (`codex sandbox -- /bin/true` must exit 0).
+Needs an AI coding agent CLI (Cursor `cursor-agent`, `codex` or `claude`) and a token. Details and results: `AGENT_READINESS.md`. The scripts use the brief's prompt by default; prefix `PROMPT_STYLE=short` for the site's short paste prompt. Codex runs use its own sandbox (`-c sandbox_mode="workspace-write" -c approval_policy="never" -c sandbox_workspace_write.network_access=true`); on Ubuntu 24.04 load the bwrap AppArmor profile first (`codex sandbox -- /bin/true` must exit 0).
 ```bash
 cd agent-readiness
 ./run_round.sh 1                    # rounds 1-3: Cursor in a fresh temp folder
@@ -51,6 +53,9 @@ agent-sandbox/test-isolation.sh   # no real token; proves the boundaries
 - `mock/` — stdlib mock API + `run_cases.sh`
 - `agent-sandbox/` — Isolated Setup (Docker + trusted `verify.sh`)
 - `site/` — static docs; `site-src/` templates filled by `make site`
+- `tools/` — site build, starter-archive check, link check, Lighthouse and keyboard/zoom check scripts
+- `reports/` — Lighthouse runs, snippet runtimes, keyboard/zoom check, live-usage log
+- `docs/` — brief, funnel-metrics PRD, requirements trace, claims-to-source table, research, demo script, QA notes
 - `AGENTS.md`, `PRD.md`, `AGENT_READINESS.md`, `BACKLOG.md`, `AI_USAGE.md`
 
 ## Submission documents
@@ -58,12 +63,14 @@ agent-sandbox/test-isolation.sh   # no real token; proves the boundaries
 |---|---|
 | Snippets (2 languages, CI-tested on a mock) | `quickstart/`, `mock/`, `.gitlab-ci.yml` |
 | Deployed site + troubleshooting | https://qrypt-quickstart.pages.dev/ · `/troubleshooting.html` · `/llms.txt` |
-| PRD | `PRD.md` |
+| PRD | `PRD.md` (funnel summary in §4) |
+| Funnel and metrics specification | `docs/PRD-funnel-metrics.md` |
 | Agent-readiness report (both rounds) | `AGENT_READINESS.md`, `agent-readiness/*.csv` |
 | RICE backlog | `BACKLOG.md` |
 | Claims-to-source table | `docs/claims-to-source.md` |
 | AI usage disclosure | `AI_USAGE.md` |
 | Requirement-by-requirement check | `docs/REQUIREMENTS_TRACE.md` |
-| Lighthouse reports, live usage log | `reports/` |
+| Lighthouse reports, keyboard/zoom check, live usage log | `reports/` |
+| Demo video (≤ 5 min) | 3:21; script and scene list in `docs/demo-script.md` |
 
 Tokens are never printed; `.env` is gitignored.
