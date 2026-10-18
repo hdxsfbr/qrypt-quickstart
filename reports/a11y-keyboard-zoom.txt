@@ -1,0 +1,27 @@
+# Keyboard-only and zoom check, live site https://qrypt-quickstart.pages.dev (site build from c4b98b1)
+# Oct 18 2026 1:47 PM CT (18:47Z), Playwright + Google Chrome headless, script tools/a11y_check.py
+# 200% zoom = 640x400 CSS px at device scale 2; 400% = 320 px wide (WCAG reflow width). Automated; not a screen-reader test.
+PASS / 200% zoom: no horizontal page scroll (overflow 0 px)
+PASS / 200% zoom: 18 code blocks; wide ones are keyboard-scrollable (unfocusable wide: 0)
+PASS / 200% zoom: code font >= 12 px (smaller: 0)
+PASS / 400% zoom / 320 px reflow: no horizontal page scroll (overflow 0 px)
+PASS / 400% zoom / 320 px reflow: 18 code blocks; wide ones are keyboard-scrollable (unfocusable wide: 0)
+PASS / 400% zoom / 320 px reflow: code font >= 12 px (smaller: 0)
+PASS /: 16 copy buttons, all with aria-label (missing: 0)
+PASS /: Tab reaches 49 stops; first is 'Skip to content'
+PASS /: visible focus indicator on every Tab stop (without: 0)
+PASS /: language tab reachable by Tab (1 tab stop(s), roving tabindex)
+PASS /: copy buttons reachable by Tab (10)
+PASS /: ArrowRight moves from Python tab to Node tab and selects it
+PASS /: Home returns to first tab (Python)
+PASS /: Enter on a copy button announces via aria-live ('Copied .env line')
+PASS /troubleshooting 200% zoom: no horizontal page scroll (overflow 0 px)
+PASS /troubleshooting 200% zoom: 5 code blocks; wide ones are keyboard-scrollable (unfocusable wide: 0)
+PASS /troubleshooting 200% zoom: code font >= 12 px (smaller: 0)
+PASS /troubleshooting 400% zoom / 320 px reflow: no horizontal page scroll (overflow 0 px)
+PASS /troubleshooting 400% zoom / 320 px reflow: 5 code blocks; wide ones are keyboard-scrollable (unfocusable wide: 0)
+PASS /troubleshooting 400% zoom / 320 px reflow: code font >= 12 px (smaller: 0)
+PASS /troubleshooting: 4 copy buttons, all with aria-label (missing: 0)
+PASS /troubleshooting: Tab reaches 32 stops; first is 'Skip to content'
+PASS /troubleshooting: visible focus indicator on every Tab stop (without: 0)
+23/23 checks passed
