@@ -1,6 +1,8 @@
 # PRD: Developer Quickstart & Onboarding Funnel for Qrypt Quantum Entropy
 
-Owner: Andre Batista (PM) · Status: v1.1 · Date: Oct 14, 2026 (updated Oct 15) · Reading time: about 10 minutes
+Owner: Andre Batista (PM) · Status: v1.2 · Date: Oct 14, 2026 (updated Oct 18) · Reading time: about 10 minutes
+
+This is an unofficial prototype built on Qrypt's public API docs. It is not made by, affiliated with or endorsed by Qrypt.
 
 ## Glossary
 - **Entropy:** truly random bytes. Qrypt's comes from quantum measurements.
@@ -48,20 +50,26 @@ These numbers need checking against real analytics once the instrumentation belo
 | **Internal: support / sales / eng** | Qrypt staff | "I want fewer avoidable tickets and clear data on where developers drop off." | No funnel data at all |
 
 ## 4. Activation funnel, targets and measurement
+This section is the summary. The full specification (every event's trigger, properties and emitter, formulas, segmentation, privacy, dashboards and rollout) is in [`docs/PRD-funnel-metrics.md`](docs/PRD-funnel-metrics.md).
+
+**Activation = a working key** (stage 4). **North Star:** weekly activated tokens, meaning tokens created in the week that reach a first key within 24 hours.
+
+**What exists today:** only the snippet header used in stage 4 (`X-Qrypt-Client`). The site has no analytics and no cookies, and stages 2–5 need data from Qrypt's portal and API gateway. No real funnel numbers exist yet.
+
 **Principles:**
 - No cookies and no personal data.
-- The visitor ID is a random ID per browser, kept in `localStorage`, and resettable.
-- Server-side stages use a **hashed token ID** (SHA-256 of the token's ID, never the token itself).
-- All events go to one table: `funnel_events(event, anon_id, token_hash, ts_utc, props_json)`.
-- Targets are illustrative and should be set again after 4 weeks of baseline data.
+- The visit ID is a random ID made in page memory on each page load. It is not stored in a cookie or in browser storage, so it can't follow anyone between visits.
+- Server-side stages use a **hashed token ID** (a keyed hash, HMAC-SHA-256, of the token's ID, computed by Qrypt; never the token itself).
+- All events go to one table: `funnel_events(event, visit_id, token_hash, ts_utc, props_json)`.
+- **Every target below is a placeholder.** Real targets are set after 4 weeks of baseline data, using the method in `docs/PRD-funnel-metrics.md` §7.
 
 | # | Stage | Event and exact definition | How it's measured | Target |
 |---|---|---|---|---|
-| 1 | **Landing** | `qs_page_view`: a page load of `/quickstart` or `/llms.txt`, with props `{path, referrer_domain, ua_class: human\|agent}` | A static-site beacon (a small no-cookie request) to `/e`. `/llms.txt` hits come from CDN logs. `ua_class=agent` when the User-Agent matches a maintained list of agent/bot patterns. | Baseline only: count weekly unique `anon_id`s |
-| 2 | **Token created** | `token_created`: the portal issues an Entropy token. Props are `{token_hash, signup_source}`, with `signup_source` taken from a `?src=qs` link parameter on the quickstart's "Get a token" button. | Portal backend emits it when the token is created. Joined to stage 1 through `src=qs` plus `anon_id`, passed along in the signup URL. | ≥ 40% of stage-1 visitors arriving with `src=qs` |
-| 3 | **First successful call** | `first_200`: the first HTTP 200 from `/quantum-entropy` for a `token_hash`. | API gateway logs: `min(ts)` where `status=200`, grouped by `token_hash`. Also record the non-200s per token before the first 200 (by status code), which show where friction is. | ≥ 50% of tokens created, within 24 hours of creation (versus the assumed 25%) |
-| 4 | **First key** | `first_key`: the quickstart snippet completes the AES-GCM round trip. | Snippets send a request header `X-Qrypt-Client: quickstart-py/1.0` or `quickstart-js/1.0`. A 200 that carries this header counts as a first key, since the snippet only succeeds when the round trip works. There's no extra network call and nothing about the key is ever sent. The proxy measure is the share of first-200s that have the header. | ≥ 80% of stage 3. Median from `qs_page_view` to `first_key` under 10 minutes, measured where `anon_id` and `token_hash` are joined. |
-| 5 | **Return within 7 days** | `return_7d`: any 200 for the same `token_hash` between 24 hours and 7 days after `first_200`, **without** the quickstart header (meaning real integration use). | Gateway logs, as a daily batch job | ≥ 30% of stage 4 |
+| 1 | **Landing** | `qs_page_view`: a page load of `/` or `/troubleshooting`, with props `{visit_id, path, referrer_domain, ua_class}`. `qs_doc_fetch`: any request for `/llms.txt`, `/`, `/troubleshooting` or the starter zip, JavaScript or not | A static-site beacon (a small no-cookie request) to `/e`; edge counting for `qs_doc_fetch`, which is how AI agents show up. `ua_class` (`human`, `agent`, `tool`, `bot`) comes from a maintained list of User-Agent patterns. | Placeholder: ≥ 50% of human landing visits engage (copy, tab, signup or starter click) |
+| 2 | **Token created** | `token_created`: the portal issues an Entropy token. Props are `{token_hash, signup_source, signup_visit_id}`, with `signup_source` taken from a `?src=qs` link parameter on the quickstart's "Get a token" link (not built yet). | Portal backend emits it when the token is created (Qrypt-side). Joined to stage 1 through the `qs_visit` value passed along in the signup URL. | Placeholder: ≥ 20% of human landing visits (≥ 40% of "Get a token" clicks) |
+| 3 | **First successful call** | `first_200`: the first HTTP 200 from `/quantum-entropy` for a `token_hash`. | API gateway logs: `min(ts)` where `status=200`, grouped by `token_hash`. Also record the non-200s per token before the first 200 (by status code), which show where friction is. | Placeholder: ≥ 50% of tokens created, within 24 hours of creation (versus the brief's assumed 25%) |
+| 4 | **First key** | `first_key`: the quickstart snippet completes the AES-GCM round trip. | Snippets send a request header `X-Qrypt-Client: quickstart-py/1.0` or `quickstart-js/1.0`. A 200 that carries this header counts as a first key, since the snippet only succeeds when the round trip works. There's no extra network call and nothing about the key is ever sent. The proxy measure is the share of first-200s that have the header. | Placeholder: ≥ 80% of stage 3. Median from `qs_page_view` to `first_key` under 10 minutes, measured where `visit_id` and `token_hash` are joined. |
+| 5 | **Return within 7 days** | `return_7d`: any 200 for the same `token_hash` between 24 hours and 7 days after `first_200`, **without** the quickstart header (meaning real integration use). | Gateway logs, as a daily batch job | Placeholder: ≥ 30% of stage 4 |
 
 **Guardrail metrics, which should stay flat or go down:**
 - 401/403 rate per new token in its first hour.
@@ -84,12 +92,13 @@ These numbers need checking against real analytics once the instrumentation belo
 - An agent-readiness test: 2 rounds × 5 runs, with a failure taxonomy (the categories of failure) mapped to doc fixes.
 - **Optional key fingerprint, kept outside the core snippets.** The brief caps each snippet at 25 lines (excluding comments and imports), and a grader can count them, so the core files stay within that limit. The page shows a separate, clearly labeled optional block (2–3 lines per language) that prints the first 8 hex characters of SHA-256(key), so a user can see the key change between runs without exposing it. A "For production" note shows mixing Qrypt bytes with local randomness via HKDF (HMAC-based Key Derivation Function).
 - A downloadable starter archive (`/qrypt-quickstart-starter.zip`) built by `make site` from the exact repo files (snippets, mock server and tests, `requirements.txt`, `.env.example`, `AGENTS.md`, `Makefile`, `agent-sandbox/`). CI checks it matches the repo byte for byte and holds no `.env` or token, because the GitLab repo is private and the page otherwise pointed to files readers could not get.
-- A RICE-scored backlog (17 open items), and a claims-to-source table (`docs/claims-to-source.md`).
+- A RICE-scored backlog (21 items: 16 open, 5 done), and a claims-to-source table (`docs/claims-to-source.md`).
+- A funnel-metrics specification (`docs/PRD-funnel-metrics.md`). The instrumentation itself is not built (see Out of scope).
 
 ## 6. Out of scope
 - A full SDK in any language.
 - Changes to the Qrypt API or portal. We document current behavior and file the 403/401 mismatch as a backlog item.
-- Building the analytics pipeline itself. This PRD specifies it, and the site ships at most a cookie-free beacon (stretch goal).
+- Building the analytics pipeline itself. `docs/PRD-funnel-metrics.md` specifies it. The site currently ships **no** analytics at all; the cookie-free beacon is a specified, unbuilt stretch goal.
 - Regions other than `api-eus`, the only one documented.
 - Qrypt's key-generation SDK product.
 
@@ -124,7 +133,7 @@ These numbers need checking against real analytics once the instrumentation belo
 ## 9. Open questions
 - How big is the monthly quota per plan? It isn't documented.
 - Is the bad-token 403 intended? To raise with Qrypt (Sean Neal).
-- Will the portal accept a `src=qs` parameter and a `token_hash` event for stage 2?
+- Will the portal accept a `src=qs` parameter and a `token_hash` event for stage 2? (Full list: `docs/PRD-funnel-metrics.md` §15.)
 
 ## 10. Submission documents
 | Document | What it holds |
@@ -132,9 +141,10 @@ These numbers need checking against real analytics once the instrumentation belo
 | `README.md` | Grader quick-start (under 5 minutes), one-line description, how to build the site and rerun the agent test |
 | `PRD.md` | This document |
 | `AGENT_READINESS.md` | All agent-test rounds (5 runs each), failure taxonomy (the types of failure) and the doc fix for each |
-| `BACKLOG.md` | 16 follow-ups scored with RICE |
+| `BACKLOG.md` | 21 follow-ups (16 open, 5 done) scored with RICE |
+| `docs/PRD-funnel-metrics.md` | Full funnel and metrics specification: events, formulas, placeholder targets, privacy, rollout |
 | `docs/claims-to-source.md` | Every factual claim about Qrypt, with its official source and live check |
 | `AI_USAGE.md` | AI tools used, exact agent-test prompt, and corrected AI-drafted claims |
 | `docs/REQUIREMENTS_TRACE.md` | Each brief requirement mapped to evidence |
 | Site | https://qrypt-quickstart.pages.dev/ (quickstart, `/troubleshooting.html`, `/llms.txt`) |
-| Video (≤ 5 min) | Fresh quickstart run, a 401 troubleshooting path, this funnel, one agent run |
+| Video (≤ 5 min) | 3:21. Fresh quickstart run, a 401 troubleshooting path, this funnel, one agent run (`docs/demo-script.md`) |
