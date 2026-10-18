@@ -4,7 +4,13 @@ set -u
 R=$1; HERE=$(cd "$(dirname "$0")" && pwd); SBX=$HERE/../agent-sandbox; OUT=$HERE/logs/round$R; mkdir -p "$OUT"
 V=$HOME/.local/share/cursor-agent/versions/2026.10.01-e373342   # pinned: same CLI version as rounds 1-3
 URL=https://qrypt-quickstart.pages.dev/
-PROMPT="Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
+# Default prompt = the one used for the logged rounds (the brief's sentence word for word).
+# PROMPT_STYLE=short uses the site's short paste prompt instead (short-prompt and Codex sandbox-on rounds).
+PROMPT="Quickstart docs: $URL
+A .env file containing QRYPT_API_KEY is already in the current directory.
+
+Generate an AES-256 key using Qrypt quantum entropy in a new project"
+[ "${PROMPT_STYLE:-brief}" = short ] && PROMPT="Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
 K=$(cat ~/.config/agentforge/qrypt_api_key)
 docker build -q -t qrypt-agent-sandbox "$SBX" >/dev/null
 for i in 1 2 3 4 5; do

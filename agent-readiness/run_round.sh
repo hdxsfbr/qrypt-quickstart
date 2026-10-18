@@ -3,7 +3,13 @@
 set -u
 R=$1; HERE=$(cd "$(dirname "$0")" && pwd); OUT=$HERE/logs/round$R; mkdir -p "$OUT"
 URL=https://qrypt-quickstart.pages.dev/
-PROMPT="Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
+# Default prompt = the one used for the logged rounds (the brief's sentence word for word).
+# PROMPT_STYLE=short uses the site's short paste prompt instead (short-prompt and Codex sandbox-on rounds).
+PROMPT="Quickstart docs: $URL
+A .env file containing QRYPT_API_KEY is already in the current directory.
+
+Generate an AES-256 key using Qrypt quantum entropy in a new project"
+[ "${PROMPT_STYLE:-brief}" = short ] && PROMPT="Set up the Qrypt quickstart and run the Python snippet. Follow https://qrypt-quickstart.pages.dev/ and https://qrypt-quickstart.pages.dev/llms.txt."
 CSV=$HERE/runs.csv; [ -f "$CSV" ] || echo "round,run,success,wall_clock_s,verify_rc,key_printed,token_in_transcript,failure_category,failure_reason" > "$CSV"
 for i in 1 2 3 4 5; do
   D=$(mktemp -d /tmp/qrypt-agent-r${R}-${i}-XXXX)
